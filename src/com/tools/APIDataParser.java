@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.app.labeli.event.ItemEvent;
 import com.app.labeli.member.ItemMember;
+import com.app.labeli.projets.ItemProject;
 
 public abstract class APIDataParser {
 
@@ -31,6 +32,18 @@ public abstract class APIDataParser {
 		}
 
 		return members;
+	}
+	
+	public static ArrayList<ItemProject> parseProjectList(haxe.root.Array a){
+		ArrayList<ItemProject> projects = new ArrayList<ItemProject>();
+
+		for(int i=0; i < a.length; i++)
+		{
+			haxe.lang.DynamicObject project= (haxe.lang.DynamicObject) a.__get(i);
+			projects.add(parseProject(project));
+		}
+
+		return projects;
 	}
 
 	public static ItemEvent parseEvent(haxe.lang.DynamicObject o){
@@ -71,6 +84,24 @@ public abstract class APIDataParser {
 
 		return new ItemMember(firstName, lastName, email, role, universityGroup,
 				description, picture, created, birthday, id, type);
+	}
+	
+	public static ItemProject parseProject(haxe.lang.DynamicObject o){
+		ItemMember author = parseMember((haxe.lang.DynamicObject) o.__hx_lookupField("author", true, false));
+		String name = (String) o.__hx_lookupField("name", true, false);
+		String description = (String) o.__hx_lookupField("description", true, false);
+		String picture = (String) o.__hx_lookupField("picture", true, false);
+		double created = 0.0;
+		if (o.__hx_lookupField("created", true, false) != null)
+		try {
+			created = (Double) o.__hx_lookupField("created", true, false);
+		} catch (ClassCastException e) {
+			created = Double.parseDouble(String.valueOf((Integer)o.__hx_lookupField("created", true, false)));
+		}
+		int status = (Integer) o.__hx_lookupField("status", true, false);
+		int type = (Integer) o.__hx_lookupField("type", true, false);
+
+		return new ItemProject(author, name, description, picture, created, status, type);
 	}
 
 }

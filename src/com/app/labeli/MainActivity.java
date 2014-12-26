@@ -7,6 +7,7 @@ import labeli.Labeli;
 import com.app.labeli.R;
 import com.app.labeli.event.FragmentEvent;
 import com.app.labeli.member.FragmentMember;
+import com.app.labeli.projets.FragmentProject;
 
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -161,6 +162,9 @@ public class MainActivity extends FragmentActivity {
 		switch(position){
 		case 0:
 			fragment = new FragmentPresentation();
+			break;
+		case 1 :
+			fragment = new FragmentProject();
 			break;
 		case 2:
 			fragment = new FragmentEvent();
