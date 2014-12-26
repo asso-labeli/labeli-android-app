@@ -1,4 +1,4 @@
-package com.app.labeli.projets;
+package com.app.labeli.project;
 
 import android.os.Parcel;
 import android.os.Parcelable;

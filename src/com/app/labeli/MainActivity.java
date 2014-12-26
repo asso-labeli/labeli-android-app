@@ -7,7 +7,7 @@ import labeli.Labeli;
 import com.app.labeli.R;
 import com.app.labeli.event.FragmentEvent;
 import com.app.labeli.member.FragmentMember;
-import com.app.labeli.projets.FragmentProject;
+import com.app.labeli.project.FragmentProject;
 
 import android.content.res.Configuration;
 import android.content.res.TypedArray;

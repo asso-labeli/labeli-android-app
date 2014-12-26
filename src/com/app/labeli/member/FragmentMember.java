@@ -1,54 +1,35 @@
 package com.app.labeli.member;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
 import com.app.callback.APICallback;
-import com.app.labeli.ListAdapterNavigationDrawer;
 import com.app.labeli.MainActivity;
 import com.app.labeli.R;
-import com.app.labeli.R.layout;
-import com.app.labeli.event.EventDetailsActivity;
 import com.tools.APIDataParser;
 import com.tools.FileTools;
 
 import labeli.Labeli;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.KeyListener;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 

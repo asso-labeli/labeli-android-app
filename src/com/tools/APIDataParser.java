@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.app.labeli.event.ItemEvent;
 import com.app.labeli.member.ItemMember;
-import com.app.labeli.projets.ItemProject;
+import com.app.labeli.project.ItemProject;
 
 public abstract class APIDataParser {
 

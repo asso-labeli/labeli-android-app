@@ -1,4 +1,4 @@
-package com.app.labeli.projets;
+package com.app.labeli.project;
 
 import java.util.ArrayList;
 

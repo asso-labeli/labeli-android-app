@@ -26,12 +26,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".event.EventDetailsActivity" >
+        <activity android:name="com.app.labeli.event.EventDetailsActivity" >
         </activity>
         <activity
             android:name="com.app.labeli.member.MemberDetailsActivity"
             android:label="@string/title_activity_member_details" >
         </activity>
+        <activity android:name="com.app.labeli.project.ProjectDetailsActivity"></activity>
     </application>
 
 </manifest>
