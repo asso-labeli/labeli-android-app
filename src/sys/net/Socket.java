@@ -1,7 +1,6 @@
 package sys.net;
-import haxe.root.*;
 
-@SuppressWarnings(value={"rawtypes", "unchecked"})
+@SuppressWarnings(value={"rawtypes"})
 public  class Socket extends haxe.lang.HxObject
 {
 	public    Socket(haxe.lang.EmptyObject empty)

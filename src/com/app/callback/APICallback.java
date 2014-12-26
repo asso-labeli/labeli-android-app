@@ -1,10 +1,10 @@
 package com.app.callback;
 
-import android.util.Log;
 
 public class APICallback extends haxe.lang.Function
 {
 	
+	@SuppressWarnings("rawtypes")
 	private haxe.root.Array array;
 	
     public APICallback()
@@ -14,13 +14,14 @@ public class APICallback extends haxe.lang.Function
     
     
 
-    public haxe.root.Array getArray() {
+    @SuppressWarnings("rawtypes")
+	public haxe.root.Array getArray() {
 		return array;
 	}
 
 
 
-	public void setArray(haxe.root.Array array) {
+	public void setArray(@SuppressWarnings("rawtypes") haxe.root.Array array) {
 		this.array = array;
 	}
 
@@ -30,7 +31,8 @@ public class APICallback extends haxe.lang.Function
     {
         if(result instanceof haxe.root.Array)
         {
-            haxe.root.Array eventArray = (haxe.root.Array) result;
+            @SuppressWarnings("rawtypes")
+			haxe.root.Array eventArray = (haxe.root.Array) result;
 
             
             this.array = eventArray;

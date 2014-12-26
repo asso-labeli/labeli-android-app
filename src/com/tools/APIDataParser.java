@@ -2,14 +2,13 @@ package com.tools;
 
 import java.util.ArrayList;
 
-import android.util.Log;
-
 import com.app.labeli.event.ItemEvent;
 import com.app.labeli.member.ItemMember;
 import com.app.labeli.project.ItemProject;
 
 public abstract class APIDataParser {
 
+	@SuppressWarnings("rawtypes")
 	public static ArrayList<ItemEvent> parseEventList(haxe.root.Array a){
 		ArrayList<ItemEvent> events = new ArrayList<ItemEvent>();
 
@@ -22,6 +21,7 @@ public abstract class APIDataParser {
 		return events;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public static ArrayList<ItemMember> parseMemberList(haxe.root.Array a){
 		ArrayList<ItemMember> members = new ArrayList<ItemMember>();
 
@@ -34,6 +34,7 @@ public abstract class APIDataParser {
 		return members;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public static ArrayList<ItemProject> parseProjectList(haxe.root.Array a){
 		ArrayList<ItemProject> projects = new ArrayList<ItemProject>();
 

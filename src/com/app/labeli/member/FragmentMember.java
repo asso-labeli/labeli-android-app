@@ -77,6 +77,7 @@ public class FragmentMember extends Fragment {
 
 	private class EventItemTextWatcher implements TextWatcher {
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public void afterTextChanged(Editable arg0) {
 			ArrayList<ItemMember> tmp = new ArrayList<ItemMember>();

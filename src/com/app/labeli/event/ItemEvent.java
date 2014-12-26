@@ -1,6 +1,5 @@
 package com.app.labeli.event;
 
-import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 

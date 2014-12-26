@@ -1,7 +1,6 @@
 package com.app.labeli.event;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -9,10 +8,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
-import com.app.labeli.MainActivity;
 import com.app.labeli.R;
-import com.app.labeli.member.FragmentMember;
-import com.app.labeli.member.ItemMember;
 import com.tools.FileTools;
 import com.tools.HTMLTools;
 
@@ -21,18 +17,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -152,7 +142,6 @@ public class EventDetailsActivity extends FragmentActivity{
 			return null;
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
 		protected void onPostExecute(String file_url) {
 			prepareImageView(FileTools.getAbsolutePathLocalFileFromURL(EventDetailsActivity.this, courtUrl));

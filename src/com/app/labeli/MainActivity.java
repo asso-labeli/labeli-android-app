@@ -17,7 +17,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,8 +34,7 @@ public class MainActivity extends FragmentActivity {
 	private String[] navMenuTitles;
 	private TypedArray navMenuIcons;
 	public static Labeli api;
-	private String oldTitle;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -79,7 +77,6 @@ public class MainActivity extends FragmentActivity {
 
 			/** Called when a drawer has settled in a completely open state. */
 			public void onDrawerOpened(View drawerView) {
-				oldTitle = (String) getActionBar().getTitle();
 				super.onDrawerOpened(drawerView);
 				invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 			}

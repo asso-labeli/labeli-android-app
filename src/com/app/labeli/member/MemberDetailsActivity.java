@@ -9,9 +9,6 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
 import com.app.labeli.R;
-import com.app.labeli.R.id;
-import com.app.labeli.R.layout;
-import com.app.labeli.R.menu;
 import com.tools.FileTools;
 
 import android.app.ProgressDialog;
@@ -146,7 +143,6 @@ public class MemberDetailsActivity extends FragmentActivity {
 			return null;
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
 		protected void onPostExecute(String file_url) {
 			prepareImageView(FileTools.getAbsolutePathLocalFileFromURL(MemberDetailsActivity.this, courtUrl));

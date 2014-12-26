@@ -1,9 +1,5 @@
 package com.tools;
 
-import org.jsoup.Jsoup;
-
-import android.util.Log;
-
 public abstract class HTMLTools {
 
 	public static String HTMLToText(String html){

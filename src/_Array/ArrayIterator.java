@@ -1,5 +1,4 @@
 package _Array;
-import haxe.root.*;
 
 @SuppressWarnings(value={"rawtypes", "unchecked"})
 public final class ArrayIterator<T> extends haxe.lang.HxObject

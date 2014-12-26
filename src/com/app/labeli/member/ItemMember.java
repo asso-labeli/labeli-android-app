@@ -1,15 +1,11 @@
 package com.app.labeli.member;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 public class ItemMember implements Parcelable{
 
@@ -177,7 +173,6 @@ public class ItemMember implements Parcelable{
 		dest.writeByte((byte) (visible ? 0x01 : 0x00));
 	}
 
-	@SuppressWarnings("unused")
 	public static final Parcelable.Creator<ItemMember> CREATOR = new Parcelable.Creator<ItemMember>() {
 		@Override
 		public ItemMember createFromParcel(Parcel in) {

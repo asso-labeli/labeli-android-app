@@ -1,7 +1,6 @@
 package sys.net;
-import haxe.root.*;
 
-@SuppressWarnings(value={"rawtypes", "unchecked"})
+@SuppressWarnings(value={"rawtypes"})
 public  class Host extends haxe.lang.HxObject
 {
 	public    Host(haxe.lang.EmptyObject empty)
