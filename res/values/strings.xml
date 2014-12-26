@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Label[i]</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="main_menu_showHome">Voir le local</string>
+    <string name="drawer_open">Options</string>
+    <string name="drawer_close">Label[i]</string>
+    <string name="menu_event_details_back">Précédent</string>
+    <string name="fragment_presentation_presentation">Notre association a pour but de réunir 
+        tous les étudiants en informatique présents à l\'université. 
+        En leur proposant un cadre pour réaliser leurs projets, 
+        nous espérons booster leur productivité et ainsi, leur donner de meilleures 
+        chances pour leur vie après les études.</string>
+    <string name="fragment_presentation_home">Nous aimons nous retrouver et 
+        vous accueillir dans notre local, 
+        dans le bâtiment A29. </string>
+    <string name="fragment_presentation_price">Tous les étudiants intéressés par l\'informatique peuvent nous rejoindre.
+		\nLes cotisations sont : 
+		\n4€ pour les étudiants en première année
+		\n8€ pour les étudiants en années supérieures</string>
+
+    <string-array name="nav_drawer_not_connected">
+        <item>L\'association</item>
+        <item>News</item>
+        <item>Projets</item>
+        <item>Evénements</item>
+        <item>Equipes</item>
+        <item>Membres</item>
+        <item>Paramètres</item>
+        <item>Connexion</item>
+    </string-array>
+    <string-array name="nav_drawer_connected">
+        <item>L\'association</item>
+        <item>News</item>
+        <item>Projets</item>
+        <item>Evénements</item>
+        <item>Equipes</item>
+        <item>Membres</item>
+        <item>Paramètres</item>
+        <item>Votes</item>
+        <item>Mon Profil</item>
+    </string-array>
+
+    <array name="nav_drawer_icons_not_connected">
+        <item>@drawable/ic_action_help</item>
+        <item>@drawable/ic_action_about</item>
+        <item>@drawable/ic_action_computer</item>
+        <item>@drawable/ic_action_time</item>
+        <item>@drawable/ic_action_group</item>
+        <item>@drawable/ic_action_person</item>
+        <item>@drawable/ic_action_settings</item>
+        <item>@drawable/ic_action_accounts</item>
+    </array>
+    <array name="nav_drawer_icons_connected">
+        <item>@drawable/ic_action_help</item>
+        <item>@drawable/ic_action_about</item>
+        <item>@drawable/ic_action_computer</item>
+        <item>@drawable/ic_action_time</item>
+        <item>@drawable/ic_action_group</item>
+        <item>@drawable/ic_action_person</item>
+        <item>@drawable/ic_action_settings</item>
+        <item>@drawable/ic_action_chat</item>
+        <item>@drawable/ic_action_settings</item>
+    </array>
+
+    <string name="desc_list_item_icon">Item Icon</string>
+    <string name="title_activity_member_details">MemberDetailsActivity</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>
