@@ -21,6 +21,7 @@
 		\n4€ pour les étudiants en première année
 		\n8€ pour les étudiants en années supérieures</string>
 	<string name="activity_project_details_picture_string">Image du projet</string>
+	<string name="activity_team_details_picture_string">Image de l\'équipe</string>
 
     <string-array name="nav_drawer_not_connected">
         <item>L\'association</item>

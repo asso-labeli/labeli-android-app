@@ -8,6 +8,7 @@ import com.app.labeli.R;
 import com.app.labeli.event.FragmentEvent;
 import com.app.labeli.member.FragmentMember;
 import com.app.labeli.project.FragmentProject;
+import com.app.labeli.team.FragmentTeam;
 
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -165,6 +166,9 @@ public class MainActivity extends FragmentActivity {
 			break;
 		case 2:
 			fragment = new FragmentEvent();
+			break;
+		case 3 :
+			fragment = new FragmentTeam();
 			break;
 		case 4:
 			fragment = new FragmentMember();

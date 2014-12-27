@@ -33,6 +33,7 @@
             android:label="@string/title_activity_member_details" >
         </activity>
         <activity android:name="com.app.labeli.project.ProjectDetailsActivity"></activity>
+        <activity android:name="com.app.labeli.team.TeamDetailsActivity"></activity>
     </application>
 
 </manifest>
