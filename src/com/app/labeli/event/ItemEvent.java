@@ -11,25 +11,29 @@ public class ItemEvent implements Parcelable{
 	private String name;
 	private String description;
 	private String pictureURL;
+	private double created;
 	private int status;
 	private int type;
+	private int id;
 
 	public ItemEvent(ItemMember author, String name, String description,
-			String picture, int status, int type) {
+			String picture, double created, int status, int type, int id) {
 		super();
 		this.author = author;
 		this.name = name;
 		this.description = description;
 		this.pictureURL = picture;
+		this.created = created;
 		this.status = status;
 		this.type = type;
+		this.id = id;
 	}
-
 	@Override
 	public String toString() {
-		return "ItemEvent [author=" + author + ", name=" + name
-				+ ", description=" + description + ", picture=" + pictureURL
-				+ ", status=" + status + ", type=" + type + "]";
+		return "ItemProject [author=" + author + ", name=" + name
+				+ ", description=" + description + ", pictureURL=" + pictureURL
+				+ ", created=" + created + ", status=" + status + ", type="
+				+ type + ", id=" + id +"]";
 	}
 
 	public ItemMember getAuthor() {
@@ -80,6 +84,18 @@ public class ItemEvent implements Parcelable{
 		this.type = type;
 	}
 
+	public double getCreated() {
+		return created;
+	}
+	public void setCreated(double created) {
+		this.created = created;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	public boolean getCounterVisibility() {
 		// TODO Auto-generated method stub
 		return true;
@@ -90,8 +106,10 @@ public class ItemEvent implements Parcelable{
 		name = in.readString();
 		description = in.readString();
 		pictureURL = in.readString();
+		created = in.readDouble();
 		status = in.readInt();
 		type = in.readInt();
+		id = in.readInt();
 	}
 
 	@Override
@@ -105,8 +123,10 @@ public class ItemEvent implements Parcelable{
 		dest.writeString(name);
 		dest.writeString(description);
 		dest.writeString(pictureURL);
+		dest.writeDouble(created);
 		dest.writeInt(status);
 		dest.writeInt(type);
+		dest.writeInt(id);
 	}
 
 	public static final Parcelable.Creator<ItemEvent> CREATOR = new Parcelable.Creator<ItemEvent>() {

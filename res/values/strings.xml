@@ -8,6 +8,10 @@
     <string name="drawer_open">Options</string>
     <string name="drawer_close">Label[i]</string>
     <string name="menu_event_details_back">Précédent</string>
+    <string name="fragment_connection_title">Accès à un compte</string>
+    <string name="fragment_connection_login">Identifiant</string>
+    <string name="fragment_connection_password">Mot de passe</string>
+    <string name="fragment_connection_button">Connexion</string>
     <string name="fragment_presentation_presentation">Notre association a pour but de réunir 
         tous les étudiants en informatique présents à l\'université. 
         En leur proposant un cadre pour réaliser leurs projets, 

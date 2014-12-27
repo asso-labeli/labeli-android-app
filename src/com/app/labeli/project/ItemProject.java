@@ -14,9 +14,10 @@ public class ItemProject implements Parcelable{
 	private double created;
 	private int status;
 	private int type;
+	private int id;
 	
 	public ItemProject(ItemMember author, String name, String description,
-			String pictureURL, double created, int status, int type) {
+			String pictureURL, double created, int status, int type, int id) {
 		super();
 		this.author = author;
 		this.name = name;
@@ -25,13 +26,14 @@ public class ItemProject implements Parcelable{
 		this.created = created;
 		this.status = status;
 		this.type = type;
+		this.id = id;
 	}
 	@Override
 	public String toString() {
 		return "ItemProject [author=" + author + ", name=" + name
 				+ ", description=" + description + ", pictureURL=" + pictureURL
 				+ ", created=" + created + ", status=" + status + ", type="
-				+ type + "]";
+				+ type + ", id=" + id +"]";
 	}
 	public ItemMember getAuthor() {
 		return author;
@@ -75,7 +77,12 @@ public class ItemProject implements Parcelable{
 	public void setType(int type) {
 		this.type = type;
 	}
-	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	protected ItemProject(Parcel in) {
         author = (ItemMember) in.readValue(ItemMember.class.getClassLoader());
         name = in.readString();
@@ -84,6 +91,7 @@ public class ItemProject implements Parcelable{
         created = in.readDouble();
         status = in.readInt();
         type = in.readInt();
+        id = in.readInt();
     }
 
     @Override
@@ -100,6 +108,7 @@ public class ItemProject implements Parcelable{
         dest.writeDouble(created);
         dest.writeInt(status);
         dest.writeInt(type);
+        dest.writeInt(id);
     }
 
     public static final Parcelable.Creator<ItemProject> CREATOR = new Parcelable.Creator<ItemProject>() {

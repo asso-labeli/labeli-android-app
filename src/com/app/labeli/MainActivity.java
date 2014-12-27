@@ -34,14 +34,17 @@ public class MainActivity extends FragmentActivity {
 	private ArrayList<ItemNavigationDrawer> navDrawerItems;
 	private String[] navMenuTitles;
 	private TypedArray navMenuIcons;
+	public static boolean connected;
 	public static Labeli api;
-	
+	private Fragment fragment = null;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
 		api = new Labeli("http://labeli.org/api");
+		connected = false;
 
 		mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);	
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -58,6 +61,7 @@ public class MainActivity extends FragmentActivity {
 		navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
 		navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[5], navMenuIcons.getResourceId(5, -1), true, "50+"));
 		navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[6], navMenuIcons.getResourceId(6, -1), true, "50+"));
+		navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[7], navMenuIcons.getResourceId(7, -1), true, "50+"));
 
 		navMenuIcons.recycle();
 
@@ -133,10 +137,10 @@ public class MainActivity extends FragmentActivity {
 
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	public void finish(){
 		super.finish();
-		 overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
@@ -156,7 +160,6 @@ public class MainActivity extends FragmentActivity {
 	private void selectItem(int position) {
 
 		// update the main content by replacing fragments
-		Fragment fragment = null;
 		switch(position){
 		case 0:
 			fragment = new FragmentPresentation();
@@ -173,15 +176,18 @@ public class MainActivity extends FragmentActivity {
 		case 4:
 			fragment = new FragmentMember();
 			break;
+		case 6:
+			fragment = new FragmentConnection();
+			break;
 		default:
 			fragment = new FragmentPresentation();
 			break;
 		}
 		Bundle args = new Bundle();
 		fragment.setArguments(args);
-		
+
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		
+
 		transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 		transaction.replace(R.id.content_frame, fragment, fragment.getClass().getName());
 		transaction.addToBackStack(fragment.getClass().getName());

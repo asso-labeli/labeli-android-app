@@ -66,10 +66,18 @@ public abstract class APIDataParser {
 		String name = (String) o.__hx_lookupField("name", true, false);
 		String description = (String) o.__hx_lookupField("description", true, false);
 		String picture = (String) o.__hx_lookupField("picture", true, false);
+		double created = 0.0;
+		if (o.__hx_lookupField("created", true, false) != null)
+		try {
+			created = (Double) o.__hx_lookupField("created", true, false);
+		} catch (ClassCastException e) {
+			created = Double.parseDouble(String.valueOf((Integer)o.__hx_lookupField("created", true, false)));
+		}
 		int status = (Integer) o.__hx_lookupField("status", true, false);
 		int type = (Integer) o.__hx_lookupField("type", true, false);
+		int id = (Integer) o.__hx_lookupField("id", true, false);
 
-		return new ItemEvent(author, name, description, picture, status, type);
+		return new ItemEvent(author, name, description, picture, created, status, type, id);
 	}
 
 	public static ItemMember parseMember(haxe.lang.DynamicObject o){
@@ -115,8 +123,9 @@ public abstract class APIDataParser {
 		}
 		int status = (Integer) o.__hx_lookupField("status", true, false);
 		int type = (Integer) o.__hx_lookupField("type", true, false);
+		int id = (Integer) o.__hx_lookupField("id", true, false);
 
-		return new ItemProject(author, name, description, picture, created, status, type);
+		return new ItemProject(author, name, description, picture, created, status, type, id);
 	}
 	
 	public static ItemTeam parseTeam(haxe.lang.DynamicObject o){
@@ -133,8 +142,9 @@ public abstract class APIDataParser {
 		}
 		int status = (Integer) o.__hx_lookupField("status", true, false);
 		int type = (Integer) o.__hx_lookupField("type", true, false);
+		int id = (Integer) o.__hx_lookupField("id", true, false);
 
-		return new ItemTeam(author, name, description, picture, created, status, type);
+		return new ItemTeam(author, name, description, picture, created, status, type, id);
 	}
 
 }

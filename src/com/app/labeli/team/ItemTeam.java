@@ -14,9 +14,10 @@ public class ItemTeam implements Parcelable{
 	private double created;
 	private int status;
 	private int type;
+	private int id;
 	
 	public ItemTeam(ItemMember author, String name, String description,
-			String pictureURL, double created, int status, int type) {
+			String pictureURL, double created, int status, int type, int id) {
 		super();
 		this.author = author;
 		this.name = name;
@@ -25,6 +26,7 @@ public class ItemTeam implements Parcelable{
 		this.created = created;
 		this.status = status;
 		this.type = type;
+		this.id = id;
 	}
 
 	@Override
@@ -32,7 +34,7 @@ public class ItemTeam implements Parcelable{
 		return "ItemTeam [author=" + author + ", name=" + name
 				+ ", description=" + description + ", pictureURL=" + pictureURL
 				+ ", created=" + created + ", status=" + status + ", type="
-				+ type + "]";
+				+ type + ", id=" + id + "]";
 	}
 
 	public ItemMember getAuthor() {
@@ -99,6 +101,7 @@ public class ItemTeam implements Parcelable{
         created = in.readDouble();
         status = in.readInt();
         type = in.readInt();
+        id = in.readInt();
     }
 
     @Override
@@ -115,6 +118,7 @@ public class ItemTeam implements Parcelable{
         dest.writeDouble(created);
         dest.writeInt(status);
         dest.writeInt(type);
+        dest.writeInt(id);
     }
 
     public static final Parcelable.Creator<ItemTeam> CREATOR = new Parcelable.Creator<ItemTeam>() {
