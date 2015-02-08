@@ -1,6 +1,8 @@
 Label[i] Android Application - V2
 =============================
 
+<img src="http://aamulumi.info/wp-content/uploads/2015/02/labeli_app_graphic_little.png" />
+
 Ce projet consiste à <b>développer une application <a href="http://fr.wikipedia.org/wiki/Android">Android</a></b> pour l'association.<br><br>
 
 L'idée de cette application est de rendre complètement <b>compatible le <a href="http://labeli.org/">site de l'association</a></b> avec les smartphones.<br>
