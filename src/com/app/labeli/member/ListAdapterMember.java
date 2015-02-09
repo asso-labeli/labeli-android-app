@@ -29,6 +29,7 @@ public class ListAdapterMember extends BaseAdapter{
 	@Override
 	public Object getItem(int position) {
 		// TODO Auto-generated method stub
+		Log.i("Test", " " + position);
 		return members.get(position);
 	}
 
@@ -39,10 +40,7 @@ public class ListAdapterMember extends BaseAdapter{
 	}
 
 	public void updateDatas(ArrayList<ItemMember> al){
-		this.members = new ArrayList<ItemMember>();
-		this.notifyDataSetChanged();
-		
-		this.members = al;
+		this.members = (ArrayList<ItemMember>)al.clone();
 		this.notifyDataSetChanged();
 	}
 	
