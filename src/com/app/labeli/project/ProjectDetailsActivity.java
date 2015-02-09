@@ -1,14 +1,22 @@
 package com.app.labeli.project;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
+
+import labeli.Labeli;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
+import com.app.callback.APICallback;
+import com.app.labeli.MainActivity;
 import com.app.labeli.R;
+import com.app.labeli.member.FragmentMember;
+import com.app.labeli.member.ItemMember;
+import com.tools.APIDataParser;
 import com.tools.FileTools;
 import com.tools.HTMLTools;
 
@@ -31,7 +39,7 @@ public class ProjectDetailsActivity extends FragmentActivity{
 	private ImageView imageView;
 	private TextView textViewName, textViewAuthor, textViewDescription;
 	private ProgressDialog pDialog;
-	private ItemProject project;
+	public ItemProject project;
 	
 	Animation animFadeIn, animFadeOut;
 
@@ -146,10 +154,44 @@ public class ProjectDetailsActivity extends FragmentActivity{
 		protected void onPostExecute(String file_url) {
 			prepareImageView(FileTools.getAbsolutePathLocalFileFromURL(ProjectDetailsActivity.this, courtUrl));
 			pDialog.dismiss();
+			new MessageProjectLoader("/projects/" + String.valueOf(project.getId())).execute(MainActivity.api);
 		}
 
 	}
 
+	private class MessageProjectLoader extends AsyncTask<Labeli, Void, String>
+	{
+		APICallback a;
+		String thread;
+		
+		public MessageProjectLoader(String thread){
+			a = new APICallback();
+			this.thread = thread;
+			Log.i("Thread demandé", " " + thread + " depuis " + project.getCreated());
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			pDialog = new ProgressDialog(ProjectDetailsActivity.this);
+			pDialog.setMessage("Chargement des messages");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(false);
+			pDialog.show();
+		}
+
+		protected String doInBackground(Labeli... api)
+		{
+			api[0].async.getMessages(thread, project.getCreated(), a);
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String file_url) {
+			pDialog.dismiss();
+			Log.i("Test", " " + a.getArray());
+		}
+	}
 
 
 

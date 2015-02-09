@@ -1,5 +1,13 @@
 package com.app.labeli;
 
+import labeli.Labeli;
+
+import com.app.callback.APICallback;
+import com.app.labeli.event.FragmentEvent;
+import com.tools.APIDataParser;
+
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -23,6 +31,7 @@ public class FragmentConnection extends Fragment {
 
 	private EditText editTextLogin, editTextPassword;
 	private Button button;
+	private ProgressDialog pDialog;
 
 	public FragmentConnection() {
 		// Required empty public constructor
@@ -34,7 +43,8 @@ public class FragmentConnection extends Fragment {
 		else if (editTextPassword.length() == 0)
 			Toast.makeText(getActivity(), "Veuillez rentrer un mot de passe", Toast.LENGTH_SHORT).show();
 		else {
-			
+			new InitConnection(editTextLogin.getText().toString(), editTextPassword.getText().toString())
+			.execute(MainActivity.api);
 		}
 	}
 
@@ -57,16 +67,82 @@ public class FragmentConnection extends Fragment {
 		editTextPassword = (EditText) v.findViewById(R.id.fragment_connection_edit_text_password);
 		button = (Button) v.findViewById(R.id.fragment_connection_button_connection);
 
-		button.setOnClickListener(new OnClickListener(){
-
-			@Override
-			public void onClick(View arg0) {
-				connectToAPI(arg0);
-			}
-
-		});
+//		button.setOnClickListener(new OnClickListener(){
+//
+//			@Override
+//			public void onClick(View arg0) {
+//				connectToAPI(arg0);
+//			}
+//
+//		});
 		
 		return v;
+	}
+	
+	private class InitConnection extends AsyncTask<Labeli, Void, String>
+	{
+		APICallback a;
+		String username, password;
+		
+		public InitConnection(String username, String password){
+			a = new APICallback();
+			this.username = username;
+			this.password = password;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			pDialog = new ProgressDialog(FragmentConnection.this.getActivity());
+			pDialog.setMessage("Connexion");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(false);
+			pDialog.show();
+		}
+
+		protected String doInBackground(Labeli... api)
+		{
+			api[0].async.login(username, password, a);
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String file_url) {
+			Log.i("Test", " " + a.getArray());
+			pDialog.dismiss();
+			new GetUser().execute(MainActivity.api);
+		}
+	}
+	
+	private class GetUser extends AsyncTask<Labeli, Void, String>
+	{
+		APICallback a;
+		
+		public GetUser(){
+			a = new APICallback();
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			pDialog = new ProgressDialog(FragmentConnection.this.getActivity());
+			pDialog.setMessage("Connexion");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(false);
+			pDialog.show();
+		}
+
+		protected String doInBackground(Labeli... api)
+		{
+			api[0].async.getCurrentUser(a);
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String file_url) {
+			Log.i("Test", " " + a.getArray());
+			pDialog.dismiss();
+		}
 	}
 
 }
