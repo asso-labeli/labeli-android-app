@@ -1,17 +1,21 @@
 package com.app.labeli.project;
 
 import java.util.ArrayList;
-import com.app.callback.APICallback;
+
+import net.tools.APIConnection;
+
 import com.app.labeli.MainActivity;
 import com.app.labeli.R;
-import com.tools.APIDataParser;
-import labeli.Labeli;
+
 import android.content.Intent;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -21,27 +25,51 @@ public class FragmentProject extends Fragment {
 
 	private ListView listView;
 	private ProgressDialog pDialog;
-	private ArrayList<ItemProject> projects;
+	private ArrayList<Project> projects;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		if (savedInstanceState != null)
-			super.onCreate(savedInstanceState);
-		else {
-			new ProjectLoader().execute(MainActivity.api);
-		}
-
 		getActivity().getActionBar().setTitle("Projets");
+		setHasOptionsMenu(true);
 
 		return inflater.inflate(R.layout.fragment_project, container, false);
 	}
+	
+	@Override
+	public void onStart() {
+		refresh();
+		super.onStart();
+	}
+	
+	public void refresh(){
+		new ProjectLoader().execute();
+	}
 
-	public void prepareListView(ArrayList<ItemProject> al){
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+		inflater.inflate(R.menu.fragment_project, menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item){
+		switch(item.getItemId()){
+		case R.id.fragment_project_menu_addProject :
+			Intent intent = new Intent(getActivity().getApplicationContext(), 
+					AddProjectActivity.class);
+			startActivity(intent);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	public void prepareListView(ArrayList<Project> al){
 		projects = al;
 		listView = (ListView) this.getView().findViewById(R.id.fragment_project_list_view);
 
-		listView.setAdapter(new ListAdapterProject(this.getActivity().getApplicationContext(),
-				al));
+		if (al != null)
+			listView.setAdapter(new ListAdapterProject(this.getActivity().getApplicationContext(),
+					al));
 		listView.setOnItemClickListener(new ProjectItemClickListener());
 	}
 
@@ -61,12 +89,12 @@ public class FragmentProject extends Fragment {
 		super.onSaveInstanceState(outState);
 	}
 
-	private class ProjectLoader extends AsyncTask<Labeli, Void, String>
+	private class ProjectLoader extends AsyncTask<Void, Void, String>
 	{
-		APICallback a;
+		ArrayList<Project> a;
 
 		public ProjectLoader(){
-			a = new APICallback();
+			a = null;
 		}
 
 		@Override
@@ -79,17 +107,16 @@ public class FragmentProject extends Fragment {
 			pDialog.show();
 		}
 
-		protected String doInBackground(Labeli... api)
+		protected String doInBackground(Void... api)
 		{
-			api[0].async.getProjects(a);
+			a = APIConnection.getProjects();
 			return null;
 		}
 
 		@Override
 		protected void onPostExecute(String file_url) {
 			pDialog.dismiss();
-			if (a.getArray() != null)
-				prepareListView(APIDataParser.parseProjectList(a.getArray()));
+			prepareListView(a);
 		}
 	}
 

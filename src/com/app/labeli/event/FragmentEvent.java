@@ -1,11 +1,12 @@
 package com.app.labeli.event;
 
 import java.util.ArrayList;
-import com.app.callback.APICallback;
+
+import net.tools.APIConnection;
+
 import com.app.labeli.MainActivity;
 import com.app.labeli.R;
-import com.tools.APIDataParser;
-import labeli.Labeli;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -21,14 +22,14 @@ public class FragmentEvent extends Fragment {
 
 	private ListView listView;
 	private ProgressDialog pDialog;
-	private ArrayList<ItemEvent> events;
+	private ArrayList<Event> events;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		if (savedInstanceState != null)
 			super.onCreate(savedInstanceState);
 		else {
-			new EventLoader().execute(MainActivity.api);
+			new EventLoader().execute();
 		}
 		
 		getActivity().getActionBar().setTitle("Evénements");
@@ -36,7 +37,7 @@ public class FragmentEvent extends Fragment {
 		return inflater.inflate(R.layout.fragment_event, container, false);
 	}
 
-	public void prepareListView(ArrayList<ItemEvent> al){
+	public void prepareListView(ArrayList<Event> al){
 		events = al;
 		listView = (ListView) this.getView().findViewById(R.id.fragment_event_list_view);
 
@@ -61,12 +62,13 @@ public class FragmentEvent extends Fragment {
 		super.onSaveInstanceState(outState);
 	}
 
-	private class EventLoader extends AsyncTask<Labeli, Void, String>
+	private class EventLoader extends AsyncTask<Void, Void, String>
 	{
-		APICallback a;
+		
+		Event e;
 
 		public EventLoader(){
-			a = new APICallback();
+			e = null;
 		}
 
 		@Override
@@ -79,17 +81,18 @@ public class FragmentEvent extends Fragment {
 			pDialog.show();
 		}
 
-		protected String doInBackground(Labeli... api)
+		protected String doInBackground(Void... params)
 		{
-			api[0].async.getEvents(a);
+			// TODO Get Event
+			//e = APIConnection.getEvent();
 			return null;
 		}
 
 		@Override
 		protected void onPostExecute(String file_url) {
 			pDialog.dismiss();
-			if (a.getArray() != null)
-				prepareListView(APIDataParser.parseEventList(a.getArray()));
+			//if (a.getArray() != null)
+				prepareListView(null);
 		}
 	}
 }

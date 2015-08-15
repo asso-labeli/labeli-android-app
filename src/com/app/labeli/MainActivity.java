@@ -2,28 +2,34 @@ package com.app.labeli;
 
 import java.util.ArrayList;
 
-import labeli.Labeli;
+import net.tools.APIConnection;
 
 import com.app.labeli.R;
 import com.app.labeli.event.FragmentEvent;
 import com.app.labeli.member.FragmentMember;
+import com.app.labeli.member.Member;
 import com.app.labeli.project.FragmentProject;
 import com.app.labeli.team.FragmentTeam;
 
+import net.tools.APIConnection;
+import android.app.ProgressDialog;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 
 public class MainActivity extends FragmentActivity {
@@ -34,8 +40,6 @@ public class MainActivity extends FragmentActivity {
 	private ArrayList<ItemNavigationDrawer> navDrawerItems;
 	private String[] navMenuTitles;
 	private TypedArray navMenuIcons;
-	public static boolean connected;
-	public static Labeli api;
 	private Fragment fragment = null;
 
 	@Override
@@ -43,25 +47,52 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		api = new Labeli("http://labeli.org/api");
-		connected = false;
-
 		mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);	
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-		navDrawerItems = new ArrayList<ItemNavigationDrawer>();
-		navMenuTitles = getResources().getStringArray(R.array.nav_drawer_not_connected);
-		navMenuIcons = getResources().obtainTypedArray(R.array.nav_drawer_icons_not_connected);
+		loadLeftMenu();
 
-		navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
-		// NEWS
-		//navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
-		navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
-		navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[3], navMenuIcons.getResourceId(3, -1), true, "22"));
-		navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
-		navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[5], navMenuIcons.getResourceId(5, -1), true, "50+"));
-		navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[6], navMenuIcons.getResourceId(6, -1), true, "50+"));
-		navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[7], navMenuIcons.getResourceId(7, -1), true, "50+"));
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setHomeButtonEnabled(true);
+
+		// Launch FragmentPresentation
+		FragmentPresentation ex = new FragmentPresentation();
+		ex.setArguments(getIntent().getExtras());
+		getSupportFragmentManager().beginTransaction().add(R.id.content_frame, ex).commit();
+	}
+
+	public void loadLeftMenu(){
+		navDrawerItems = new ArrayList<ItemNavigationDrawer>();
+		if (APIConnection.getLoggedUser() == null){
+			navMenuTitles = getResources().getStringArray(R.array.nav_drawer_not_connected);
+			navMenuIcons = getResources().obtainTypedArray(R.array.nav_drawer_icons_not_connected);
+
+			navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
+			// NEWS
+			//navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
+			navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
+			navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[3], navMenuIcons.getResourceId(3, -1), true, "22"));
+			navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
+			navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[5], navMenuIcons.getResourceId(5, -1), true, "50+"));
+			navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[6], navMenuIcons.getResourceId(6, -1), true, "50+"));
+			navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[7], navMenuIcons.getResourceId(7, -1), true, "50+"));
+		}
+		else {
+			navMenuTitles = getResources().getStringArray(R.array.nav_drawer_connected);
+			navMenuIcons = getResources().obtainTypedArray(R.array.nav_drawer_icons_connected);
+
+			navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
+			// NEWS
+			//navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
+			navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
+			navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[3], navMenuIcons.getResourceId(3, -1), true, "22"));
+			navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
+			navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[5], navMenuIcons.getResourceId(5, -1), true, "50+"));
+			navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[6], navMenuIcons.getResourceId(6, -1), true, "50+"));
+			navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[7], navMenuIcons.getResourceId(7, -1), true, "50+"));
+			navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[8], navMenuIcons.getResourceId(8, -1), true, "50+"));
+			navDrawerItems.add(new ItemNavigationDrawer(navMenuTitles[9], navMenuIcons.getResourceId(9, -1), true, "50+"));
+		}
 
 		navMenuIcons.recycle();
 
@@ -89,14 +120,6 @@ public class MainActivity extends FragmentActivity {
 
 		// Set the drawer toggle as the DrawerListener
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setHomeButtonEnabled(true);
-
-		// Launch FragmentPresentation
-		FragmentPresentation ex = new FragmentPresentation();
-		ex.setArguments(getIntent().getExtras());
-		getSupportFragmentManager().beginTransaction().add(R.id.content_frame, ex).commit();
 	}
 
 	@Override
@@ -179,6 +202,11 @@ public class MainActivity extends FragmentActivity {
 		case 6:
 			fragment = new FragmentConnection();
 			break;
+		case 8:
+			mDrawerLayout.closeDrawer(mDrawerList);
+			new Logout().execute();
+			fragment = new FragmentPresentation();
+			break;
 		default:
 			fragment = new FragmentPresentation();
 			break;
@@ -197,5 +225,45 @@ public class MainActivity extends FragmentActivity {
 		mDrawerList.setItemChecked(position, true);
 		mDrawerLayout.closeDrawer(mDrawerList);
 
+	}
+	
+	private class Logout extends AsyncTask<Void, Void, String>
+	{
+		ProgressDialog pDialog;
+		boolean success;
+		
+		public Logout(){
+			Log.i("Coucou", "Oui");
+			this.success = false;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			pDialog = new ProgressDialog(MainActivity.this);
+			pDialog.setMessage("Déconnexion");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(false);
+			pDialog.show();
+			Log.i("Coucou", "Oui");
+		}
+
+		protected String doInBackground(Void... params)
+		{
+			success = APIConnection.logout();
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String file_url) {
+			Log.i("Coucou", "Oui");
+			pDialog.dismiss();
+			if (!success)
+				Toast.makeText(MainActivity.this, "Erreur lors de la déconnexion", Toast.LENGTH_SHORT).show();
+			else {
+				Toast.makeText(MainActivity.this, "Déconnexion réussie", Toast.LENGTH_SHORT).show();
+				MainActivity.this.loadLeftMenu();
+			}
+		}
 	}
 }

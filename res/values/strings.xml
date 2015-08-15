@@ -47,6 +47,7 @@
         <item>Paramètres</item>
         <item>Votes</item>
         <item>Mon Profil</item>
+        <item>Déconnexion</item>
     </string-array>
 
     <array name="nav_drawer_icons_not_connected">
@@ -69,10 +70,29 @@
         <item>@drawable/ic_action_settings</item>
         <item>@drawable/ic_action_chat</item>
         <item>@drawable/ic_action_settings</item>
+        <item>@drawable/ic_action_accounts</item>
     </array>
+    
+    <string-array name="activity_add_project_type_array">
+        <item>Type 0</item>
+        <item>Type 1</item>
+        <item>Type 2</item>
+        <item>Type 3</item>
+        <item>Type 4</item>
+        <item>Type 5</item>
+    </string-array>
 
     <string name="desc_list_item_icon">Item Icon</string>
     <string name="title_activity_member_details">MemberDetailsActivity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    
+    <string name="fragment_project_menu_addProject">Ajouter un projet</string>
+    <string name="fragment_project_menu_refresh">Rafraîchir</string>
+    
+    <string name="activity_add_project_name">Nom</string>
+    <string name="activity_add_project_type">Type</string>
+    <string name="activity_add_project_author">Auteur</string>
+    <string name="activity_add_project_title">Ajout d\'un projet</string>
+    <string name="activity_add_project_button">Créer le projet</string>
 
 </resources>

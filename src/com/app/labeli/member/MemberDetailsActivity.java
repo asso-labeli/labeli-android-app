@@ -1,13 +1,7 @@
 package com.app.labeli.member;
 
-import java.io.File;
-import java.util.concurrent.ExecutionException;
+import net.tools.MySingleton;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageRequest;
-import com.android.volley.toolbox.RequestFuture;
-import com.android.volley.toolbox.Volley;
 import com.app.labeli.R;
 import com.tools.FileTools;
 
@@ -17,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -25,7 +18,7 @@ import android.widget.TextView;
 
 public class MemberDetailsActivity extends FragmentActivity {
 
-	private ItemMember item;
+	private Member item;
 	private ImageView imageView;
 	private ProgressDialog pDialog;
 	private TextView textViewName, textViewStatus, textViewGroup, textViewBirthday, textViewBiography;
@@ -51,7 +44,7 @@ public class MemberDetailsActivity extends FragmentActivity {
 		if (!item.getDescription().equals(""))
 			textViewGroup.setText("Groupe : " + item.getUniversityGroup());
 		
-		if (item.getBirthday() != 0)
+		if (item.getBirthday() != null)
 			textViewBirthday.setText("Anniversaire : " + item.getBirthdayAsString());
 		
 		if (item.getDescription().equals(""))
@@ -60,7 +53,7 @@ public class MemberDetailsActivity extends FragmentActivity {
 			textViewBiography.setText(item.getDescription());
 		
 		if (!item.getPictureURL().equals(""))
-			new ImageLoader(item.getPictureURL()).execute();
+			new LoadImage().execute();
 	}
 
 	@Override
@@ -87,14 +80,11 @@ public class MemberDetailsActivity extends FragmentActivity {
 		imageView.setImageBitmap(myBitmap);
 	}
 
-	private class ImageLoader extends AsyncTask<Void, Void, String>
+	private class LoadImage extends AsyncTask<Void, Void, String>
 	{
-		String courtUrl;
-		RequestQueue q;
 
-		public ImageLoader(String courtUrl){
-			this.courtUrl = courtUrl;
-			this.q = Volley.newRequestQueue(MemberDetailsActivity.this);
+		public LoadImage(){
+			
 		}
 
 		@Override
@@ -109,43 +99,13 @@ public class MemberDetailsActivity extends FragmentActivity {
 
 		protected String doInBackground(Void... v)
 		{
-			if (courtUrl != null && !courtUrl.equals("")){
-				Bitmap bm = null;
-				
-				final File dataFile = new File(FileTools.getAbsolutePathLocalFileFromURL(MemberDetailsActivity.this, courtUrl));
-				String wallpaperURLStr = "http://labeli.org/" + courtUrl;
-				String localFile = FileTools.getLocalFileFromURL(courtUrl);
-
-				if (!dataFile.exists()){
-					Log.i("Net", "Chargement de " + wallpaperURLStr);
-
-					RequestFuture<Bitmap> f = RequestFuture.newFuture();
-					ImageRequest ir = new ImageRequest(wallpaperURLStr.replace(" ", "%20"), f, 0, 0, null, null);
-					ir.setRetryPolicy(new DefaultRetryPolicy(
-							5000, 
-							DefaultRetryPolicy.DEFAULT_MAX_RETRIES, 
-							DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-					q.add(ir);
-
-					try {
-						bm = f.get();
-						FileTools.writeBitmapToFile(MemberDetailsActivity.this, localFile, bm);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (ExecutionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
-				}
-			}
+			MySingleton.loadImage(MemberDetailsActivity.this, item);
 			return null;
 		}
 
 		@Override
 		protected void onPostExecute(String file_url) {
-			prepareImageView(FileTools.getAbsolutePathLocalFileFromURL(MemberDetailsActivity.this, courtUrl));
+			prepareImageView(FileTools.getAbsolutePathLocalFileFromURL(MemberDetailsActivity.this, item.getPictureURL()));
 			pDialog.dismiss();
 		}
 

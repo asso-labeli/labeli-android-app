@@ -1,31 +1,20 @@
 package com.app.labeli.member;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageRequest;
-import com.android.volley.toolbox.RequestFuture;
-import com.android.volley.toolbox.Volley;
-import com.app.callback.APICallback;
-import com.app.labeli.MainActivity;
+import net.tools.APIConnection;
+import net.tools.MySingleton;
+
 import com.app.labeli.R;
-import com.tools.APIDataParser;
-import com.tools.FileTools;
 
-import labeli.Labeli;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,19 +27,19 @@ public class FragmentMember extends Fragment {
 	public ListView listView;
 	public TextView textView;
 	private ProgressDialog pDialog;
-	private ArrayList<ItemMember> items;
+	private ArrayList<Member> items;
 	private ListAdapterMember adapter;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		new MemberLoader().execute(MainActivity.api);
-		
+		new MemberLoader().execute();
+
 		getActivity().getActionBar().setTitle("Membres");
 
 		return inflater.inflate(R.layout.fragment_member, container, false);
 	}
 
-	public void prepareListView(ArrayList<ItemMember> al){
+	public void prepareListView(ArrayList<Member> al){
 		listView = (ListView) getView().findViewById(R.id.fragment_member_list_view);		
 
 		adapter = new ListAdapterMember(this.getActivity().getApplicationContext(), 
@@ -69,7 +58,7 @@ public class FragmentMember extends Fragment {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			Intent intent = new Intent(getActivity().getApplicationContext(), 
 					MemberDetailsActivity.class);
-			intent.putExtra("member", (ItemMember)adapter.getItem(position));
+			intent.putExtra("member", (Member)adapter.getItem(position));
 			startActivity(intent);
 		}
 
@@ -80,17 +69,17 @@ public class FragmentMember extends Fragment {
 		@SuppressWarnings("unchecked")
 		@Override
 		public void afterTextChanged(Editable arg0) {
-			ArrayList<ItemMember> tmp = new ArrayList<ItemMember>();
-			
+			ArrayList<Member> tmp = new ArrayList<Member>();
+
 			if (arg0.length() > 0){
-				for (ItemMember i : items){
+				for (Member i : items){
 					if ((i.getFirstName() + " " + i.getLastName()).toLowerCase(Locale.FRANCE)
 							.contains(arg0.toString().toLowerCase(Locale.FRANCE)))
 						tmp.add(i);
 				}
 			}
 			else
-				tmp = (ArrayList<ItemMember>) items.clone();
+				tmp = (ArrayList<Member>) items.clone();
 
 			adapter.updateDatas(tmp);
 			adapter.notifyDataSetChanged();
@@ -99,25 +88,20 @@ public class FragmentMember extends Fragment {
 		@Override
 		public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
 				int arg3) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onTextChanged(CharSequence arg0, int arg1, int arg2,
 				int arg3) {
-			// TODO Auto-generated method stub
-
 		}
-
 	}
 
-	private class MemberLoader extends AsyncTask<Labeli, Void, String>
+	private class MemberLoader extends AsyncTask<Void, Void, String>
 	{
-		APICallback a;
+		ArrayList<Member> v;
 
 		public MemberLoader(){
-			a = new APICallback();
+			v = null;
 		}
 
 		@Override
@@ -130,28 +114,25 @@ public class FragmentMember extends Fragment {
 			pDialog.show();
 		}
 
-		protected String doInBackground(Labeli... api)
+		protected String doInBackground(Void... params)
 		{
-			api[0].async.getUsers(a);
+			v = APIConnection.getUsers();
 			return null;
 		}
 
 		@Override
 		protected void onPostExecute(String file_url) {
 			pDialog.dismiss();
-			if (a.getArray() != null)
-				new ImageMemberLoader(APIDataParser.parseMemberList(a.getArray())).execute();
+			new ImageMemberLoader(v).execute();
 		}
 	}
 
 	private class ImageMemberLoader extends AsyncTask<Void, Void, String>
 	{
-		ArrayList<ItemMember> a;
-		RequestQueue q;
+		ArrayList<Member> v;
 
-		public ImageMemberLoader(ArrayList<ItemMember> a){
-			this.a = a;
-			this.q = Volley.newRequestQueue(getActivity());
+		public ImageMemberLoader(ArrayList<Member> v){
+			this.v = v;
 		}
 
 		@Override
@@ -164,50 +145,20 @@ public class FragmentMember extends Fragment {
 			pDialog.show();
 		}
 
-		protected String doInBackground(Void... v)
+		protected String doInBackground(Void... params)
 		{
-			for (ItemMember im : a){
-				if (im.getPictureURL() != null && !im.getPictureURL().equals("")){
-					Bitmap bm = null;
-
-					final File dataFile = new File(FileTools.getAbsolutePathLocalFileFromURL(getActivity(), im.getPictureURL()));
-					String wallpaperURLStr = "http://labeli.org/" + im.getPictureURL();
-					String localFile = FileTools.getLocalFileFromURL(im.getPictureURL());
-
-					if (!dataFile.exists()){
-						Log.i("Net", "Chargement de " + wallpaperURLStr);
-
-						RequestFuture<Bitmap> f = RequestFuture.newFuture();
-						ImageRequest ir = new ImageRequest(wallpaperURLStr.replace(" ", "%20"), f, 0, 0, null, null);
-						ir.setRetryPolicy(new DefaultRetryPolicy(
-								5000, 
-								DefaultRetryPolicy.DEFAULT_MAX_RETRIES, 
-								DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-						q.add(ir);
-
-						try {
-							bm = f.get();
-							FileTools.writeBitmapToFile(getActivity(), localFile, bm);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (ExecutionException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-
-					}
-				}
-			}
+			for (Member im : v)
+				MySingleton.loadImage(getActivity(), im);
+			
 			return null;
 		}
 
 		@SuppressWarnings("unchecked")
 		@Override
 		protected void onPostExecute(String file_url) {
-			prepareListView(a);
+			prepareListView(v);
 			prepareTextEdit();
-			items = (ArrayList<ItemMember>) a.clone();
+			items = (ArrayList<Member>) v.clone();
 			pDialog.dismiss();
 		}
 

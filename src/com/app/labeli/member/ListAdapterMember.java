@@ -1,7 +1,9 @@
 package com.app.labeli.member;
 
 import java.util.ArrayList;
+
 import com.app.labeli.R;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
@@ -13,9 +15,9 @@ import android.widget.TextView;
 
 public class ListAdapterMember extends BaseAdapter{
 	private Context mContext;
-	private ArrayList<ItemMember> members;
+	private ArrayList<Member> members;
 
-	public ListAdapterMember(Context c, ArrayList<ItemMember> al) {
+	public ListAdapterMember(Context c, ArrayList<Member> al) {
 		mContext = c;
 		members = al;
 	}
@@ -39,8 +41,9 @@ public class ListAdapterMember extends BaseAdapter{
 		return 0;
 	}
 
-	public void updateDatas(ArrayList<ItemMember> al){
-		this.members = (ArrayList<ItemMember>)al.clone();
+	@SuppressWarnings("unchecked")
+	public void updateDatas(ArrayList<Member> al){
+		this.members = (ArrayList<Member>)al.clone();
 		this.notifyDataSetChanged();
 	}
 	

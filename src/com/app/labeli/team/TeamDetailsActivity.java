@@ -31,7 +31,7 @@ public class TeamDetailsActivity extends FragmentActivity{
 	private ImageView imageView;
 	private TextView textViewName, textViewAuthor, textViewDescription;
 	private ProgressDialog pDialog;
-	private ItemTeam team;
+	private Team team;
 	
 	Animation animFadeIn, animFadeOut;
 

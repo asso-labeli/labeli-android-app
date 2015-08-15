@@ -2,12 +2,9 @@ package com.app.labeli.team;
 
 import java.util.ArrayList;
 
-import com.app.callback.APICallback;
 import com.app.labeli.MainActivity;
 import com.app.labeli.R;
-import com.tools.APIDataParser;
 
-import labeli.Labeli;
 import android.content.Intent;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -23,22 +20,22 @@ public class FragmentTeam extends Fragment {
 
 	private ListView listView;
 	private ProgressDialog pDialog;
-	private ArrayList<ItemTeam> teams;
+	private ArrayList<Team> teams;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		if (savedInstanceState != null)
 			super.onCreate(savedInstanceState);
 		else {
-			new TeamLoader().execute(MainActivity.api);
+			new TeamLoader().execute();
 		}
 
-		getActivity().getActionBar().setTitle("Projets");
+		getActivity().getActionBar().setTitle("Equipes");
 
 		return inflater.inflate(R.layout.fragment_project, container, false);
 	}
 
-	public void prepareListView(ArrayList<ItemTeam> al){
+	public void prepareListView(ArrayList<Team> al){
 		teams = al;
 		listView = (ListView) this.getView().findViewById(R.id.fragment_project_list_view);
 
@@ -63,12 +60,12 @@ public class FragmentTeam extends Fragment {
 		super.onSaveInstanceState(outState);
 	}
 
-	private class TeamLoader extends AsyncTask<Labeli, Void, String>
+	private class TeamLoader extends AsyncTask<Void, Void, String>
 	{
-		APICallback a;
+		
 
 		public TeamLoader(){
-			a = new APICallback();
+			
 		}
 
 		@Override
@@ -81,17 +78,14 @@ public class FragmentTeam extends Fragment {
 			pDialog.show();
 		}
 
-		protected String doInBackground(Labeli... api)
+		protected String doInBackground(Void... params)
 		{
-			api[0].async.getTeams(a);
 			return null;
 		}
 
 		@Override
 		protected void onPostExecute(String file_url) {
 			pDialog.dismiss();
-			if (a.getArray() != null)
-				prepareListView(APIDataParser.parseTeamList(a.getArray()));
 		}
 	}
 }

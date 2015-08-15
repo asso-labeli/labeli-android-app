@@ -13,9 +13,9 @@ import android.widget.TextView;
 public class ListAdapterTeam extends BaseAdapter {
 
 	private Context context;
-	private ArrayList<ItemTeam> projects;
+	private ArrayList<Team> projects;
 
-	public ListAdapterTeam(Context context, ArrayList<ItemTeam> projects){
+	public ListAdapterTeam(Context context, ArrayList<Team> projects){
 		this.context = context;
 		this.projects = projects;
 	}

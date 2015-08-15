@@ -1,22 +1,10 @@
 package com.app.labeli.project;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
+import net.tools.APIConnection;
+import net.tools.MySingleton;
 
-import labeli.Labeli;
-
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageRequest;
-import com.android.volley.toolbox.RequestFuture;
-import com.android.volley.toolbox.Volley;
-import com.app.callback.APICallback;
-import com.app.labeli.MainActivity;
 import com.app.labeli.R;
-import com.app.labeli.member.FragmentMember;
-import com.app.labeli.member.ItemMember;
-import com.tools.APIDataParser;
 import com.tools.FileTools;
 import com.tools.HTMLTools;
 
@@ -39,7 +27,7 @@ public class ProjectDetailsActivity extends FragmentActivity{
 	private ImageView imageView;
 	private TextView textViewName, textViewAuthor, textViewDescription;
 	private ProgressDialog pDialog;
-	public ItemProject project;
+	private Project project;
 	
 	Animation animFadeIn, animFadeOut;
 
@@ -63,7 +51,7 @@ public class ProjectDetailsActivity extends FragmentActivity{
 		textViewDescription.setText(HTMLTools.HTMLToText(project.getDescription()));
 		
 		if (!project.getPictureURL().equals(""))
-			new ImageLoader(project.getPictureURL()).execute();
+			new ImageLoader().execute();
 	}
 	
 	@Override
@@ -96,14 +84,6 @@ public class ProjectDetailsActivity extends FragmentActivity{
 
 	private class ImageLoader extends AsyncTask<Void, Void, String>
 	{
-		String courtUrl;
-		RequestQueue q;
-
-		public ImageLoader(String courtUrl){
-			this.courtUrl = courtUrl;
-			this.q = Volley.newRequestQueue(ProjectDetailsActivity.this);
-		}
-
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -116,57 +96,27 @@ public class ProjectDetailsActivity extends FragmentActivity{
 
 		protected String doInBackground(Void... v)
 		{
-			if (courtUrl != null && !courtUrl.equals("")){
-				Bitmap bm = null;
-				
-				final File dataFile = new File(FileTools.getAbsolutePathLocalFileFromURL(ProjectDetailsActivity.this, courtUrl));
-				String wallpaperURLStr = "http://labeli.org/" + courtUrl;
-				String localFile = FileTools.getLocalFileFromURL(courtUrl);
-
-				if (!dataFile.exists()){
-					Log.i("Net", "Chargement de " + wallpaperURLStr);
-
-					RequestFuture<Bitmap> f = RequestFuture.newFuture();
-					ImageRequest ir = new ImageRequest(wallpaperURLStr.replace(" ", "%20"), f, 0, 0, null, null);
-					ir.setRetryPolicy(new DefaultRetryPolicy(
-							5000, 
-							DefaultRetryPolicy.DEFAULT_MAX_RETRIES, 
-							DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-					q.add(ir);
-
-					try {
-						bm = f.get();
-						FileTools.writeBitmapToFile(ProjectDetailsActivity.this, localFile, bm);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (ExecutionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
-				}
-			}
+			MySingleton.loadImage(ProjectDetailsActivity.this, project);
 			return null;
 		}
 
 		@Override
 		protected void onPostExecute(String file_url) {
-			prepareImageView(FileTools.getAbsolutePathLocalFileFromURL(ProjectDetailsActivity.this, courtUrl));
+			prepareImageView(FileTools.getAbsolutePathLocalFileFromURL(ProjectDetailsActivity.this, project.getPictureURL()));
 			pDialog.dismiss();
-			new MessageProjectLoader("/projects/" + String.valueOf(project.getId())).execute(MainActivity.api);
+			new MessageProjectLoader("/projects/" + String.valueOf(project.getId())).execute();
 		}
 
 	}
 
-	private class MessageProjectLoader extends AsyncTask<Labeli, Void, String>
+	private class MessageProjectLoader extends AsyncTask<Void, Void, String>
 	{
-		APICallback a;
 		String thread;
+		ArrayList<Message> a;
 		
 		public MessageProjectLoader(String thread){
-			a = new APICallback();
 			this.thread = thread;
+			a = null;
 			Log.i("Thread demandé", " " + thread + " depuis " + project.getCreated());
 		}
 
@@ -180,16 +130,16 @@ public class ProjectDetailsActivity extends FragmentActivity{
 			pDialog.show();
 		}
 
-		protected String doInBackground(Labeli... api)
+		protected String doInBackground(Void... api)
 		{
-			api[0].async.getMessages(thread, project.getCreated(), a);
+			a = APIConnection.getMessages(thread);
 			return null;
 		}
 
 		@Override
 		protected void onPostExecute(String file_url) {
 			pDialog.dismiss();
-			Log.i("Test", " " + a.getArray());
+			Log.i("Test", " ");
 		}
 	}
 

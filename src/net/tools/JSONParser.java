@@ -32,10 +32,11 @@ public class JSONParser {
 	static JSONObject jObj = null;
 	static JSONArray jArray = null;
 	static String json = "";
+	DefaultHttpClient httpClient;
 
 	// constructor
 	public JSONParser() {
-
+		httpClient = new DefaultHttpClient();
 	}
 
 	// function get json from url
@@ -60,7 +61,7 @@ public class JSONParser {
 				int timeoutSocket = 5000;
 				HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 				
-				DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
+				httpClient.setParams(httpParameters);
 				HttpPost httpPost = new HttpPost(url);
 				httpPost.setEntity(new UrlEncodedFormEntity(params));
 
@@ -80,7 +81,7 @@ public class JSONParser {
 				int timeoutSocket = 5000;
 				HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 				
-				DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
+				httpClient.setParams(httpParameters);
 				String paramString = URLEncodedUtils.format(params, "utf-8");
 				url += "?" + paramString;
 				HttpGet httpGet = new HttpGet(url);
@@ -150,7 +151,7 @@ public class JSONParser {
 				int timeoutSocket = 5000;
 				HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 				
-				DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
+				httpClient.setParams(httpParameters);
 				HttpPost httpPost = new HttpPost(url);
 				httpPost.setEntity(new UrlEncodedFormEntity(params));
 
@@ -170,7 +171,7 @@ public class JSONParser {
 				int timeoutSocket = 5000;
 				HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 				
-				DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
+				httpClient.setParams(httpParameters);
 				String paramString = URLEncodedUtils.format(params, "utf-8");
 				url += "?" + paramString;
 				HttpGet httpGet = new HttpGet(url);
@@ -237,7 +238,7 @@ public class JSONParser {
 				int timeoutSocket = 5000;
 				HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 				
-				DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
+				httpClient.setParams(httpParameters);
 				HttpPost httpPost = new HttpPost(url);
 				httpPost.setEntity(new UrlEncodedFormEntity(params));
 
@@ -257,7 +258,7 @@ public class JSONParser {
 				int timeoutSocket = 5000;
 				HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 				
-				DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
+				httpClient.setParams(httpParameters);
 				String paramString = URLEncodedUtils.format(params, "utf-8");
 				url += "?" + paramString;
 				HttpGet httpGet = new HttpGet(url);

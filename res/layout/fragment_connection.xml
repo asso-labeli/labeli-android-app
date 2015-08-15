@@ -36,6 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
+            android:text="admintest.admintest"
             android:textColor="@color/white" />
 
         <TextView
@@ -52,6 +53,7 @@
             android:id="@+id/fragment_connection_edit_text_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="poulpe"
             android:inputType="textPassword"
             android:textColor="@color/white" />
     </LinearLayout>

@@ -31,7 +31,7 @@ public class EventDetailsActivity extends FragmentActivity{
 	private ImageView imageView;
 	private TextView textViewName, textViewAuthor, textViewDescription;
 	private ProgressDialog pDialog;
-	private ItemEvent event;
+	private Event event;
 	
 	Animation animFadeIn, animFadeOut;
 
@@ -130,10 +130,10 @@ public class EventDetailsActivity extends FragmentActivity{
 						bm = f.get();
 						FileTools.writeBitmapToFile(EventDetailsActivity.this, localFile, bm);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
+						Log.w(getPackageName(), "Cannot load picture");
 						e.printStackTrace();
 					} catch (ExecutionException e) {
-						// TODO Auto-generated catch block
+						Log.w(getPackageName(), "Cannot load picture");
 						e.printStackTrace();
 					}
 

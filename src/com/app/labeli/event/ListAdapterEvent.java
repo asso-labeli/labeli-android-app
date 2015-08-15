@@ -13,9 +13,9 @@ import android.widget.TextView;
 public class ListAdapterEvent extends BaseAdapter {
 
 	private Context context;
-	private ArrayList<ItemEvent> eventItems;
+	private ArrayList<Event> eventItems;
 
-	public ListAdapterEvent(Context context, ArrayList<ItemEvent> eventItems){
+	public ListAdapterEvent(Context context, ArrayList<Event> eventItems){
 		this.context = context;
 		this.eventItems = eventItems;
 	}
