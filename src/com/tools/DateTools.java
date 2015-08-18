@@ -5,6 +5,8 @@ import java.util.Date;
 
 public class DateTools {
 	
+	private static SimpleDateFormat formater = new SimpleDateFormat("dd-MM-yy hh:mm");
+	
 	public static Date parse( String input ) throws java.text.ParseException {
 
         //NOTE: SimpleDateFormat uses GMT[-+]hh:mm for the TZ which breaks
@@ -26,5 +28,9 @@ public class DateTools {
         return df.parse( input );
         
     }
+	
+	public static String formatDate(Date d){
+		return formater.format(d);
+	}
 
 }

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/list_view_item_message_top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/labeli_blue"
+        android:paddingBottom="5dp" >
+
+        <TextView
+            android:id="@+id/list_view_item_message_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:paddingLeft="20dp"
+            android:paddingTop="5dp"
+            android:textColor="@color/white"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/list_view_item_message_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/list_view_item_message_author"
+            android:layout_alignParentRight="true"
+            android:paddingRight="20dp"
+            android:paddingTop="5dp"
+            android:textColor="@color/white"
+            android:textSize="10sp" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/list_view_item_message_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/list_view_item_message_top_layout"
+        android:paddingLeft="15dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textColor="@color/list_background_title"
+        android:textSize="12sp" />
+
+</RelativeLayout>

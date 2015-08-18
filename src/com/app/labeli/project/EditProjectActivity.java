@@ -1,14 +1,11 @@
 package com.app.labeli.project;
 
-import java.util.ArrayList;
-
 import net.tools.APIConnection;
 
 import com.app.labeli.R;
 import com.app.labeli.member.Member;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,35 +23,49 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-public class AddProjectActivity extends FragmentActivity{
+public class EditProjectActivity extends FragmentActivity{
 
 	Animation animFadeIn, animFadeOut;
-	private Spinner spinnerType;
-	private EditText editTextName, editTextAuthor;
+	private Spinner spinnerType, spinnerStatus;
+	private EditText editTextName, editTextAuthor, editTextDescription;
 	private Button buttonValidate;
+	private Project project;
 
 	private static final int AUTHOR_SELECTION = 1;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		setContentView(R.layout.activity_add_project);
 		
-		// Remove any focus
-		View current = getCurrentFocus();
-		if (current != null) current.clearFocus();
+		project = this.getIntent().getExtras().getParcelable("project");
+
+		setContentView(R.layout.activity_edit_project);
 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setTitle("Nouveau projet");
+		getActionBar().setTitle("Edition");
 
-		spinnerType = (Spinner) findViewById(R.id.activity_add_project_spinner_type);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+		spinnerType = (Spinner) findViewById(R.id.activity_edit_project_spinner_type);
+		ArrayAdapter<CharSequence> adapterType = ArrayAdapter.createFromResource(this,
 				R.array.project_type_array, R.layout.spinner_white);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinnerType.setAdapter(adapter);
+		adapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinnerType.setAdapter(adapterType);
+		spinnerType.setSelection(project.getType());
+		
+		spinnerStatus = (Spinner) findViewById(R.id.activity_edit_project_spinner_status);
+		ArrayAdapter<CharSequence> adapterStatus = ArrayAdapter.createFromResource(this,
+				R.array.project_status_array, R.layout.spinner_white);
+		adapterStatus.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinnerStatus.setAdapter(adapterStatus);
+		spinnerStatus.setSelection(project.getStatus());
 
-		editTextName = (EditText)findViewById(R.id.activity_add_project_edit_text_name);
-		editTextAuthor = (EditText)findViewById(R.id.activity_add_project_edit_text_author);
+		editTextName = (EditText)findViewById(R.id.activity_edit_project_edit_text_name);
+		editTextName.setText(project.getName());
+		
+		editTextDescription = (EditText)findViewById(R.id.activity_edit_project_edit_text_description);
+		if (project.getDescription() != null)
+			editTextDescription.setText(project.getDescription());
+		
+		editTextAuthor = (EditText)findViewById(R.id.activity_edit_project_edit_text_author);
+		editTextAuthor.setText(project.getAuthor().getUsername());
 		editTextAuthor.setKeyListener(null);
 		editTextAuthor.setOnFocusChangeListener(new OnFocusChangeListener() {
 			
@@ -66,7 +77,7 @@ public class AddProjectActivity extends FragmentActivity{
 			}
 		});
 		
-		buttonValidate = (Button)findViewById(R.id.activity_add_project_button_validate);
+		buttonValidate = (Button)findViewById(R.id.activity_edit_project_button_validate);
 		buttonValidate.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -82,8 +93,10 @@ public class AddProjectActivity extends FragmentActivity{
 		else if (editTextAuthor.length() == 0)
 			Toast.makeText(getApplicationContext(), "Veuillez choisir un auteur", Toast.LENGTH_SHORT).show();
 		else 
-			new AddProject(editTextName.getText().toString(), 
-					String.valueOf(spinnerType.getSelectedItemPosition()), 
+			new EditProject(editTextName.getText().toString(),
+					spinnerStatus.getSelectedItemPosition(),
+					editTextDescription.getText().toString(),
+					spinnerType.getSelectedItemPosition(), 
 					editTextAuthor.getText().toString()).execute();
 	}
 
@@ -115,13 +128,16 @@ public class AddProjectActivity extends FragmentActivity{
 		}
 	}
 	
-	private class AddProject extends AsyncTask<Void, Void, String>
+	private class EditProject extends AsyncTask<Void, Void, String>
 	{
-		private String name, type, authorUsername;
+		private String name, authorUsername, description;
+		private int status, type;
 		private Project p;
 
-		public AddProject(String name, String type, String authorUsername){
+		public EditProject(String name, int status, String description, int type, String authorUsername){
 			this.name = name;
+			this.status = status;
+			this.description = description;
 			this.type = type;
 			this.authorUsername = authorUsername;
 			p = null;
@@ -134,16 +150,16 @@ public class AddProjectActivity extends FragmentActivity{
 
 		protected String doInBackground(Void... params)
 		{
-			p = APIConnection.createProject(name, type, authorUsername);
+			p = APIConnection.editProject(project.getId(), name, status, description, type, authorUsername);
 			return null;
 		}
 
 		@Override
 		protected void onPostExecute(String file_url) {
 			if (p == null)
-				Toast.makeText(getApplicationContext(), "Erreur lors de la création du projet", Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), "Erreur lors de l'édition du projet", Toast.LENGTH_LONG).show();
 			else {
-				Toast.makeText(getApplicationContext(), "Projet crée", Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), "Projet edité", Toast.LENGTH_LONG).show();
 				finish();
 			}
 		}

@@ -31,13 +31,15 @@ public class FragmentProject extends Fragment {
 			Bundle savedInstanceState) {
 		getActivity().getActionBar().setTitle("Projets");
 		setHasOptionsMenu(true);
+		
+		refresh();
 
 		return inflater.inflate(R.layout.fragment_project, container, false);
 	}
 	
 	@Override
 	public void onStart() {
-		refresh();
+		//refresh();
 		super.onStart();
 	}
 	
@@ -57,6 +59,9 @@ public class FragmentProject extends Fragment {
 			Intent intent = new Intent(getActivity().getApplicationContext(), 
 					AddProjectActivity.class);
 			startActivity(intent);
+			return true;
+		case R.id.fragment_project_menu_refresh :
+			refresh();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

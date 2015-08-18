@@ -41,11 +41,11 @@ public class ListAdapterTeam extends BaseAdapter {
 		if (convertView == null) {
 			LayoutInflater mInflater = (LayoutInflater)
 					context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = mInflater.inflate(R.layout.list_view_event_item, null);
+			convertView = mInflater.inflate(R.layout.list_view_item_event, null);
 		}
 
-		TextView txtTitle = (TextView) convertView.findViewById(R.id.list_view_event_item_title);
-		TextView txtAuthor = (TextView) convertView.findViewById(R.id.list_view_event_item_author);
+		TextView txtTitle = (TextView) convertView.findViewById(R.id.list_view_item_event_title);
+		TextView txtAuthor = (TextView) convertView.findViewById(R.id.list_view_item_event_author);
 
 		if (projects != null){
 			txtTitle.setText(projects.get(position).getName());

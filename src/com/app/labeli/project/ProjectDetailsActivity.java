@@ -1,6 +1,7 @@
 package com.app.labeli.project;
 
 import java.util.ArrayList;
+
 import net.tools.APIConnection;
 import net.tools.MySingleton;
 
@@ -9,6 +10,7 @@ import com.tools.FileTools;
 import com.tools.HTMLTools;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -57,7 +59,7 @@ public class ProjectDetailsActivity extends FragmentActivity{
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.project_details, menu);
+	    inflater.inflate(R.menu.activity_project_details, menu);
 	    return super.onCreateOptionsMenu(menu);
 	}
 	
@@ -67,10 +69,24 @@ public class ProjectDetailsActivity extends FragmentActivity{
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle presses on the action bar items
+		Intent intent;
+		
 	    switch (item.getItemId()) {
 	        case android.R.id.home:
 	        	finish();
 	        	return true;
+	        case R.id.activity_project_details_messages:
+	        	intent = new Intent(getApplicationContext(), 
+						MessagesActivity.class);
+				intent.putExtra("project", project);
+				startActivity(intent);
+				return true;
+	        case R.id.activity_project_details_edit :
+	        	intent = new Intent(getApplicationContext(), 
+						EditProjectActivity.class);
+				intent.putExtra("project", project);
+				startActivity(intent);
+				return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }

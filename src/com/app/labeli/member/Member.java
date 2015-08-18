@@ -30,6 +30,9 @@ public class Member implements Parcelable, DataWithPicture{
 	 * 3 : Admin
 	 */
 	private int level;
+	
+	public static final int LEVEL_ADMIN = 3;
+	public static final int LEVEL_MEMBER = 1;
 
 	private boolean visible;
 

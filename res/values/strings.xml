@@ -24,8 +24,8 @@
 		\nLes cotisations sont : 
 		\n4€ pour les étudiants en première année
 		\n8€ pour les étudiants en années supérieures</string>
-	<string name="activity_project_details_picture_string">Image du projet</string>
-	<string name="activity_team_details_picture_string">Image de l\'équipe</string>
+    <string name="activity_project_details_picture_string">Image du projet</string>
+    <string name="activity_team_details_picture_string">Image de l\'équipe</string>
 
     <string-array name="nav_drawer_not_connected">
         <item>L\'association</item>
@@ -72,8 +72,8 @@
         <item>@drawable/ic_action_settings</item>
         <item>@drawable/ic_action_accounts</item>
     </array>
-    
-    <string-array name="activity_add_project_type_array">
+
+    <string-array name="project_type_array">
         <item>Type 0</item>
         <item>Type 1</item>
         <item>Type 2</item>
@@ -81,18 +81,33 @@
         <item>Type 4</item>
         <item>Type 5</item>
     </string-array>
+    
+    <string-array name="project_status_array">
+        <item>Préparation</item>
+        <item>En vote</item>
+        <item>En cours</item>
+        <item>Archivé</item>
+    </string-array>
 
     <string name="desc_list_item_icon">Item Icon</string>
     <string name="title_activity_member_details">MemberDetailsActivity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    
     <string name="fragment_project_menu_addProject">Ajouter un projet</string>
     <string name="fragment_project_menu_refresh">Rafraîchir</string>
-    
     <string name="activity_add_project_name">Nom</string>
     <string name="activity_add_project_type">Type</string>
     <string name="activity_add_project_author">Auteur</string>
     <string name="activity_add_project_title">Ajout d\'un projet</string>
     <string name="activity_add_project_button">Créer le projet</string>
+    <string name="activity_project_details_edit">Editer le projet</string>
+    <string name="activity_project_details_messages">Voir les messages</string>
+    <string name="activity_edit_project_name">Nom</string>
+    <string name="activity_edit_project_type">Type</string>
+    <string name="activity_edit_project_description">Description</string>
+    <string name="activity_edit_project_author">Auteur</string>
+    <string name="activity_edit_project_status">Statut</string>
+    <string name="activity_edit_project_title">Editer un projet</string>
+    <string name="activity_edit_project_button">Editer le projet</string>
+    <string name="hint_activity_messages_edit_text">Entrez votre message …</string>
 
 </resources>

@@ -35,17 +35,13 @@ public abstract class APIConnection {
 	 * Reference : https://github.com/eolhing/labeli-api
 	 */
 
-	private static boolean DebugMode = true;
-
-	private static int RequestSuccessful = 1;
-	private static int RequestFailed = 0;
-
 	// URLs
-	public static String apiUrl = "http://192.168.0.13:9010/";
+	public static String apiUrl = "http://192.168.1.11:9010/";
 	private static String urlUsers = apiUrl + "users";
 	private static String urlAuth = apiUrl + "auth";
 	private static String urlProjects = apiUrl + "projects";
 	private static String urlMessages = apiUrl + "messages";
+	private static String urlMessage = apiUrl + "message";
 	private static String urlVotes = apiUrl + "votes";
 
 	// HTTP
@@ -115,29 +111,26 @@ public abstract class APIConnection {
 
 	// Messages JSON Tags
 
+	private static String tagMessageContent = "content";
+	private static String tagMessageProject = "project";
+	private static String tagMessageAuthor = "author";
+	private static String tagMessageLastEdited = "lastEdited";
+	private static String tagMessageCreated = "created";
+	private static String tagMessageId = "_id";
+
 	// Votes JSON Tags
 
 	public static final int BOOLEAN_TRUE = 0;
 	public static final int BOOLEAN_FALSE = 1;
 	public static final int ERROR_VALUE = -1;
-	
+
 	private static Member loggedUser = null;
-	
+
 	private static JSONParser jParser = new JSONParser();
 
-	private static JSONObject makeHttpRequestToObject(String url, 
+	private static JSONObject makeHttpRequest(String url, 
 			String method, List<NameValuePair> params){
 		return jParser.makeHttpRequest(url, method, params);
-	}
-
-	private static JSONArray makeHttpRequestToArray(String url, 
-			String method, List<NameValuePair> params){
-		return jParser.makeHttpRequestArray(url, method, params);
-	}
-
-	private static boolean makeHttpRequestToBoolean(String url, 
-			String method, List<NameValuePair> params){
-		return convertToBoolean(jParser.makeHttpRequestString(url, method, params));
 	}
 
 	private String getProjectUrl(int id){
@@ -155,9 +148,25 @@ public abstract class APIConnection {
 	private String getVoteUrl(int id){
 		return urlVotes + "/" + id;
 	}
-	
+
 	public static Member getLoggedUser(){
 		return loggedUser;
+	}
+	
+	public static boolean isLogged(){
+		return loggedUser != null;
+	}
+	
+	public static boolean loggedUserIsMember(){
+		if (isLogged())
+			return loggedUser.getLevel() >= Member.LEVEL_MEMBER;
+		return false;
+	}
+	
+	public static boolean loggedUserIsAdmin(){
+		if (isLogged())
+			return loggedUser.getLevel() >= Member.LEVEL_ADMIN;
+		return false;
 	}
 
 	/**
@@ -185,7 +194,7 @@ public abstract class APIConnection {
 
 		// Make request
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		JSONObject json = makeHttpRequestToObject(url, GET, params);
+		JSONObject json = makeHttpRequest(url, GET, params);
 
 		if (json == null)
 			return null;
@@ -232,7 +241,7 @@ public abstract class APIConnection {
 
 		// Make request
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		JSONObject json = makeHttpRequestToObject(url, GET, params);
+		JSONObject json = makeHttpRequest(url, GET, params);
 
 		if (json == null)
 			return null;
@@ -258,7 +267,7 @@ public abstract class APIConnection {
 
 		return null;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static <T> T createItem(String url, String parseMethod, List<NameValuePair> params){
 		Class<?>[] cArg = new Class[1];
@@ -271,9 +280,50 @@ public abstract class APIConnection {
 			e1.printStackTrace();
 			return null;
 		}
+
+		JSONObject json = makeHttpRequest(url, POST, params);
 		
-		JSONObject json = makeHttpRequestToObject(url, POST, params);
-		
+		Log.i("Coucou", json.toString());
+
+		if (json == null)
+			return null;
+		try {
+			int success = json.getInt("success");
+			// Parse if successfull
+			if (success == 1){
+				return (T) parse.invoke(APIConnection.class, json.getJSONObject("data"));
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			return null;
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		return null;
+	}
+	@SuppressWarnings("unchecked")
+	public static <T> T editItem(String url, String parseMethod, List<NameValuePair> params){
+		Class<?>[] cArg = new Class[1];
+		cArg[0] = JSONObject.class;
+
+		Method parse = null;
+		try {
+			parse = APIConnection.class.getMethod(parseMethod, cArg);
+		} catch (NoSuchMethodException e1) {
+			e1.printStackTrace();
+			return null;
+		}
+
+		Log.i("Test", url);
+		JSONObject json = makeHttpRequest(url, PUT, params);
 		Log.i("Coucou", json.toString());
 
 		if (json == null)
@@ -315,8 +365,8 @@ public abstract class APIConnection {
 		nameValuePairs.add(new BasicNameValuePair("username", username));
 		nameValuePairs.add(new BasicNameValuePair("password", password));
 
-		JSONObject json = makeHttpRequestToObject(urlAuth, POST, nameValuePairs);
-		
+		JSONObject json = makeHttpRequest(urlAuth, POST, nameValuePairs);
+
 		try {
 			if (json.getInt("success") == 1){
 				loggedUser = parseMember(json.getJSONObject("data"));
@@ -325,14 +375,14 @@ public abstract class APIConnection {
 		} catch (JSONException e) {
 			Log.w("APIConnection", "Error during parsing JSON");
 		}
-		
+
 		return false;
 	}
 
 	public static boolean logout(){
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		JSONObject json = makeHttpRequestToObject(urlAuth, DELETE, params);
-		
+		JSONObject json = makeHttpRequest(urlAuth, DELETE, params);
+
 		try {
 			if (json.getInt("success") == 1){
 				loggedUser = null;
@@ -341,7 +391,7 @@ public abstract class APIConnection {
 		} catch (JSONException e) {
 			Log.w("APIConnection", "Error during parsing JSON");
 		}
-		
+
 		return false;
 	}
 
@@ -359,7 +409,7 @@ public abstract class APIConnection {
 		params.add(new BasicNameValuePair("firstName", firstName));
 		params.add(new BasicNameValuePair("lastName", lastName));
 		params.add(new BasicNameValuePair("email", email));
-		
+
 		return APIConnection.<Member>createItem(urlUsers, "parseMember", params);
 	}
 
@@ -390,7 +440,7 @@ public abstract class APIConnection {
 		params.add(new BasicNameValuePair("name", name));
 		params.add(new BasicNameValuePair("type", type));
 		params.add(new BasicNameValuePair("authorUsername", authorUsername));
-		
+
 		return APIConnection.<Project>createItem(urlProjects, "parseProject", params);
 	}
 
@@ -399,11 +449,17 @@ public abstract class APIConnection {
 		return false;
 	}
 
-	public static boolean editProject(String projectID, String name, 
+	public static Project editProject(String projectID, String name, 
 			int status, String description, int type, 
 			String authorUsername){
-		// TODO editProject
-		return false;
+		List<NameValuePair> params = new ArrayList<NameValuePair>(5);
+		params.add(new BasicNameValuePair("name", name));
+		params.add(new BasicNameValuePair("status", String.valueOf(status)));
+		params.add(new BasicNameValuePair("description", description));
+		params.add(new BasicNameValuePair("type", String.valueOf(type)));
+		params.add(new BasicNameValuePair("authorUsername", authorUsername));
+
+		return APIConnection.<Project>editItem(urlProjects + "/" + projectID, "parseProject", params);
 	}
 
 	public static ArrayList<Project> getProjects(){
@@ -443,10 +499,12 @@ public abstract class APIConnection {
 	 * MESSAGES
 	 */
 
-	public static boolean createMessage(String projectID, String content, 
-			String authorUsername){
-		// TODO createMessage
-		return false;
+	public static Message createMessage(String projectID, String content){
+		if (!isLogged()) return null;
+		
+		List<NameValuePair> params = new ArrayList<NameValuePair>(1);
+		params.add(new BasicNameValuePair("content", content));
+		return APIConnection.<Message>createItem(urlMessages + "/" + projectID, "parseMessage", params);
 	}
 
 	public static boolean deleteMessage(String messageID){
@@ -459,11 +517,11 @@ public abstract class APIConnection {
 	}
 
 	public static Message getMessage(String messageID){
-		return null;
+		return APIConnection.<Message>getItem(urlMessage + "/" + messageID , "parseMessage");
 	}
 
 	public static ArrayList<Message> getMessages(String projectID) {
-		return null;
+		return APIConnection.<Message>getItems(urlMessages + "/" + projectID, "parseMessage");
 	}
 
 	/*
@@ -579,5 +637,24 @@ public abstract class APIConnection {
 		ArrayList<SurveyItem> items = getSurveyItems(id);
 
 		return new Survey(description, name, state, numberChoices, created, lastEdited, author, id, v, items);
+	}
+
+	public static Message parseMessage(JSONObject o) throws JSONException{
+		String content = o.getString(tagMessageContent);
+		Project project = getProject(o.getString(tagMessageProject));
+		Member author = getUser(o.getString(tagMessageAuthor));
+		Date created = null;
+		Date lastEdited = null;
+		try {
+			created = DateTools.parse(o.getString(tagMessageCreated));
+			lastEdited = DateTools.parse(o.getString(tagMessageLastEdited));
+		} catch (ParseException e) {
+			e.printStackTrace();
+			created = new Date(0);
+			lastEdited = new Date(0);
+		}
+		String id = o.getString(tagSurveyItemId);
+
+		return new Message(project, author, created, lastEdited, id, content);
 	}
 }

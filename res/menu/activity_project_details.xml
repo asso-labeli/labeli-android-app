@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-
+	<item
+        android:id="@+id/activity_project_details_edit"
+        android:orderInCategory="200"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_create_white_24dp"
+        android:title="@string/activity_project_details_edit"/>
+    
+    <item
+        android:id="@+id/activity_project_details_messages"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_question_answer_white_24dp"
+        android:title="@string/activity_project_details_messages"/>
+    
 </menu>

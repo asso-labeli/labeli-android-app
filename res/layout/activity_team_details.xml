@@ -8,7 +8,9 @@
     android:orientation="vertical"
     android:overScrollMode="always"
     android:scrollbarAlwaysDrawVerticalTrack="true"
-    android:scrollbars="vertical" >
+    android:scrollbars="vertical"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true" >
 
     <RelativeLayout
         android:layout_width="match_parent"

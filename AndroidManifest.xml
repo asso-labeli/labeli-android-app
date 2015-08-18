@@ -34,8 +34,14 @@
         </activity>
         <activity android:name="com.app.labeli.project.ProjectDetailsActivity"></activity>
         <activity android:name="com.app.labeli.team.TeamDetailsActivity"></activity>
-        <activity android:name="com.app.labeli.project.AddProjectActivity"></activity>
-        <activity android:name="com.app.labeli.project.AuthorSelectionActivity"></activity>
+        <activity android:name="com.app.labeli.project.AddProjectActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
+        <activity android:name="com.app.labeli.project.AuthorSelectionActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
+        <activity android:name="com.app.labeli.project.EditProjectActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
+        <activity android:name="com.app.labeli.project.MessagesActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
     </application>
 
 </manifest>
