@@ -12,14 +12,17 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,10 +63,10 @@ public class JSONParser {
 				// in milliseconds which is the timeout for waiting for data.
 				int timeoutSocket = 5000;
 				HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
-				
+
 				httpClient.setParams(httpParameters);
 				HttpPost httpPost = new HttpPost(url);
-				httpPost.setEntity(new UrlEncodedFormEntity(params));
+				httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
 
 				HttpResponse httpResponse = httpClient.execute(httpPost);
 				HttpEntity httpEntity = httpResponse.getEntity();
@@ -80,13 +83,47 @@ public class JSONParser {
 				// in milliseconds which is the timeout for waiting for data.
 				int timeoutSocket = 5000;
 				HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
-				
+
 				httpClient.setParams(httpParameters);
 				String paramString = URLEncodedUtils.format(params, "utf-8");
 				url += "?" + paramString;
 				HttpGet httpGet = new HttpGet(url);
 
 				HttpResponse httpResponse = httpClient.execute(httpGet);
+				HttpEntity httpEntity = httpResponse.getEntity();
+				
+				is = httpEntity.getContent();
+			} else if (method == "PUT") {
+				HttpParams httpParameters = new BasicHttpParams();
+
+				int timeoutConnection = 3000;
+				HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+
+				int timeoutSocket = 5000;
+				HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+
+				httpClient.setParams(httpParameters);
+				HttpPut httpPut = new HttpPut(url);
+				httpPut.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+
+				HttpResponse httpResponse = httpClient.execute(httpPut);
+				HttpEntity httpEntity = httpResponse.getEntity();
+				is = httpEntity.getContent();
+			} else if (method == "DELETE") {
+				HttpParams httpParameters = new BasicHttpParams();
+
+				int timeoutConnection = 3000;
+				HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+
+				int timeoutSocket = 5000;
+				HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+
+				httpClient.setParams(httpParameters);
+				String paramString = URLEncodedUtils.format(params, "utf-8");
+				url += "?" + paramString;
+				HttpDelete httpDelete = new HttpDelete(url);
+
+				HttpResponse httpResponse = httpClient.execute(httpDelete);
 				HttpEntity httpEntity = httpResponse.getEntity();
 				is = httpEntity.getContent();
 			}
@@ -103,7 +140,7 @@ public class JSONParser {
 
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					is, "iso-8859-1"), 8);
+					is, "UTF-8"), 8);
 			StringBuilder sb = new StringBuilder();
 			String line = null;
 			while ((line = reader.readLine()) != null) {
@@ -128,174 +165,6 @@ public class JSONParser {
 
 		// return JSON String
 		return jObj;
-
-	}
-
-	public JSONArray makeHttpRequestArray(String url, String method,
-			List<NameValuePair> params) {
-
-		// Making HTTP request
-		try {
-
-			// check for request method
-			if (method == "POST") {
-				// request method is POST
-				// defaultHttpClient
-				HttpParams httpParameters = new BasicHttpParams();
-				// Set the timeout in milliseconds until a connection is established.
-				// The default value is zero, that means the timeout is not used. 
-				int timeoutConnection = 3000;
-				HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
-				// Set the default socket timeout (SO_TIMEOUT) 
-				// in milliseconds which is the timeout for waiting for data.
-				int timeoutSocket = 5000;
-				HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
-				
-				httpClient.setParams(httpParameters);
-				HttpPost httpPost = new HttpPost(url);
-				httpPost.setEntity(new UrlEncodedFormEntity(params));
-
-				HttpResponse httpResponse = httpClient.execute(httpPost);
-				HttpEntity httpEntity = httpResponse.getEntity();
-				is = httpEntity.getContent();
-
-			} else if (method == "GET") {
-				// request method is GET
-				HttpParams httpParameters = new BasicHttpParams();
-				// Set the timeout in milliseconds until a connection is established.
-				// The default value is zero, that means the timeout is not used. 
-				int timeoutConnection = 3000;
-				HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
-				// Set the default socket timeout (SO_TIMEOUT) 
-				// in milliseconds which is the timeout for waiting for data.
-				int timeoutSocket = 5000;
-				HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
-				
-				httpClient.setParams(httpParameters);
-				String paramString = URLEncodedUtils.format(params, "utf-8");
-				url += "?" + paramString;
-				HttpGet httpGet = new HttpGet(url);
-
-				HttpResponse httpResponse = httpClient.execute(httpGet);
-				HttpEntity httpEntity = httpResponse.getEntity();
-				is = httpEntity.getContent();
-			}
-
-		} catch (HttpHostConnectException e){
-			e.printStackTrace();
-			return null;
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					is, "iso-8859-1"), 8);
-			StringBuilder sb = new StringBuilder();
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
-			is.close();
-			json = sb.toString();
-		} catch (Exception e) {
-			Log.e("Buffer Error", "Error converting result " + e.toString());
-		}
-
-		// try parse the string to a JSON object
-		try {
-			jArray = new JSONArray(json);
-		} catch (JSONException e) {
-			Log.e("JSON Parser", "Error parsing data " + e.toString());
-		}
-
-		// return JSON String
-		return jArray;
-
-	}
-
-	public String makeHttpRequestString(String url, String method,
-			List<NameValuePair> params) {
-
-		// Making HTTP request
-		try {
-
-			// check for request method
-			if (method == "POST") {
-				// request method is POST
-				// defaultHttpClient
-				HttpParams httpParameters = new BasicHttpParams();
-				// Set the timeout in milliseconds until a connection is established.
-				// The default value is zero, that means the timeout is not used. 
-				int timeoutConnection = 3000;
-				HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
-				// Set the default socket timeout (SO_TIMEOUT) 
-				// in milliseconds which is the timeout for waiting for data.
-				int timeoutSocket = 5000;
-				HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
-				
-				httpClient.setParams(httpParameters);
-				HttpPost httpPost = new HttpPost(url);
-				httpPost.setEntity(new UrlEncodedFormEntity(params));
-
-				HttpResponse httpResponse = httpClient.execute(httpPost);
-				HttpEntity httpEntity = httpResponse.getEntity();
-				is = httpEntity.getContent();
-
-			} else if (method == "GET") {
-				// request method is GET
-				HttpParams httpParameters = new BasicHttpParams();
-				// Set the timeout in milliseconds until a connection is established.
-				// The default value is zero, that means the timeout is not used. 
-				int timeoutConnection = 3000;
-				HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
-				// Set the default socket timeout (SO_TIMEOUT) 
-				// in milliseconds which is the timeout for waiting for data.
-				int timeoutSocket = 5000;
-				HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
-				
-				httpClient.setParams(httpParameters);
-				String paramString = URLEncodedUtils.format(params, "utf-8");
-				url += "?" + paramString;
-				HttpGet httpGet = new HttpGet(url);
-
-				HttpResponse httpResponse = httpClient.execute(httpGet);
-				HttpEntity httpEntity = httpResponse.getEntity();
-				is = httpEntity.getContent();
-			}
-
-		} catch (HttpHostConnectException e){
-			e.printStackTrace();
-			return null;
-		} catch (UnsupportedEncodingException e) {
-
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					is, "iso-8859-1"), 8);
-			StringBuilder sb = new StringBuilder();
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
-			is.close();
-			json = sb.toString();
-		} catch (Exception e) {
-			Log.e("Buffer Error", "Error converting result " + e.toString());
-		}
-
-		// return JSON String
-		return json;
 
 	}
 }
