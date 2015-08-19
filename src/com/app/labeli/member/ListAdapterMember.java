@@ -13,6 +13,14 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+/**
+ * > @ListAdapterMember
+ *
+ * Adapter for FragmentMember's ListView
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class ListAdapterMember extends BaseAdapter{
 	private Context mContext;
 	private ArrayList<Member> members;

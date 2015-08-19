@@ -6,11 +6,8 @@ import java.util.Locale;
 import net.tools.APIConnection;
 
 import com.app.labeli.R;
-import com.app.labeli.member.FragmentMember;
 import com.app.labeli.member.ListAdapterMember;
 import com.app.labeli.member.Member;
-import com.app.labeli.member.MemberDetailsActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -18,17 +15,20 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
+/**
+ * > @AuthorSelectionActivity
+ *
+ * Activity to select an author for a project
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class AuthorSelectionActivity extends FragmentActivity{
 	
 	Animation animFadeIn, animFadeOut;

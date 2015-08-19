@@ -2,13 +2,10 @@ package net.tools;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -19,7 +16,6 @@ import android.util.Log;
 
 import com.app.labeli.Survey;
 import com.app.labeli.SurveyItem;
-import com.app.labeli.event.Event;
 import com.app.labeli.member.Member;
 import com.app.labeli.project.Message;
 import com.app.labeli.project.Project;
@@ -29,6 +25,15 @@ import com.tools.DateTools;
 
 import net.tools.JSONParser;
 
+/**
+ * > @APIConnection
+ *
+ * Connector to Label[i] API
+ * Reference : https://github.com/asso-labeli/labeli-api
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public abstract class APIConnection {
 
 	/**

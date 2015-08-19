@@ -3,12 +3,8 @@ package com.app.labeli.project;
 import java.util.ArrayList;
 
 import net.tools.APIConnection;
-
-import com.app.labeli.MainActivity;
-import com.app.labeli.R;
-
-import android.content.Intent;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,6 +17,16 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.app.labeli.R;
+
+/**
+ * > @FragmentProject
+ *
+ * Fragment to show all projects
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class FragmentProject extends Fragment {
 
 	private ListView listView;

@@ -16,9 +16,17 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
-import com.app.labeli.DataWithPicture;
+import com.app.labeli.interfaces.DataWithPicture;
 import com.tools.FileTools;
 
+/**
+ * > @MySingleton
+ *
+ * Singleton to download pictures with the same queue
+ *
+ * @author Google
+ * for the project @Android
+ */
 public class MySingleton {
 	private static MySingleton mInstance;
     private RequestQueue mRequestQueue;

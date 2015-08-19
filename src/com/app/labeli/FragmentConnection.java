@@ -1,6 +1,5 @@
 package com.app.labeli;
 
-import com.app.labeli.event.FragmentEvent;
 import com.app.labeli.member.Member;
 
 import net.tools.*;
@@ -9,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,12 +17,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 /**
- * A simple {@link Fragment} subclass. Activities that contain this fragment
- * must implement the {@link FragmentPresentation.OnFragmentInteractionListener}
- * interface to handle interaction events. Use the
- * {@link FragmentConnection#newInstance} factory method to create an instance
- * of this fragment.
+ * > @FragmentConnection
  *
+ * Fragment to create a connection between app
+ * 	and API.
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
  */
 public class FragmentConnection extends Fragment {
 
@@ -33,7 +32,6 @@ public class FragmentConnection extends Fragment {
 	private ProgressDialog pDialog;
 
 	public FragmentConnection() {
-		// Required empty public constructor
 	}
 
 	public void connectToAPI(View v){

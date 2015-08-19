@@ -1,20 +1,15 @@
 package com.app.labeli.project;
 
-import java.util.ArrayList;
-
 import net.tools.APIConnection;
 
 import com.app.labeli.R;
 import com.app.labeli.member.Member;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,6 +21,14 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+/**
+ * > @AddProjectActivity
+ *
+ * Activity to add a new project
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class AddProjectActivity extends FragmentActivity{
 
 	Animation animFadeIn, animFadeOut;

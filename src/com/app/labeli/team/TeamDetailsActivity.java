@@ -26,6 +26,14 @@ import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * > @TeamDetailsActivity
+ *
+ * Activity to show informations on a team
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class TeamDetailsActivity extends FragmentActivity{
 
 	private ImageView imageView;

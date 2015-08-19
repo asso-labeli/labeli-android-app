@@ -7,21 +7,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * A simple {@link Fragment} subclass. Activities that contain this fragment
- * must implement the {@link FragmentPresentation.OnFragmentInteractionListener}
- * interface to handle interaction events. Use the
- * {@link FragmentPresentation#newInstance} factory method to create an instance
- * of this fragment.
+ * > @FragmentPresentation
  *
+ * Default fragment to show informations on 
+ * 	association.
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
  */
 public class FragmentPresentation extends Fragment {
 
-	/**
-	 * Use this factory method to create a new instance of this fragment using
-	 * the provided parameters.
-	 *
-	 * @return A new instance of fragment FragmentPresentation.
-	 */
 	// TODO: Rename and change types and number of parameters
 	public static FragmentPresentation newInstance(String param1, String param2) {
 		FragmentPresentation fragment = new FragmentPresentation();
@@ -30,7 +25,6 @@ public class FragmentPresentation extends Fragment {
 	}
 
 	public FragmentPresentation() {
-		// Required empty public constructor
 	}
 
 	@Override

@@ -4,11 +4,20 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import com.app.labeli.DataWithPicture;
+import com.app.labeli.interfaces.DataWithPicture;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * > @Member
+ *
+ * Model for Member data
+ * (= User in the API)
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class Member implements Parcelable, DataWithPicture{
 
 	private String firstName;

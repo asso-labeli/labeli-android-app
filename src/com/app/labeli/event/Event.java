@@ -3,9 +3,17 @@ package com.app.labeli.event;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.app.labeli.DataWithPicture;
+import com.app.labeli.interfaces.DataWithPicture;
 import com.app.labeli.member.Member;
 
+/**
+ * > @Event
+ *
+ * Model for Event data
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class Event implements Parcelable, DataWithPicture{
 
 	private Member author;

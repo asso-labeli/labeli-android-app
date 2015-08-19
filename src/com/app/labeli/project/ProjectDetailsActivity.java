@@ -24,6 +24,14 @@ import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * > @ProjectDetailsActivity
+ *
+ * Activity to show informations on a project
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class ProjectDetailsActivity extends FragmentActivity{
 
 	private ImageView imageView;

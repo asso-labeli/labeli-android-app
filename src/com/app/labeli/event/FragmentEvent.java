@@ -2,9 +2,6 @@ package com.app.labeli.event;
 
 import java.util.ArrayList;
 
-import net.tools.APIConnection;
-
-import com.app.labeli.MainActivity;
 import com.app.labeli.R;
 
 import android.app.ProgressDialog;
@@ -18,6 +15,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+/**
+ * > @FragmentEvent
+ *
+ * Fragment to show all Events
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class FragmentEvent extends Fragment {
 
 	private ListView listView;

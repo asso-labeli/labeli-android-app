@@ -13,6 +13,14 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+/**
+ * > @ListAdapterMessage
+ *
+ * Adapter for MessagesActivity's ListView
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class ListAdapterMessage extends BaseAdapter {
 
 	private Context context;

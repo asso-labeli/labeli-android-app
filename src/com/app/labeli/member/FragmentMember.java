@@ -22,6 +22,14 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+/**
+ * > @FragmentMember
+ *
+ * Fragment to show members
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class FragmentMember extends Fragment {
 
 	public ListView listView;

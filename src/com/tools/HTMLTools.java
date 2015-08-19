@@ -1,5 +1,13 @@
 package com.tools;
 
+/**
+ * > @HTMLTools
+ *
+ * Tools for HTML encoding translation
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public abstract class HTMLTools {
 
 	public static String HTMLToText(String html){

@@ -16,6 +16,14 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * > @MemberDetailsActivity
+ *
+ * Activity to show informations on a member
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class MemberDetailsActivity extends FragmentActivity {
 
 	private Member item;

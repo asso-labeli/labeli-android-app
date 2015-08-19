@@ -26,6 +26,14 @@ import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * > @EventDetailsActivity
+ *
+ * Activity to see informations on specific Event
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class EventDetailsActivity extends FragmentActivity{
 
 	private ImageView imageView;

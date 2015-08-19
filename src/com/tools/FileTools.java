@@ -13,6 +13,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+/**
+ * > @FileTools
+ *
+ * Tools for writing and reading files
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public abstract class FileTools {
 
 	public static void writeToFile(Context context, String filename, String data)

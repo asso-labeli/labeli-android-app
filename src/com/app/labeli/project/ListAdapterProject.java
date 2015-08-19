@@ -10,6 +10,14 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+/**
+ * > @ListAdapterProject
+ *
+ * Adapter for FragmentProject's ListView
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class ListAdapterProject extends BaseAdapter {
 
 	private Context context;

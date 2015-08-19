@@ -1,5 +1,14 @@
 package com.app.labeli;
 
+/**
+ * > @Vote
+ *
+ * Model for Vote data
+ * TODO add Parcelable
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class Vote {
 	
 	private int negativeVote;

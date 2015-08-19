@@ -1,10 +1,17 @@
 package com.app.labeli.project;
 
-import java.util.Comparator;
 import java.util.Date;
 
 import com.app.labeli.member.Member;
 
+/**
+ * > @Message
+ *
+ * Model for Message data
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class Message implements Comparable<Message>{
 	
 	public Project project;

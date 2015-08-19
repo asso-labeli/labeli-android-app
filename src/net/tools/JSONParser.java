@@ -29,6 +29,14 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
+/**
+ * > @JSONParser
+ *
+ * Parser for JSON datas
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class JSONParser {
 
 	static InputStream is = null;

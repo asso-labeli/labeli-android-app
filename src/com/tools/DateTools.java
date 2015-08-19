@@ -3,6 +3,14 @@ package com.tools;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * > @DateTools
+ *
+ * Tools for Date class
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class DateTools {
 	
 	private static SimpleDateFormat formater = new SimpleDateFormat("dd-MM-yy hh:mm");

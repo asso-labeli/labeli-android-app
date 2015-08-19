@@ -5,9 +5,17 @@ import java.util.Date;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.app.labeli.DataWithPicture;
+import com.app.labeli.interfaces.DataWithPicture;
 import com.app.labeli.member.Member;
 
+/**
+ * > @Project
+ *
+ * Model for project data
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class Project implements Parcelable, DataWithPicture{
 
 	private Member author;

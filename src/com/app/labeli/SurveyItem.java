@@ -2,6 +2,15 @@ package com.app.labeli;
 
 import java.util.Date;
 
+/**
+ * > @SurveyItem
+ *
+ * Model for SurveyItem data
+ * TODO add Parcelable
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class SurveyItem {
 	
 	private String name;

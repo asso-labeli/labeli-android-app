@@ -2,11 +2,8 @@ package com.app.labeli.team;
 
 import java.util.ArrayList;
 
-import com.app.labeli.MainActivity;
-import com.app.labeli.R;
-
-import android.content.Intent;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +13,16 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.app.labeli.R;
+
+/**
+ * > @FragmentTeam
+ *
+ * Fragment to show all teams
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class FragmentTeam extends Fragment {
 
 	private ListView listView;

@@ -2,6 +2,14 @@ package com.app.labeli.project;
 
 import com.app.labeli.member.Member;
 
+/**
+ * > @ProjectUser
+ *
+ * Model for ProjectUser data
+ *
+ * @author Florian "Aamu Lumi" Kauder
+ * for the project @Label[i]
+ */
 public class ProjectUser {
 	
 	private double created;
