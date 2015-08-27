@@ -10,7 +10,9 @@ Avoir cette application Android permettrait de <b>gagner en visibilité</b> (ass
 - Présentation de l'association<br>
 - Gestion des projets, équipes, événements et membres<br>
 - Votes via un module de connexion<br>
-- Modification du profil<br><br>
+- Modification du profil<br>
+- Gestion des messages<br>
+- Gestion des sondages<br>
 
 <b>Possibilités supplémentaires :</b><br>
 - Gestion de l'état du local, avec un widget et une notification lors d'un changement d'état<br>
