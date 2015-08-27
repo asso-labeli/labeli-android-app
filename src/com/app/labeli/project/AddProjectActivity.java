@@ -4,6 +4,7 @@ import net.tools.APIConnection;
 
 import com.app.labeli.R;
 import com.app.labeli.member.Member;
+import com.iangclifton.android.floatlabel.FloatLabel;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -33,9 +34,8 @@ public class AddProjectActivity extends FragmentActivity{
 
 	Animation animFadeIn, animFadeOut;
 	private Spinner spinnerType;
-	private EditText editTextName, editTextAuthor;
 	private Button buttonValidate;
-
+	private FloatLabel floatLabelName, floatLabelAuthor;
 	private static final int AUTHOR_SELECTION = 1;
 
 	@Override
@@ -57,10 +57,10 @@ public class AddProjectActivity extends FragmentActivity{
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinnerType.setAdapter(adapter);
 
-		editTextName = (EditText)findViewById(R.id.activity_add_project_edit_text_name);
-		editTextAuthor = (EditText)findViewById(R.id.activity_add_project_edit_text_author);
-		editTextAuthor.setKeyListener(null);
-		editTextAuthor.setOnFocusChangeListener(new OnFocusChangeListener() {
+		floatLabelName = (FloatLabel)findViewById(R.id.activity_add_project_float_label_name);
+		floatLabelAuthor = (FloatLabel)findViewById(R.id.activity_add_project_float_label_author);
+		floatLabelAuthor.getEditText().setKeyListener(null);
+		floatLabelAuthor.getEditText().setOnFocusChangeListener(new OnFocusChangeListener() {
 			
 			@Override
 			public void onFocusChange(View arg0, boolean arg1) {
@@ -81,14 +81,14 @@ public class AddProjectActivity extends FragmentActivity{
 	}
 	
 	public void checkInput(View arg){
-		if (editTextName.length() == 0)
+		if (floatLabelName.getEditText().length() == 0)
 			Toast.makeText(getApplicationContext(), "Veuillez rentrer un nom", Toast.LENGTH_SHORT).show();
-		else if (editTextAuthor.length() == 0)
+		else if (floatLabelAuthor.getEditText().length() == 0)
 			Toast.makeText(getApplicationContext(), "Veuillez choisir un auteur", Toast.LENGTH_SHORT).show();
 		else 
-			new AddProject(editTextName.getText().toString(), 
+			new AddProject(floatLabelName.getEditText().getText().toString(), 
 					String.valueOf(spinnerType.getSelectedItemPosition()), 
-					editTextAuthor.getText().toString()).execute();
+					floatLabelAuthor.getEditText().getText().toString()).execute();
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class AddProjectActivity extends FragmentActivity{
 		case (AUTHOR_SELECTION) :
 			if (resultCode == Activity.RESULT_OK) {
 				Member m = (Member)data.getExtras().get("member");
-				editTextAuthor.setText(m.getUsername());
+				floatLabelAuthor.setText(m.getUsername());
 			}
 			break;
 		}

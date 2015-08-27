@@ -1,17 +1,4 @@
-<resources>
-
-    <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    -->
-    <style name="AppBaseTheme" parent="@android:style/Theme.Holo.Light">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        -->
-        
-    </style>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="@android:style/Theme.Holo.Light">
@@ -30,4 +17,58 @@
         <item name="android:textColor">@color/actionbar_text</item>
     </style>
 
+    
+    <!-- Applications compoments styles -->
+    <style name="text_view_activity_title" parent="android:Widget.Holo.Light.TextView">
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:padding">16dp</item>
+    </style>
+    <style name="layout_with_text_components">
+        <item name="android:background">@color/labeli_blue</item>
+        <item name="android:isScrollContainer">true</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:paddingTop">32dp</item>
+        <item name="android:paddingBottom">32dp</item>
+    </style>
+    <style name="text_view_field_description" parent="android:Widget.Holo.Light.TextView">
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+        <item name="android:lines">1</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textIsSelectable">true</item>
+    </style>
+    <style name="edit_text_field" parent="android:Widget.Holo.Light.EditText">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHint">@color/hint_light</item>
+    </style>
+    <style name="layout_one_field">
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+    <style name="button_validate" parent="android:Widget.Holo.Light.Button">
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="layout_button_validate">
+        <item name="android:padding">16dp</item>
+        <item name="android:paddingTop">32dp</item>
+        <item name="android:paddingBottom">32dp</item>
+    </style>
+    <style name="button_field" parent="android:Widget.Holo.Light.Button">
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="edit_text_big_field" parent="android:Widget.Holo.Light.EditText">
+        <item name="android:ems">10</item>
+        <item name="android:gravity">top</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHint">@color/hint_light</item>
+    </style>
+    <style name="float_label_field">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHint">@color/hint_light</item>
+    </style>
+    <style name="component_under_text_view_field">
+        <item name="android:layout_marginTop">-7dp</item>
+    </style>
 </resources>

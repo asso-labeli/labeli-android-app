@@ -119,7 +119,7 @@ public class FragmentConnection extends Fragment {
 				FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
 
 				transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-				transaction.replace(R.id.content_frame, fragment, fragment.getClass().getName());
+				transaction.replace(R.id.activity_main_content_frame, fragment, fragment.getClass().getName());
 				transaction.addToBackStack(fragment.getClass().getName());
 
 				transaction.commit();

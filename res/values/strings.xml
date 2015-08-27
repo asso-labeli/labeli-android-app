@@ -107,7 +107,9 @@
     <string name="activity_edit_project_status">Statut</string>
     <string name="activity_edit_project_title">Editer un projet</string>
     <string name="activity_edit_project_button">Editer le projet</string>
-    <string name="hint_activity_messages_edit_text">Entrez votre message …</string>
+    <string name="activity_edit_project_image">Image</string>
+    <string name="activity_edit_project_button_choose_image">Choisir une nouvelle image</string>
+    <string name="hint_activity_messages_edit_text"><i>Entrez votre message …</i></string>
     <string name="activity_messages_dialog_item_title">Que faire ?</string>
     <string-array name="activity_messages_dialog_items">
         <item>Editer</item>
@@ -115,12 +117,13 @@
     </string-array>
     <string name="activity_edit_message_title">Editer un message</string>
 	<string name="activity_edit_message_button">Editer le message</string>
-	<string name="hint_activity_edit_message_edit_text_content">Composez le message …</string>
+	<string name="hint_activity_edit_message_edit_text_content"><i>Composez le message …</i></string>
 	<string name="fragment_member_menu_add_member">Ajouter un membre</string>
 	<string name="fragment_member_menu_refresh">Rafraîchir</string>
 	<string name="activity_add_member_title">Ajouter un membre</string>
-	<string name="activity_add_mamber_first_name">Prénom</string>
+	<string name="activity_add_member_first_name">Prénom</string>
 	<string name="activity_add_member_last_name">Nom</string>
 	<string name="activity_add_member_email">E-mail</string>
 	<string name="activity_add_member_button">Valider</string>
+	<string name="activity_edit_message_content">Message</string>
 </resources>

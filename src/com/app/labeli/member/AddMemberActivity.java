@@ -4,6 +4,7 @@ import net.tools.APIConnection;
 
 import com.app.labeli.R;
 import com.app.labeli.member.Member;
+import com.iangclifton.android.floatlabel.FloatLabel;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,13 +14,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 /**
- * > @AddProjectActivity
+ * > @AddMemberActivity
  *
- * Activity to add a new project
+ * Activity to add a new member
  *
  * @author Florian "Aamu Lumi" Kauder
  * for the project @Label[i]
@@ -27,7 +27,7 @@ import android.widget.Toast;
 public class AddMemberActivity extends FragmentActivity{
 
 	Animation animFadeIn, animFadeOut;
-	private EditText editTextLastName, editTextFirstName, editTextEmail;
+	private FloatLabel floatLabelLastName, floatLabelFirstName, floatLabelEmail;
 	private Button buttonValidate;
 
 	@Override
@@ -43,9 +43,9 @@ public class AddMemberActivity extends FragmentActivity{
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setTitle("Nouveau membre");
 		
-		editTextLastName = (EditText)findViewById(R.id.activity_add_member_edit_text_last_name);
-		editTextFirstName = (EditText)findViewById(R.id.activity_add_member_edit_text_first_name);
-		editTextEmail = (EditText)findViewById(R.id.activity_add_member_edit_text_email);
+		floatLabelLastName = (FloatLabel)findViewById(R.id.activity_add_member_float_label_last_name);
+		floatLabelFirstName = (FloatLabel)findViewById(R.id.activity_add_member_float_label_first_name);
+		floatLabelEmail = (FloatLabel)findViewById(R.id.activity_add_member_float_label_email);
 		
 		buttonValidate = (Button)findViewById(R.id.activity_add_member_button_validate);
 		buttonValidate.setOnClickListener(new OnClickListener() {
@@ -58,16 +58,16 @@ public class AddMemberActivity extends FragmentActivity{
 	}
 	
 	public void checkInput(View arg){
-		if (editTextLastName.length() == 0)
+		if (floatLabelLastName.getEditText().length() == 0)
 			Toast.makeText(getApplicationContext(), "Veuillez rentrer un nom", Toast.LENGTH_SHORT).show();
-		else if (editTextFirstName.length() == 0)
+		else if (floatLabelFirstName.getEditText().length() == 0)
 			Toast.makeText(getApplicationContext(), "Veuillez rentrer un prénom", Toast.LENGTH_SHORT).show();
-		else if (editTextEmail.length() == 0)
+		else if (floatLabelEmail.getEditText().length() == 0)
 			Toast.makeText(getApplicationContext(), "Veuillez rentrer une adresse e-mail", Toast.LENGTH_SHORT).show();
 		else 
-			new AddMember(editTextFirstName.getText().toString(), 
-					editTextLastName.getText().toString(), 
-					editTextEmail.getText().toString()).execute();
+			new AddMember(floatLabelFirstName.getEditText().getText().toString(), 
+					floatLabelLastName.getEditText().getText().toString(), 
+					floatLabelEmail.getEditText().getText().toString()).execute();
 	}
 
 	@Override

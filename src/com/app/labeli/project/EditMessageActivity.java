@@ -3,6 +3,8 @@ package com.app.labeli.project;
 import net.tools.APIConnection;
 
 import com.app.labeli.R;
+import com.iangclifton.android.floatlabel.FloatLabel;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -15,7 +17,6 @@ import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 /**
@@ -29,7 +30,7 @@ import android.widget.Toast;
 public class EditMessageActivity extends FragmentActivity{
 
 	Animation animFadeIn, animFadeOut;
-	private EditText editTextContent;
+	private FloatLabel floatLabelContent;
 	private Button buttonValidate;
 	private Message message;
 
@@ -44,8 +45,8 @@ public class EditMessageActivity extends FragmentActivity{
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setTitle("Edition");
 		
-		editTextContent = (EditText)findViewById(R.id.activity_edit_message_edit_text_content);
-		editTextContent.setText(message.getContent());
+		floatLabelContent = (FloatLabel)findViewById(R.id.activity_edit_message_float_label_content);
+		floatLabelContent.setText(message.getContent());
 		
 		buttonValidate = (Button)findViewById(R.id.activity_edit_message_button_validate);
 		buttonValidate.setOnClickListener(new OnClickListener() {
@@ -57,10 +58,10 @@ public class EditMessageActivity extends FragmentActivity{
 	}
 	
 	public void checkInput(View arg){
-		if (editTextContent.length() == 0)
+		if (floatLabelContent.getEditText().length() == 0)
 			Toast.makeText(getApplicationContext(), "Veuillez rentrer un message", Toast.LENGTH_SHORT).show();
 		else 
-			new EditMessage(editTextContent.getText().toString()).execute();
+			new EditMessage(floatLabelContent.getEditText().getText().toString()).execute();
 	}
 
 	@Override

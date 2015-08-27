@@ -53,9 +53,9 @@ public class MainActivity extends FragmentActivity {
 		setContentView(R.layout.activity_main);
 
 		// Get base layout (DrawerLayout to create a LeftDrawer)
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.activity_main_drawer_layout);
 		// Get ListView (corresponding to LeftDrawer)
-		mDrawerList = (ListView) findViewById(R.id.left_drawer);
+		mDrawerList = (ListView) findViewById(R.id.activity_main_left_drawer);
 
 		// Loading menu
 		loadLeftMenu();
@@ -68,7 +68,7 @@ public class MainActivity extends FragmentActivity {
 		FragmentPresentation ex = new FragmentPresentation();
 		ex.setArguments(getIntent().getExtras());
 		getSupportFragmentManager().beginTransaction()
-				.add(R.id.content_frame, ex).commit();
+				.add(R.id.activity_main_content_frame, ex).commit();
 	}
 
 	public void loadLeftMenu() {
@@ -172,6 +172,8 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onDrawerOpened(View drawerView) {
 				super.onDrawerOpened(drawerView);
+				mDrawerList.bringToFront();
+				mDrawerLayout.requestLayout();
 				invalidateOptionsMenu(); // creates call to
 											// onPrepareOptionsMenu()
 			}
@@ -269,7 +271,7 @@ public class MainActivity extends FragmentActivity {
 				.beginTransaction();
 
 		transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-		transaction.replace(R.id.content_frame, fragment, fragment.getClass()
+		transaction.replace(R.id.activity_main_content_frame, fragment, fragment.getClass()
 				.getName());
 		// Keep fragment in the app history (for back button)
 		transaction.addToBackStack(fragment.getClass().getName());

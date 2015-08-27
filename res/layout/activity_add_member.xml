@@ -19,93 +19,76 @@
 
         <TextView
             android:id="@+id/activity_add_member_text_view_title"
+            style="@style/text_view_activity_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="30dp"
-            android:paddingLeft="10dp"
-            android:text="@string/activity_add_member_title"
-            android:textSize="19sp" />
+            android:text="@string/activity_add_member_title" />
 
         <LinearLayout
+            style="@style/layout_with_text_components"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
             <LinearLayout
+                style="@style/layout_one_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/labeli_blue"
-                android:orientation="vertical"
-                android:padding="15dp"
-                android:paddingTop="40dp" >
+                android:orientation="vertical" >
 
-                <TextView
-                    android:id="@+id/activity_add_member_text_view_last_name"
+                <com.iangclifton.android.floatlabel.FloatLabel
+                    android:id="@+id/activity_add_member_float_label_last_name"
+                    style="@style/float_label_field"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingTop="15dp"
-                    android:text="@string/activity_add_member_last_name"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
-
-                <EditText
-                    android:id="@+id/activity_add_member_edit_text_last_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textColor="@color/white" />
-
-                <TextView
-                    android:id="@+id/activity_add_member_text_view_first_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:text="@string/activity_add_mamber_first_name"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
-
-                <EditText
-                    android:id="@+id/activity_add_member_edit_text_first_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textColor="@color/white" />
-
-                <TextView
-                    android:id="@+id/activity_add_member_text_view_email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingTop="15dp"
-                    android:text="@string/activity_add_member_email"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
-
-                <EditText
-                    android:id="@+id/activity_add_member_edit_text_email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"
-                    android:textColor="@color/white" />
+                    android:hint="@string/activity_add_member_last_name"
+                    android:inputType="textCapWords|textNoSuggestions" />
             </LinearLayout>
 
             <LinearLayout
+                style="@style/layout_one_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="15dp"
-                android:paddingTop="40dp" >
+                android:orientation="vertical" >
 
-                <Button
-                    android:id="@+id/activity_add_member_button_validate"
-                    android:layout_width="wrap_content"
+                <com.iangclifton.android.floatlabel.FloatLabel
+                    android:id="@+id/activity_add_member_float_label_first_name"
+                    style="@style/float_label_field"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/activity_add_member_button"
-                    android:textSize="14sp" />
+                    android:hint="@string/activity_add_member_first_name"
+                    android:inputType="textCapWords|textNoSuggestions" />
             </LinearLayout>
+
+            <LinearLayout
+                style="@style/layout_one_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <com.iangclifton.android.floatlabel.FloatLabel
+                    android:id="@+id/activity_add_member_float_label_email"
+                    style="@style/float_label_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/activity_add_member_email"
+                    android:inputType="textEmailAddress" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/layout_button_validate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/activity_add_member_button_validate"
+                style="@style/button_validate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/activity_add_member_button" />
         </LinearLayout>
     </LinearLayout>
 

@@ -9,5 +9,5 @@
     <color name="list_background_title"> #000000</color>
     <color name="grid_view_name_color"> #FFFFFF</color>
     <color name="actionbar_text"> #FFFFFF</color>
-    
+    <color name="hint_light"> #DDDDDD</color>
 </resources>

@@ -138,22 +138,6 @@ public abstract class APIConnection {
 		return jParser.makeHttpRequest(url, method, params);
 	}
 
-	private String getProjectUrl(int id){
-		return urlProjects + "/" + id;
-	}
-
-	private String getUserUrl(int id){
-		return urlUsers + "/" + id;
-	}
-
-	private String getMessageUrl(int id){
-		return urlMessages + "/" + id;
-	}
-
-	private String getVoteUrl(int id){
-		return urlVotes + "/" + id;
-	}
-
 	public static Member getLoggedUser(){
 		return loggedUser;
 	}
@@ -688,7 +672,7 @@ public abstract class APIConnection {
 			created = new Date(0);
 			lastEdited = new Date(0);
 		}
-		String id = o.getString(tagSurveyItemId);
+		String id = o.getString(tagMessageId);
 
 		return new Message(project, author, created, lastEdited, id, content);
 	}

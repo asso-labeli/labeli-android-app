@@ -9,49 +9,41 @@
 
     <TextView
         android:id="@+id/activity_edit_message_text_view_title"
+        style="@style/text_view_activity_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="30dp"
-        android:paddingLeft="10dp"
-        android:text="@string/activity_edit_message_title"
-        android:textSize="19sp" />
+        android:text="@string/activity_edit_message_title" />
 
     <LinearLayout
+        style="@style/layout_with_text_components"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/labeli_blue"
-        android:isScrollContainer="true"
-        android:orientation="vertical"
-        android:padding="15dp"
-        android:paddingTop="40dp" >
+        android:orientation="vertical" >
 
-        <EditText
-            android:id="@+id/activity_edit_message_edit_text_content"
+        <com.iangclifton.android.floatlabel.FloatLabel
+            android:id="@+id/activity_edit_message_float_label_content"
+            style="@style/float_label_field"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="@string/hint_activity_edit_message_edit_text_content"
-            android:gravity="top"
-            android:ems="10"
-            android:inputType="textMultiLine"
-            android:textColor="@color/white" />
+            android:hint="@string/activity_edit_message_content"
+            android:inputType="textMultiLine|textCapSentences"
+            android:layout="@layout/float_label_big" />
     </LinearLayout>
 
     <LinearLayout
+        style="@style/layout_button_validate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="15dp"
-        android:paddingTop="40dp" >
+        android:orientation="vertical" >
 
         <Button
             android:id="@+id/activity_edit_message_button_validate"
+            style="@style/button_validate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/activity_edit_message_button"
-            android:textSize="14sp" />
+            android:text="@string/activity_edit_message_button" />
     </LinearLayout>
 
 </LinearLayout>
