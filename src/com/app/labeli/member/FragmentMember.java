@@ -7,7 +7,6 @@ import net.tools.APIConnection;
 import net.tools.MySingleton;
 
 import com.app.labeli.R;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -16,6 +15,9 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -38,13 +40,19 @@ public class FragmentMember extends Fragment {
 	private ArrayList<Member> items;
 	private ListAdapterMember adapter;
 
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		new MemberLoader().execute();
+		setHasOptionsMenu(true);
 
 		getActivity().getActionBar().setTitle("Membres");
 
 		return inflater.inflate(R.layout.fragment_member, container, false);
+	}
+	
+	public void refresh(){
+		new MemberLoader().execute();
 	}
 
 	public void prepareListView(ArrayList<Member> al){
@@ -59,6 +67,27 @@ public class FragmentMember extends Fragment {
 	public void prepareTextEdit(){
 		textView = (TextView) getView().findViewById(R.id.fragment_member_edit_text);
 		textView.addTextChangedListener(new EventItemTextWatcher());
+	}
+	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+		inflater.inflate(R.menu.fragment_member, menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item){
+		switch(item.getItemId()){
+		case R.id.fragment_member_menu_add_member:
+			Intent intent = new Intent(getActivity().getApplicationContext(), 
+					AddMemberActivity.class);
+			startActivity(intent);
+			return true;
+		case R.id.fragment_member_menu_refresh :
+			refresh();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 	private class EventItemClickListener implements ListView.OnItemClickListener {
@@ -122,6 +151,7 @@ public class FragmentMember extends Fragment {
 			pDialog.show();
 		}
 
+		@Override
 		protected String doInBackground(Void... params)
 		{
 			v = APIConnection.getUsers();
@@ -153,6 +183,7 @@ public class FragmentMember extends Fragment {
 			pDialog.show();
 		}
 
+		@Override
 		protected String doInBackground(Void... params)
 		{
 			for (Member im : v)

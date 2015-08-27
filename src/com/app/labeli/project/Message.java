@@ -2,6 +2,9 @@ package com.app.labeli.project;
 
 import java.util.Date;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.app.labeli.member.Member;
 
 /**
@@ -12,7 +15,7 @@ import com.app.labeli.member.Member;
  * @author Florian "Aamu Lumi" Kauder
  * for the project @Label[i]
  */
-public class Message implements Comparable<Message>{
+public class Message implements Comparable<Message>, Parcelable{
 	
 	public Project project;
 	public Member author;
@@ -30,6 +33,23 @@ public class Message implements Comparable<Message>{
 		this.lastEdited = lastEdited;
 		this.id = id;
 		this.content = content;
+	}
+	
+	protected Message(Parcel in) {
+		super();
+		this.project = (Project) in.readValue(Project.class.getClassLoader());
+		this.author = (Member) in.readValue(Member.class.getClassLoader());
+		this.created = new Date(in.readLong());
+		this.lastEdited = new Date(in.readLong());
+		this.id = in.readString();
+		this.content = in.readString();
+	}
+	
+	@Override
+	public String toString() {
+		return "Message [project=" + project + ", author=" + author
+				+ ", created=" + created + ", lastEdited=" + lastEdited
+				+ ", id=" + id + ", content=" + content + "]";
 	}
 
 	public Project getProject() {
@@ -84,5 +104,32 @@ public class Message implements Comparable<Message>{
 	public int compareTo(Message arg0) {
 		return lastEdited.compareTo(arg0.getLastEdited());
 	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeValue(project);
+		dest.writeValue(author);
+		dest.writeLong(created.getTime());
+		dest.writeLong(lastEdited.getTime());
+		dest.writeString(id);
+		dest.writeString(content);
+	}
+	
+	public static final Parcelable.Creator<Message> CREATOR = new Parcelable.Creator<Message>() {
+        @Override
+        public Message createFromParcel(Parcel in) {
+            return new Message(in);
+        }
+
+        @Override
+        public Message[] newArray(int size) {
+            return new Message[size];
+        }
+    };
 
 }

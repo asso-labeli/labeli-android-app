@@ -1,8 +1,5 @@
 package com.app.labeli.project;
 
-import java.util.ArrayList;
-
-import net.tools.APIConnection;
 import net.tools.MySingleton;
 
 import com.app.labeli.R;
@@ -16,7 +13,6 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,6 +37,7 @@ public class ProjectDetailsActivity extends FragmentActivity{
 	
 	Animation animFadeIn, animFadeOut;
 
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
@@ -71,10 +68,12 @@ public class ProjectDetailsActivity extends FragmentActivity{
 	    return super.onCreateOptionsMenu(menu);
 	}
 	
+	@Override
 	public void onBackPressed() {
         super.onBackPressed();
     }
 	
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle presses on the action bar items
 		Intent intent;
@@ -118,6 +117,7 @@ public class ProjectDetailsActivity extends FragmentActivity{
 			pDialog.show();
 		}
 
+		@Override
 		protected String doInBackground(Void... v)
 		{
 			MySingleton.loadImage(ProjectDetailsActivity.this, project);
@@ -128,45 +128,7 @@ public class ProjectDetailsActivity extends FragmentActivity{
 		protected void onPostExecute(String file_url) {
 			prepareImageView(FileTools.getAbsolutePathLocalFileFromURL(ProjectDetailsActivity.this, project.getPictureURL()));
 			pDialog.dismiss();
-			new MessageProjectLoader("/projects/" + String.valueOf(project.getId())).execute();
 		}
 
 	}
-
-	private class MessageProjectLoader extends AsyncTask<Void, Void, String>
-	{
-		String thread;
-		ArrayList<Message> a;
-		
-		public MessageProjectLoader(String thread){
-			this.thread = thread;
-			a = null;
-			Log.i("Thread demandé", " " + thread + " depuis " + project.getCreated());
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			pDialog = new ProgressDialog(ProjectDetailsActivity.this);
-			pDialog.setMessage("Chargement des messages");
-			pDialog.setIndeterminate(false);
-			pDialog.setCancelable(false);
-			pDialog.show();
-		}
-
-		protected String doInBackground(Void... api)
-		{
-			a = APIConnection.getMessages(thread);
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(String file_url) {
-			pDialog.dismiss();
-			Log.i("Test", " ");
-		}
-	}
-
-
-
 }

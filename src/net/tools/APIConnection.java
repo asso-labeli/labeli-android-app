@@ -41,7 +41,7 @@ public abstract class APIConnection {
 	 */
 
 	// URLs
-	public static String apiUrl = "http://192.168.1.11:9010/";
+	public static String apiUrl = "http://dev.aamulumi.info:9010/";
 	private static String urlUsers = apiUrl + "users";
 	private static String urlAuth = apiUrl + "auth";
 	private static String urlProjects = apiUrl + "projects";
@@ -157,21 +157,21 @@ public abstract class APIConnection {
 	public static Member getLoggedUser(){
 		return loggedUser;
 	}
-	
+
 	public static boolean isLogged(){
 		return loggedUser != null;
 	}
-	
+
 	public static boolean loggedUserIsMember(){
 		if (isLogged())
 			return loggedUser.getLevel() >= Member.LEVEL_MEMBER;
-		return false;
+			return false;
 	}
-	
+
 	public static boolean loggedUserIsAdmin(){
 		if (isLogged())
 			return loggedUser.getLevel() >= Member.LEVEL_ADMIN;
-		return false;
+			return false;
 	}
 
 	/**
@@ -287,8 +287,47 @@ public abstract class APIConnection {
 		}
 
 		JSONObject json = makeHttpRequest(url, POST, params);
-		
-		Log.i("Coucou", json.toString());
+
+		if (json == null)
+			return null;
+		try {
+			int success = json.getInt("success");
+			Log.i("Coucou", json.toString());
+			// Parse if successfull
+			if (success == 1){
+				return (T) parse.invoke(APIConnection.class, json.getJSONObject("data"));
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			return null;
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> T editItem(String url, String parseMethod, List<NameValuePair> params){
+		Class<?>[] cArg = new Class[1];
+		cArg[0] = JSONObject.class;
+
+		Method parse = null;
+		try {
+			parse = APIConnection.class.getMethod(parseMethod, cArg);
+		} catch (NoSuchMethodException e1) {
+			e1.printStackTrace();
+			return null;
+		}
+
+		JSONObject json = makeHttpRequest(url, PUT, params);
 
 		if (json == null)
 			return null;
@@ -314,46 +353,25 @@ public abstract class APIConnection {
 
 		return null;
 	}
-	@SuppressWarnings("unchecked")
-	public static <T> T editItem(String url, String parseMethod, List<NameValuePair> params){
-		Class<?>[] cArg = new Class[1];
-		cArg[0] = JSONObject.class;
-
-		Method parse = null;
-		try {
-			parse = APIConnection.class.getMethod(parseMethod, cArg);
-		} catch (NoSuchMethodException e1) {
-			e1.printStackTrace();
-			return null;
-		}
-
-		Log.i("Test", url);
-		JSONObject json = makeHttpRequest(url, PUT, params);
-		Log.i("Coucou", json.toString());
-
+	
+	public static boolean deleteItem(String url){
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		JSONObject json = makeHttpRequest(url, DELETE, params);
+		
 		if (json == null)
-			return null;
+			return false;
 		try {
 			int success = json.getInt("success");
 			// Parse if successfull
 			if (success == 1){
-				return (T) parse.invoke(APIConnection.class, json.getJSONObject("data"));
+				return true;
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
-			return null;
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-			return null;
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-			return null;
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-			return null;
-		}
+			return false;
+		} 
 
-		return null;
+		return false;
 	}
 
 	/*
@@ -379,6 +397,8 @@ public abstract class APIConnection {
 			}
 		} catch (JSONException e) {
 			Log.w("APIConnection", "Error during parsing JSON");
+		} catch (NullPointerException e){
+			Log.w("APIConnection", "Error during getting response");
 		}
 
 		return false;
@@ -395,6 +415,8 @@ public abstract class APIConnection {
 			}
 		} catch (JSONException e) {
 			Log.w("APIConnection", "Error during parsing JSON");
+		} catch (NullPointerException e){
+			Log.w("APIConnection", "Error during getting response");
 		}
 
 		return false;
@@ -506,19 +528,24 @@ public abstract class APIConnection {
 
 	public static Message createMessage(String projectID, String content){
 		if (!isLogged()) return null;
-		
+
 		List<NameValuePair> params = new ArrayList<NameValuePair>(1);
 		params.add(new BasicNameValuePair("content", content));
 		return APIConnection.<Message>createItem(urlMessages + "/" + projectID, "parseMessage", params);
 	}
 
 	public static boolean deleteMessage(String messageID){
-		// TODO deleteMessage
-		return false;
+		if (!isLogged()) return false;
+		
+		return APIConnection.deleteItem(urlMessage + "/" + messageID);
 	}
 
-	public static boolean editMessage(String messageID, String content){
-		return false;
+	public static Message editMessage(String messageID, String content){
+		if (!isLogged()) return null;
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>(1);
+		params.add(new BasicNameValuePair("content", content));
+		return APIConnection.<Message>editItem(urlMessage + "/" + messageID, "parseMessage", params);
 	}
 
 	public static Message getMessage(String messageID){
@@ -558,7 +585,10 @@ public abstract class APIConnection {
 		Date birthday = null;
 		try {
 			created = DateTools.parse(o.getString(tagUserCreated));
-			birthday = DateTools.parse(o.getString(tagUserBirthday));
+			if (!o.getString(tagUserBirthday).equals("null"))
+				birthday = DateTools.parse(o.getString(tagUserBirthday));
+			else
+				birthday = new Date(0);
 		} catch (ParseException e) {
 			e.printStackTrace();
 			created = new Date(0);

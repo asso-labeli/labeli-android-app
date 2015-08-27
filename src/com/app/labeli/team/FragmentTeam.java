@@ -29,6 +29,7 @@ public class FragmentTeam extends Fragment {
 	private ProgressDialog pDialog;
 	private ArrayList<Team> teams;
 
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		if (savedInstanceState != null)
@@ -85,6 +86,7 @@ public class FragmentTeam extends Fragment {
 			pDialog.show();
 		}
 
+		@Override
 		protected String doInBackground(Void... params)
 		{
 			return null;

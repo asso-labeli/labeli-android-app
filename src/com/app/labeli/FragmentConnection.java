@@ -95,6 +95,7 @@ public class FragmentConnection extends Fragment {
 			pDialog.show();
 		}
 
+		@Override
 		protected String doInBackground(Void... params)
 		{
 			success = APIConnection.login(username, password);

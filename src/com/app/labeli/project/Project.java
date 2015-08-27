@@ -74,10 +74,12 @@ public class Project implements Parcelable, DataWithPicture{
 		this.description = description;
 	}
 	
+	@Override
 	public String getPictureURL() {
 		return pictureURL;
 	}
 	
+	@Override
 	public void setPictureURL(String pictureURL) {
 		this.pictureURL = pictureURL;
 	}

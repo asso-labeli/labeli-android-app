@@ -38,6 +38,7 @@ public class AuthorSelectionActivity extends FragmentActivity{
 	private ArrayList<Member> items;
 	private ListAdapterMember adapter;
 
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
@@ -49,6 +50,7 @@ public class AuthorSelectionActivity extends FragmentActivity{
 		new MemberLoader().execute();
 	}
 	
+	@Override
 	public void onBackPressed() {
 		setResult(RESULT_CANCELED);
         finish();
@@ -129,6 +131,7 @@ public class AuthorSelectionActivity extends FragmentActivity{
 			pDialog.show();
 		}
 
+		@Override
 		protected String doInBackground(Void... params)
 		{
 			v = APIConnection.getUsers();

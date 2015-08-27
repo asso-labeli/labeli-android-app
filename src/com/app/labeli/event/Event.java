@@ -69,10 +69,12 @@ public class Event implements Parcelable, DataWithPicture{
 		this.description = description;
 	}
 
+	@Override
 	public String getPictureURL() {
 		return pictureURL;
 	}
 
+	@Override
 	public void setPictureURL(String picture) {
 		this.pictureURL = picture;
 	}

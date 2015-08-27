@@ -31,6 +31,7 @@ public class MemberDetailsActivity extends FragmentActivity {
 	private ProgressDialog pDialog;
 	private TextView textViewName, textViewStatus, textViewGroup, textViewBirthday, textViewBiography;
 
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_member_details);
@@ -105,6 +106,7 @@ public class MemberDetailsActivity extends FragmentActivity {
 			pDialog.show();
 		}
 
+		@Override
 		protected String doInBackground(Void... v)
 		{
 			MySingleton.loadImage(MemberDetailsActivity.this, item);

@@ -39,6 +39,7 @@ public class EditProjectActivity extends FragmentActivity{
 
 	private static final int AUTHOR_SELECTION = 1;
 
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
@@ -119,10 +120,12 @@ public class EditProjectActivity extends FragmentActivity{
 		}
 	}
 
+	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
 	}
 
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle presses on the action bar items
 		switch (item.getItemId()) {
@@ -154,6 +157,7 @@ public class EditProjectActivity extends FragmentActivity{
 			super.onPreExecute();
 		}
 
+		@Override
 		protected String doInBackground(Void... params)
 		{
 			p = APIConnection.editProject(project.getId(), name, status, description, type, authorUsername);

@@ -33,6 +33,7 @@ public class FragmentProject extends Fragment {
 	private ProgressDialog pDialog;
 	private ArrayList<Project> projects;
 
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		getActivity().getActionBar().setTitle("Projets");
@@ -118,6 +119,7 @@ public class FragmentProject extends Fragment {
 			pDialog.show();
 		}
 
+		@Override
 		protected String doInBackground(Void... api)
 		{
 			a = APIConnection.getProjects();

@@ -161,6 +161,7 @@ public class MainActivity extends FragmentActivity {
 				R.string.drawer_close) {
 
 			/** Called when a drawer has settled in a completely closed state. */
+			@Override
 			public void onDrawerClosed(View view) {
 				super.onDrawerClosed(view);
 				invalidateOptionsMenu(); // creates call to
@@ -168,6 +169,7 @@ public class MainActivity extends FragmentActivity {
 			}
 
 			/** Called when a drawer has settled in a completely open state. */
+			@Override
 			public void onDrawerOpened(View drawerView) {
 				super.onDrawerOpened(drawerView);
 				invalidateOptionsMenu(); // creates call to
@@ -218,6 +220,7 @@ public class MainActivity extends FragmentActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	@Override
 	public void finish() {
 		super.finish();
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
@@ -298,6 +301,7 @@ public class MainActivity extends FragmentActivity {
 			Log.i("Coucou", "Oui");
 		}
 
+		@Override
 		protected String doInBackground(Void... params) {
 			success = APIConnection.logout();
 			return null;

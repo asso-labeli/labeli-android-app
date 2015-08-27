@@ -43,6 +43,7 @@ public class TeamDetailsActivity extends FragmentActivity{
 	
 	Animation animFadeIn, animFadeOut;
 
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
@@ -73,10 +74,12 @@ public class TeamDetailsActivity extends FragmentActivity{
 	    return super.onCreateOptionsMenu(menu);
 	}
 	
+	@Override
 	public void onBackPressed() {
         super.onBackPressed();
     }
 	
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle presses on the action bar items
 	    switch (item.getItemId()) {
@@ -114,6 +117,7 @@ public class TeamDetailsActivity extends FragmentActivity{
 			pDialog.show();
 		}
 
+		@Override
 		protected String doInBackground(Void... v)
 		{
 			if (courtUrl != null && !courtUrl.equals("")){

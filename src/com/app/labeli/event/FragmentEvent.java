@@ -29,6 +29,7 @@ public class FragmentEvent extends Fragment {
 	private ProgressDialog pDialog;
 	private ArrayList<Event> events;
 
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		if (savedInstanceState != null)
@@ -86,6 +87,7 @@ public class FragmentEvent extends Fragment {
 			pDialog.show();
 		}
 
+		@Override
 		protected String doInBackground(Void... params)
 		{
 			// TODO Get Event

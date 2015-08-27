@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.app.labeli.MainActivity" >
+
+    <item
+        android:id="@+id/fragment_member_menu_add_member"
+        android:orderInCategory="200"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_add_white_24dp"
+        android:title="@string/fragment_member_menu_add_member"/>
+    
+    <item
+        android:id="@+id/fragment_member_menu_refresh"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_cached_white_24dp"
+        android:title="@string/fragment_member_menu_refresh"/>
+
+</menu>

@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true" >
 
-    <ListView
-        android:id="@+id/activity_messages_list_view"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="#ffffff"
-        android:choiceMode="singleChoice"
-        android:gravity="center" >
-    </ListView>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/white"
+        android:orientation="horizontal" >
+
+        <ListView
+            android:id="@+id/activity_messages_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff"
+            android:choiceMode="singleChoice"
+            android:gravity="center" >
+        </ListView>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:orientation="horizontal" >
 
@@ -30,8 +36,8 @@
             android:layout_gravity="center_vertical|center_horizontal"
             android:layout_weight="5"
             android:gravity="top|left"
-            android:inputType="textMultiLine|textCapSentences"
             android:hint="@string/hint_activity_messages_edit_text"
+            android:inputType="textMultiLine|textCapSentences"
             android:maxLines="5"
             android:minLines="3"
             android:scrollHorizontally="false" />
@@ -46,4 +52,4 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

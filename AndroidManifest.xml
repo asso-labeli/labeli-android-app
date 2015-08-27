@@ -42,6 +42,10 @@
             android:windowSoftInputMode="stateHidden|adjustResize"></activity>
         <activity android:name="com.app.labeli.project.MessagesActivity"
             android:windowSoftInputMode="stateHidden|adjustResize"></activity>
+        <activity android:name="com.app.labeli.project.EditMessageActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
+        <activity android:name="com.app.labeli.member.AddMemberActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
     </application>
 
 </manifest>
