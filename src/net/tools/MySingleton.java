@@ -1,6 +1,7 @@
 package net.tools;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import android.app.Activity;
 import android.content.Context;
@@ -78,13 +79,14 @@ public class MySingleton {
         return mImageLoader;
     }
     
-    public static void loadImage(final Activity a, DataWithPicture d){
+    public static void loadImage(final Activity a, DataWithPicture d, int width){
 		if (d.getPictureURL() == null) return;
 
 		final File dataFile = new File(FileTools.getAbsolutePathLocalFileFromURL(a, d.getPictureURL()));
-		String wallpaperURLStr = APIConnection.apiUrl + d.getPictureURL();
+		String wallpaperURLStr = APIConnection.apiUrl + "images/" + d.getPictureURL() +"?dim=" + width;
 		final String localFile = FileTools.getLocalFileFromURL(d.getPictureURL());
 
+		Log.i("Co", dataFile.getAbsolutePath());
 		if (!dataFile.exists() && !d.getPictureURL().equals("null")){
 			Log.i("Net", "Chargement de " + wallpaperURLStr);
 

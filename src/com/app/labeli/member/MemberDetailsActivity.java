@@ -109,7 +109,8 @@ public class MemberDetailsActivity extends FragmentActivity {
 		@Override
 		protected String doInBackground(Void... v)
 		{
-			MySingleton.loadImage(MemberDetailsActivity.this, item);
+			// TODO : Manage image size with screen size
+			MySingleton.loadImage(MemberDetailsActivity.this, item, 0);
 			return null;
 		}
 

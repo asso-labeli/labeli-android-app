@@ -3,19 +3,23 @@ package com.app.labeli.project;
 import net.tools.MySingleton;
 
 import com.app.labeli.R;
+import com.tools.DeviceTools;
 import com.tools.FileTools;
 import com.tools.HTMLTools;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -49,6 +53,9 @@ public class ProjectDetailsActivity extends FragmentActivity{
 		project = this.getIntent().getExtras().getParcelable("project");
 
 		imageView = (ImageView) findViewById(R.id.activity_project_details_picture);
+		// Image max : 1/3 of screen
+		imageView.setMaxHeight((int)(DeviceTools.getHeightScreen(this)/3));
+		
 		textViewName = (TextView) findViewById(R.id.activity_project_details_name);
 		textViewAuthor = (TextView) findViewById(R.id.activity_project_details_author);
 		textViewDescription = (TextView) findViewById(R.id.activity_project_details_description);
@@ -120,7 +127,8 @@ public class ProjectDetailsActivity extends FragmentActivity{
 		@Override
 		protected String doInBackground(Void... v)
 		{
-			MySingleton.loadImage(ProjectDetailsActivity.this, project);
+			MySingleton.loadImage(ProjectDetailsActivity.this, project, 
+					DeviceTools.getWidthScreen(ProjectDetailsActivity.this));
 			return null;
 		}
 

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.Locale;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -102,6 +103,10 @@ public abstract class FileTools {
 	
 	public static String getLocalFileFromURL(String url){
 		return url.replace("/", "_").replace(" ", "%20");
+	}
+	
+	public static String createFilenameForProject(String projectName, String extension){
+		return projectName.replace(' ', '_').toLowerCase(Locale.FRANCE) + extension;
 	}
 
 }

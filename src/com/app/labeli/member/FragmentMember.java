@@ -161,47 +161,6 @@ public class FragmentMember extends Fragment {
 		@Override
 		protected void onPostExecute(String file_url) {
 			pDialog.dismiss();
-			new ImageMemberLoader(v).execute();
 		}
 	}
-
-	private class ImageMemberLoader extends AsyncTask<Void, Void, String>
-	{
-		ArrayList<Member> v;
-
-		public ImageMemberLoader(ArrayList<Member> v){
-			this.v = v;
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			pDialog = new ProgressDialog(FragmentMember.this.getActivity());
-			pDialog.setMessage("Chargement des images");
-			pDialog.setIndeterminate(false);
-			pDialog.setCancelable(false);
-			pDialog.show();
-		}
-
-		@Override
-		protected String doInBackground(Void... params)
-		{
-			for (Member im : v)
-				MySingleton.loadImage(getActivity(), im);
-			
-			return null;
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		protected void onPostExecute(String file_url) {
-			prepareListView(v);
-			prepareTextEdit();
-			items = (ArrayList<Member>) v.clone();
-			pDialog.dismiss();
-		}
-
-	}
-
-
 }

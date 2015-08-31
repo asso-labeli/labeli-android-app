@@ -149,12 +149,14 @@ public abstract class APIConnection {
 	public static boolean loggedUserIsMember(){
 		if (isLogged())
 			return loggedUser.getLevel() >= Member.LEVEL_MEMBER;
+
 			return false;
 	}
 
 	public static boolean loggedUserIsAdmin(){
 		if (isLogged())
 			return loggedUser.getLevel() >= Member.LEVEL_ADMIN;
+
 			return false;
 	}
 
@@ -297,7 +299,7 @@ public abstract class APIConnection {
 
 		return null;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static <T> T editItem(String url, String parseMethod, List<NameValuePair> params){
 		Class<?>[] cArg = new Class[1];
@@ -337,11 +339,11 @@ public abstract class APIConnection {
 
 		return null;
 	}
-	
+
 	public static boolean deleteItem(String url){
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		JSONObject json = makeHttpRequest(url, DELETE, params);
-		
+
 		if (json == null)
 			return false;
 		try {
@@ -462,13 +464,14 @@ public abstract class APIConnection {
 
 	public static Project editProject(String projectID, String name, 
 			int status, String description, int type, 
-			String authorUsername){
-		List<NameValuePair> params = new ArrayList<NameValuePair>(5);
+			String authorUsername, String pictureURL){
+		List<NameValuePair> params = new ArrayList<NameValuePair>(6);
 		params.add(new BasicNameValuePair("name", name));
 		params.add(new BasicNameValuePair("status", String.valueOf(status)));
 		params.add(new BasicNameValuePair("description", description));
 		params.add(new BasicNameValuePair("type", String.valueOf(type)));
 		params.add(new BasicNameValuePair("authorUsername", authorUsername));
+		if (pictureURL != null) params.add(new BasicNameValuePair("picture", pictureURL));
 
 		return APIConnection.<Project>editItem(urlProjects + "/" + projectID, "parseProject", params);
 	}
@@ -520,7 +523,7 @@ public abstract class APIConnection {
 
 	public static boolean deleteMessage(String messageID){
 		if (!isLogged()) return false;
-		
+
 		return APIConnection.deleteItem(urlMessage + "/" + messageID);
 	}
 
