@@ -2,17 +2,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
 	<item
-        android:id="@+id/activity_project_details_edit"
+        android:id="@+id/activity_project_details_menu_edit"
         android:orderInCategory="200"
+        android:visible="false"
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_create_white_24dp"
         android:title="@string/activity_project_details_edit"/>
     
     <item
-        android:id="@+id/activity_project_details_messages"
+        android:id="@+id/activity_project_details_menu_messages"
         android:orderInCategory="100"
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_question_answer_white_24dp"
         android:title="@string/activity_project_details_messages"/>
+    
+    <item
+        android:id="@+id/activity_project_details_menu_refresh"
+        android:orderInCategory="150"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_cached_white_24dp"
+        android:title="@string/activity_project_details_menu_refresh"/>
     
 </menu>

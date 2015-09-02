@@ -93,6 +93,7 @@
     <string name="title_activity_member_details">Member</string>
     <string name="fragment_project_menu_addProject">Ajouter un projet</string>
     <string name="fragment_project_menu_refresh">Rafraîchir</string>
+    <string name="activity_project_details_menu_refresh">Rafraîchir</string>
     <string name="activity_add_project_name">Nom</string>
     <string name="activity_add_project_type">Type</string>
     <string name="activity_add_project_author">Auteur</string>

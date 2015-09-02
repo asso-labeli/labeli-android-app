@@ -50,6 +50,11 @@ public class Project implements Parcelable, DataWithPicture{
 				+ type + ", id=" + id +"]";
 	}
 	
+	public Object clone(){
+		return new Project((Member)author.clone(), name, description, pictureURL,
+				(Date)created.clone(), (Date)lastEdited.clone(), status, type, id);
+	}
+	
 	public Member getAuthor() {
 		return author;
 	}

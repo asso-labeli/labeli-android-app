@@ -1,13 +1,13 @@
 package net.tools;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
+import java.util.HashMap;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,7 +23,7 @@ import com.app.labeli.project.ProjectUser;
 import com.app.labeli.Vote;
 import com.tools.DateTools;
 
-import net.tools.JSONParser;
+import net.tools.RequestSender;
 
 /**
  * > @APIConnection
@@ -131,11 +131,15 @@ public abstract class APIConnection {
 
 	private static Member loggedUser = null;
 
-	private static JSONParser jParser = new JSONParser();
+	private static RequestSender jParser = new RequestSender();
 
 	private static JSONObject makeHttpRequest(String url, 
-			String method, List<NameValuePair> params){
-		return jParser.makeHttpRequest(url, method, params);
+			String method, HashMap<String, String> urlParameters, HashMap<String, String> bodyParameters){
+		return jParser.makeHttpRequest(url, method, urlParameters, bodyParameters);
+	}
+	
+	public static boolean makeFileRequest(File f, String fileName){
+		return jParser.postPicture(f, fileName);
 	}
 
 	public static Member getLoggedUser(){
@@ -169,7 +173,8 @@ public abstract class APIConnection {
 		return Boolean.valueOf(bool.replace(" ", "").replace("\n", ""));
 	}
 
-	private static <T> ArrayList<T> getItems(String url, String parseMethod){
+	private static <T> ArrayList<T> getItems(String url, String parseMethod, 
+			HashMap<String, String> urlParameters, HashMap<String, String> bodyParameters){
 		Class<?>[] cArg = new Class[1];
 		cArg[0] = JSONObject.class;
 
@@ -183,9 +188,7 @@ public abstract class APIConnection {
 
 		ArrayList<T> list = new ArrayList<T>();
 
-		// Make request
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		JSONObject json = makeHttpRequest(url, GET, params);
+		JSONObject json = makeHttpRequest(url, GET, urlParameters, bodyParameters);
 
 		if (json == null)
 			return null;
@@ -218,7 +221,8 @@ public abstract class APIConnection {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T> T getItem(String url, String parseMethod){
+	private static <T> T getItem(String url, String parseMethod, 
+			HashMap<String, String> urlParameters, HashMap<String, String> bodyParameters){
 		Class<?>[] cArg = new Class[1];
 		cArg[0] = JSONObject.class;
 
@@ -231,8 +235,7 @@ public abstract class APIConnection {
 		}
 
 		// Make request
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		JSONObject json = makeHttpRequest(url, GET, params);
+		JSONObject json = makeHttpRequest(url, GET, urlParameters, bodyParameters);
 
 		if (json == null)
 			return null;
@@ -260,7 +263,8 @@ public abstract class APIConnection {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T createItem(String url, String parseMethod, List<NameValuePair> params){
+	public static <T> T createItem(String url, String parseMethod, 
+			HashMap<String, String> urlParameters, HashMap<String, String> bodyParameters){
 		Class<?>[] cArg = new Class[1];
 		cArg[0] = JSONObject.class;
 
@@ -272,7 +276,7 @@ public abstract class APIConnection {
 			return null;
 		}
 
-		JSONObject json = makeHttpRequest(url, POST, params);
+		JSONObject json = makeHttpRequest(url, POST, urlParameters, bodyParameters);
 
 		if (json == null)
 			return null;
@@ -301,7 +305,8 @@ public abstract class APIConnection {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T editItem(String url, String parseMethod, List<NameValuePair> params){
+	public static <T> T editItem(String url, String parseMethod, 
+			HashMap<String, String> urlParameters, HashMap<String, String> bodyParameters){
 		Class<?>[] cArg = new Class[1];
 		cArg[0] = JSONObject.class;
 
@@ -313,7 +318,7 @@ public abstract class APIConnection {
 			return null;
 		}
 
-		JSONObject json = makeHttpRequest(url, PUT, params);
+		JSONObject json = makeHttpRequest(url, PUT, urlParameters, bodyParameters);
 
 		if (json == null)
 			return null;
@@ -340,9 +345,10 @@ public abstract class APIConnection {
 		return null;
 	}
 
-	public static boolean deleteItem(String url){
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		JSONObject json = makeHttpRequest(url, DELETE, params);
+	public static boolean deleteItem(String url,
+			HashMap<String, String> urlParameters, HashMap<String, String> bodyParameters){
+		HashMap<String, String> params = new HashMap<String, String>();
+		JSONObject json = makeHttpRequest(url, DELETE, urlParameters, bodyParameters);
 
 		if (json == null)
 			return false;
@@ -370,11 +376,11 @@ public abstract class APIConnection {
 	}
 
 	public static boolean login(String username, String password){
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-		nameValuePairs.add(new BasicNameValuePair("username", username));
-		nameValuePairs.add(new BasicNameValuePair("password", password));
+		HashMap<String, String> nameValuePairs = new HashMap<String, String>(2);
+		nameValuePairs.put("username", username);
+		nameValuePairs.put("password", password);
 
-		JSONObject json = makeHttpRequest(urlAuth, POST, nameValuePairs);
+		JSONObject json = makeHttpRequest(urlAuth, POST, null, nameValuePairs);
 
 		try {
 			if (json.getInt("success") == 1){
@@ -391,8 +397,7 @@ public abstract class APIConnection {
 	}
 
 	public static boolean logout(){
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		JSONObject json = makeHttpRequest(urlAuth, DELETE, params);
+		JSONObject json = makeHttpRequest(urlAuth, DELETE, null, null);
 
 		try {
 			if (json.getInt("success") == 1){
@@ -413,21 +418,21 @@ public abstract class APIConnection {
 	 */
 
 	public static ArrayList<Member> getUsers(){
-		return APIConnection.<Member>getItems(urlUsers, "parseMember");
+		return APIConnection.<Member>getItems(urlUsers, "parseMember", null, null);
 	}
 
 	public static Member createUser(String firstName, String lastName, 
 			String email){
-		List<NameValuePair> params = new ArrayList<NameValuePair>(3);
-		params.add(new BasicNameValuePair("firstName", firstName));
-		params.add(new BasicNameValuePair("lastName", lastName));
-		params.add(new BasicNameValuePair("email", email));
+		HashMap<String, String> params = new HashMap<String, String>(3);
+		params.put("firstName", firstName);
+		params.put("lastName", lastName);
+		params.put("email", email);
 
-		return APIConnection.<Member>createItem(urlUsers, "parseMember", params);
+		return APIConnection.<Member>createItem(urlUsers, "parseMember", null, params);
 	}
 
 	public static Member getUser(String userID){
-		return APIConnection.<Member>getItem(urlUsers + "/" + userID, "parseMember");
+		return APIConnection.<Member>getItem(urlUsers + "/" + userID, "parseMember", null, null);
 	}
 
 	public static boolean editUser(String userID, String firstName, 
@@ -449,12 +454,12 @@ public abstract class APIConnection {
 
 	public static Project createProject(String name, String type, 
 			String authorUsername){
-		List<NameValuePair> params = new ArrayList<NameValuePair>(3);
-		params.add(new BasicNameValuePair("name", name));
-		params.add(new BasicNameValuePair("type", type));
-		params.add(new BasicNameValuePair("authorUsername", authorUsername));
+		HashMap<String, String> params = new HashMap<String, String>(3);
+		params.put("name", name);
+		params.put("type", type);
+		params.put("authorUsername", authorUsername);
 
-		return APIConnection.<Project>createItem(urlProjects, "parseProject", params);
+		return APIConnection.<Project>createItem(urlProjects, "parseProject", null, params);
 	}
 
 	public static boolean deleteProject(String projectID){
@@ -462,26 +467,24 @@ public abstract class APIConnection {
 		return false;
 	}
 
-	public static Project editProject(String projectID, String name, 
-			int status, String description, int type, 
-			String authorUsername, String pictureURL){
-		List<NameValuePair> params = new ArrayList<NameValuePair>(6);
-		params.add(new BasicNameValuePair("name", name));
-		params.add(new BasicNameValuePair("status", String.valueOf(status)));
-		params.add(new BasicNameValuePair("description", description));
-		params.add(new BasicNameValuePair("type", String.valueOf(type)));
-		params.add(new BasicNameValuePair("authorUsername", authorUsername));
-		if (pictureURL != null) params.add(new BasicNameValuePair("picture", pictureURL));
+	public static Project editProject(Project p){
+		HashMap<String, String> params = new HashMap<String, String>(6);
+		params.put("name", p.getName());
+		params.put("status", String.valueOf(p.getStatus()));
+		params.put("description", p.getDescription());
+		params.put("type", String.valueOf(p.getType()));
+		params.put("authorUsername", p.getAuthor().getUsername());
+		if (p.getPictureURL() != null) params.put("picture", p.getPictureURL());
 
-		return APIConnection.<Project>editItem(urlProjects + "/" + projectID, "parseProject", params);
+		return APIConnection.<Project>editItem(urlProjects + "/" + p.getId(), "parseProject", null, params);
 	}
 
 	public static ArrayList<Project> getProjects(){
-		return APIConnection.<Project>getItems(urlProjects, "parseProject");
+		return APIConnection.<Project>getItems(urlProjects, "parseProject", null, null);
 	}
 
 	public static Project getProject(String projectID){
-		return APIConnection.<Project>getItem(urlProjects + "/" + projectID, "parseProject");
+		return APIConnection.<Project>getItem(urlProjects + "/" + projectID, "parseProject", null, null);
 	}
 
 	/*
@@ -516,31 +519,31 @@ public abstract class APIConnection {
 	public static Message createMessage(String projectID, String content){
 		if (!isLogged()) return null;
 
-		List<NameValuePair> params = new ArrayList<NameValuePair>(1);
-		params.add(new BasicNameValuePair("content", content));
-		return APIConnection.<Message>createItem(urlMessages + "/" + projectID, "parseMessage", params);
+		HashMap<String, String> params = new HashMap<String, String>(1);
+		params.put("content", content);
+		return APIConnection.<Message>createItem(urlMessages + "/" + projectID, "parseMessage", null, params);
 	}
 
 	public static boolean deleteMessage(String messageID){
 		if (!isLogged()) return false;
 
-		return APIConnection.deleteItem(urlMessage + "/" + messageID);
+		return APIConnection.deleteItem(urlMessage + "/" + messageID, null, null);
 	}
 
 	public static Message editMessage(String messageID, String content){
 		if (!isLogged()) return null;
 
-		List<NameValuePair> params = new ArrayList<NameValuePair>(1);
-		params.add(new BasicNameValuePair("content", content));
-		return APIConnection.<Message>editItem(urlMessage + "/" + messageID, "parseMessage", params);
+		HashMap<String, String> params = new HashMap<String, String>(1);
+		params.put("content", content);
+		return APIConnection.<Message>editItem(urlMessage + "/" + messageID, "parseMessage", null, params);
 	}
 
 	public static Message getMessage(String messageID){
-		return APIConnection.<Message>getItem(urlMessage + "/" + messageID , "parseMessage");
+		return APIConnection.<Message>getItem(urlMessage + "/" + messageID , "parseMessage", null, null);
 	}
 
 	public static ArrayList<Message> getMessages(String projectID) {
-		return APIConnection.<Message>getItems(urlMessages + "/" + projectID, "parseMessage");
+		return APIConnection.<Message>getItems(urlMessages + "/" + projectID, "parseMessage", null, null);
 	}
 
 	/*

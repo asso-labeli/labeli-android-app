@@ -57,6 +57,11 @@ public class FragmentProject extends Fragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
 		inflater.inflate(R.menu.fragment_project, menu);
+		
+		MenuItem itemAdd = menu.findItem(R.id.fragment_project_menu_addProject);
+		if (APIConnection.isLogged() 
+				&& APIConnection.loggedUserIsAdmin())
+			itemAdd.setVisible(true);
 	}
 
 	@Override
@@ -101,14 +106,7 @@ public class FragmentProject extends Fragment {
 		super.onSaveInstanceState(outState);
 	}
 
-	private class ProjectLoader extends AsyncTask<Void, Void, String>
-	{
-		ArrayList<Project> a;
-
-		public ProjectLoader(){
-			a = null;
-		}
-
+	private class ProjectLoader extends AsyncTask<Void, Void, ArrayList<Project>>{
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -120,14 +118,12 @@ public class FragmentProject extends Fragment {
 		}
 
 		@Override
-		protected String doInBackground(Void... api)
-		{
-			a = APIConnection.getProjects();
-			return null;
+		protected ArrayList<Project> doInBackground(Void... v){
+			return APIConnection.getProjects();
 		}
 
 		@Override
-		protected void onPostExecute(String file_url) {
+		protected void onPostExecute(ArrayList<Project> a){
 			pDialog.dismiss();
 			prepareListView(a);
 		}

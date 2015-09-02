@@ -43,6 +43,7 @@ public class MessagesActivity extends FragmentActivity{
 	private ListView listView;
 	private EditText editText;
 	private Button buttonSend;
+	private ProgressDialog pDialog;
 	private ArrayList<Message> messages;
 	private Project p;
 	// Used to save position of edited message
@@ -63,7 +64,7 @@ public class MessagesActivity extends FragmentActivity{
 			@Override
 			public void onClick(View arg0) {
 				if (editText.getText().length() != 0){
-					new AddMessage(editText.getText().toString()).execute();
+					new AddMessage().execute(editText.getText().toString());
 				}
 			}
 		});
@@ -88,7 +89,7 @@ public class MessagesActivity extends FragmentActivity{
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
 				if (APIConnection.isLogged() &&
-						messages.get(position).getAuthor().getUsername().equals(APIConnection.getLoggedUser().getUsername())){
+						messages.get(position).getAuthor().equals(APIConnection.getLoggedUser())){
 					AlertDialog.Builder builder = new AlertDialog.Builder(MessagesActivity.this);
 
 					builder.setTitle(R.string.activity_messages_dialog_item_title)
@@ -103,7 +104,7 @@ public class MessagesActivity extends FragmentActivity{
 								startActivityForResult(intent, ACTIVITY_EDIT_MESSAGE);
 								currentPosition = position;
 							} else if (which == 1){
-								new DeleteMessage(messages.get(position).getId()).execute();
+								new DeleteMessage().execute(messages.get(position).getId());
 							}
 						}
 					});
@@ -160,30 +161,21 @@ public class MessagesActivity extends FragmentActivity{
 		Collections.reverse(m);
 	}
 
-	private class AddMessage extends AsyncTask<Void, Void, String>
-	{
-		private String content;
-		private Message m;
-
-		public AddMessage(String content){
-			this.content = content;
-			m = null;
-		}
-
+	private class AddMessage extends AsyncTask<String, Void, Message>{
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
 		}
 
 		@Override
-		protected String doInBackground(Void... params)
-		{
-			m = APIConnection.createMessage(p.getId(), content);
+		protected Message doInBackground(String... params){
+			if (params[0] != null)
+				return APIConnection.createMessage(p.getId(), params[0]);
 			return null;
 		}
 
 		@Override
-		protected void onPostExecute(String file_url) {
+		protected void onPostExecute(Message m) {
 			if (m == null)
 				Toast.makeText(getApplicationContext(), "Erreur lors de la création du message", Toast.LENGTH_LONG).show();
 			else {
@@ -206,15 +198,7 @@ public class MessagesActivity extends FragmentActivity{
 		}
 	}
 
-	private class LoadMessages extends AsyncTask<Void, Void, String>
-	{
-		ArrayList<Message> a;
-		ProgressDialog pDialog;
-
-		public LoadMessages(){
-			a = null;
-		}
-
+	private class LoadMessages extends AsyncTask<Void, Void, ArrayList<Message>>{
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -226,49 +210,39 @@ public class MessagesActivity extends FragmentActivity{
 		}
 
 		@Override
-		protected String doInBackground(Void... api)
-		{
-			a = APIConnection.getMessages(p.getId());
-			return null;
+		protected ArrayList<Message> doInBackground(Void... api){
+			return APIConnection.getMessages(p.getId());
 		}
 
 		@Override
-		protected void onPostExecute(String file_url) {
+		protected void onPostExecute(ArrayList<Message> a) {
 			pDialog.dismiss();
 			prepareListView(a);
 		}
 	}
 
-	private class DeleteMessage extends AsyncTask<Void, Void, String>
-	{
-
-		private String messageID;
-		private boolean success;
-
-		public DeleteMessage(String messageID){
-			this.messageID = messageID;
-			this.success = false;
-		}
-
+	private class DeleteMessage extends AsyncTask<String, Void, Boolean>{
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
 		}
 
 		@Override
-		protected String doInBackground(Void... api)
-		{
-			success = APIConnection.deleteMessage(messageID);
-			return null;
+		protected Boolean doInBackground(String... params){
+			if (APIConnection.deleteMessage(params[0])){
+				removeMessageWithID(params[0]);
+				return true;
+			}
+			
+			return false;
 		}
 
 		@Override
-		protected void onPostExecute(String file_url) {
+		protected void onPostExecute(Boolean success) {
 			if (!success)
 				Toast.makeText(getApplicationContext(), "Erreur lors de la suppression du message", Toast.LENGTH_LONG).show();
 			else {
 				Toast.makeText(getApplicationContext(), "Message supprimé", Toast.LENGTH_LONG).show();
-				removeMessageWithID(messageID);
 				prepareListView(messages);
 			}
 		}

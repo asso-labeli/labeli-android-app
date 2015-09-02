@@ -48,7 +48,7 @@ public class Member implements Parcelable, DataWithPicture{
 	public Member(String firstName, String lastName, String username,
 			String email, String role, String website,
 			String universityGroup, String description,
-			String pictureURL, Date created, Date birthday, String id, int type) {
+			String pictureURL, Date created, Date birthday, String id, int level) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -62,7 +62,7 @@ public class Member implements Parcelable, DataWithPicture{
 		this.created = created;
 		this.birthday = birthday;
 		this.id = id;
-		this.level = type;
+		this.level = level;
 		this.visible = true;
 	}
 	
@@ -75,6 +75,20 @@ public class Member implements Parcelable, DataWithPicture{
 				+ ", pictureURL=" + pictureURL + ", created=" + created
 				+ ", birthday=" + birthday + ", id=" + id + ", level=" + level
 				+ ", visible=" + visible + "]";
+	}
+	
+	public boolean equals(Object o){
+		if (o == null) return false;
+		if (o instanceof Member)
+			return ((Member)o).getUsername().equals(this.username);
+		
+		return false;
+	}
+	
+	public Object clone(){
+		return new Member(firstName, lastName, username, email, role, 
+				website, universityGroup, description, pictureURL, (Date)created.clone(), 
+				(Date)birthday.clone(), id, level);
 	}
 	
 	public String getFirstName() {

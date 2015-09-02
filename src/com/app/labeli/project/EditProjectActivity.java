@@ -1,37 +1,21 @@
 package com.app.labeli.project;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.InputStreamReader;
-
 import net.tools.APIConnection;
-import ch.boye.httpclientandroidlib.HttpEntity;
-import ch.boye.httpclientandroidlib.HttpResponse;
-import ch.boye.httpclientandroidlib.client.HttpClient;
-import ch.boye.httpclientandroidlib.client.methods.HttpPost;
-import ch.boye.httpclientandroidlib.entity.ContentType;
-import ch.boye.httpclientandroidlib.entity.mime.HttpMultipartMode;
-import ch.boye.httpclientandroidlib.entity.mime.MultipartEntityBuilder;
-import ch.boye.httpclientandroidlib.impl.client.DefaultHttpClient;
-
 import com.app.labeli.R;
 import com.app.labeli.member.Member;
 import com.iangclifton.android.floatlabel.FloatLabel;
 import com.tools.FileTools;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore.MediaColumns;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -57,6 +41,8 @@ public class EditProjectActivity extends FragmentActivity{
 	private FloatLabel floatLabelName, floatLabelAuthor, floatLabelDescription;
 	private Button buttonValidate, buttonChooseImage;
 	private Project project;
+	private ProgressDialog pDialog;
+	private boolean imageChanged;
 
 	private static final int AUTHOR_SELECTION = 1;
 	private static final int IMAGE_SELECTION = 2;
@@ -123,6 +109,8 @@ public class EditProjectActivity extends FragmentActivity{
 				openGallery();
 			}
 		});
+
+		imageChanged = false;
 	}
 
 	public void openGallery(){
@@ -137,31 +125,42 @@ public class EditProjectActivity extends FragmentActivity{
 			Toast.makeText(getApplicationContext(), "Veuillez rentrer un nom", Toast.LENGTH_SHORT).show();
 		else if (floatLabelAuthor.getEditText().length() == 0)
 			Toast.makeText(getApplicationContext(), "Veuillez choisir un auteur", Toast.LENGTH_SHORT).show();
-		else if (buttonChooseImage.getText().length() > 0)
-			new UploadImage(floatLabelName.getEditText().getText().toString(), buttonChooseImage.getText().toString()).execute();
-		else
-			new EditProject(floatLabelName.getEditText().getText().toString(),
-					spinnerStatus.getSelectedItemPosition(),
-					floatLabelDescription.getEditText().getText().toString(),
-					spinnerType.getSelectedItemPosition(), 
-					floatLabelAuthor.getEditText().getText().toString(),
-					buttonChooseImage.getText().toString()).execute();
+		else if (buttonChooseImage.getText().length() > 0 && imageChanged)
+			new UploadImage().execute(floatLabelName.getEditText().getText().toString(), buttonChooseImage.getText().toString());
+		else {
+			new EditProject().execute(getProjectWithFieldsValues());
+		}
+	}
+
+	public Project getProjectWithFieldsValues(){
+		Project p2 = (Project) project.clone();
+
+		p2.setName(floatLabelName.getEditText().getText().toString());
+		p2.setDescription(floatLabelDescription.getEditText().getText().toString());
+		p2.setStatus(spinnerStatus.getSelectedItemPosition());
+		p2.setType(spinnerType.getSelectedItemPosition());
+		// Little hack to set author username
+		p2.getAuthor().setUsername(floatLabelAuthor.getEditText().getText().toString());
+
+		return p2;
 	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		switch(requestCode) {
-		case (AUTHOR_SELECTION) :
-			if (resultCode == Activity.RESULT_OK) {
+		if (resultCode == Activity.RESULT_OK) {
+			switch(requestCode) {
+			case (AUTHOR_SELECTION) :
 				Member m = (Member)data.getExtras().get("member");
-				floatLabelAuthor.setText(m.getUsername());
+			floatLabelAuthor.setText(m.getUsername());
+			break;
+			
+			case (IMAGE_SELECTION) :
+				Uri selectedImageUri = data.getData();
+			buttonChooseImage.setText(getPath(selectedImageUri));
+			imageChanged = true;
+			break;
 			}
-		break;
-		case (IMAGE_SELECTION) :
-			Uri selectedImageUri = data.getData();
-		buttonChooseImage.setText(getPath(selectedImageUri));
-		break;
 		}
 	}
 
@@ -169,9 +168,9 @@ public class EditProjectActivity extends FragmentActivity{
 		String res = null;
 		String[] proj = { MediaColumns.DATA };
 		Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
-		if(cursor.moveToFirst()){;
-		int column_index = cursor.getColumnIndexOrThrow(MediaColumns.DATA);
-		res = cursor.getString(column_index);
+		if(cursor.moveToFirst()){
+			int column_index = cursor.getColumnIndexOrThrow(MediaColumns.DATA);
+			res = cursor.getString(column_index);
 		}
 		cursor.close();
 		return res;
@@ -194,26 +193,7 @@ public class EditProjectActivity extends FragmentActivity{
 		}
 	}
 
-	private class EditProject extends AsyncTask<Void, Void, String>
-	{
-		private String name, authorUsername, description, pictureURL;
-		private int status, type;
-		private Project p;
-
-		public EditProject(String name, int status, String description, int type, String authorUsername, String pictureURL){
-			this.name = name;
-			this.status = status;
-			this.description = description;
-			this.type = type;
-			this.authorUsername = authorUsername;
-			
-			if (!pictureURL.equals(getString(R.string.activity_edit_project_button_choose_image)))
-				this.pictureURL = pictureURL;
-			else
-				pictureURL = null;
-			
-			p = null;
-		}
+	private class EditProject extends AsyncTask<Project, Void, Project>{
 
 		@Override
 		protected void onPreExecute() {
@@ -221,14 +201,18 @@ public class EditProjectActivity extends FragmentActivity{
 		}
 
 		@Override
-		protected String doInBackground(Void... params)
+		/**
+		 * 
+		 * @param params : project with new datas
+		 * @return project created by parsing response from API
+		 */
+		protected Project doInBackground(Project... p)
 		{
-			p = APIConnection.editProject(project.getId(), name, status, description, type, authorUsername, pictureURL);
-			return null;
+			return APIConnection.editProject(p[0]);
 		}
 
 		@Override
-		protected void onPostExecute(String file_url) {
+		protected void onPostExecute(Project p) {
 			if (p == null)
 				Toast.makeText(getApplicationContext(), "Erreur lors de l'édition du projet", Toast.LENGTH_LONG).show();
 			else {
@@ -238,51 +222,43 @@ public class EditProjectActivity extends FragmentActivity{
 		}
 	}
 
-	private class UploadImage extends AsyncTask<Void, Void, Void>{
-
-		private File f;
-		private String name;
-		private boolean success;
-
-		public UploadImage(String projectName, String path){
-			this.f = new File(path);
-			this.name = FileTools.createFilenameForProject(projectName, path.substring(path.lastIndexOf('.')));
-			success = false;
-		}
+	private class UploadImage extends AsyncTask<String, Void, String>{
 		@Override
-		protected Void doInBackground(Void... params) {
-			try {
-				MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
-				multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-				multipartEntity.addBinaryBody("upload", f, ContentType.DEFAULT_BINARY, f.getName());
-				multipartEntity.addTextBody("name", name, ContentType.TEXT_PLAIN);
-
-				HttpClient httpClient = new DefaultHttpClient();
-				HttpPost post = new HttpPost(
-						APIConnection.apiUrl + "upload");
-				HttpEntity entity = multipartEntity.build();
-				post.setEntity(entity);
-				HttpResponse response = httpClient.execute(post);
-				if (response.getStatusLine().getStatusCode() == 200)
-					success = true;
-			} catch (Exception e) {
-				// handle exception here
-				Log.e(e.getClass().getName(), e.getMessage());
-			}
+		protected void onPreExecute() {
+			super.onPreExecute();
+			pDialog = new ProgressDialog(EditProjectActivity.this);
+			pDialog.setMessage("Upload de l'image");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(false);
+			pDialog.show();
+		}
+		
+		@Override
+		/**
+		 * 
+		 * @param params : 0 = projectName, 1 = path
+		 * @return
+		 */
+		protected String doInBackground(String... params) {
+			String name = FileTools.createFilenameForProject(params[0], 
+					params[1].substring(params[1].lastIndexOf('.')));
+			File f = new File(params[1]);
+			if (APIConnection.makeFileRequest(f, name))
+				return name;
+			
 			return null;
+			
 		}
 
 		@Override
-		protected void onPostExecute(Void param) {
-			if (!success)
+		protected void onPostExecute(String pictureName) {
+			pDialog.dismiss();
+			if (pictureName == null)
 				Toast.makeText(getApplicationContext(), "Erreur lors de l'upload de l'image. Veuillez réessayer.", Toast.LENGTH_LONG).show();
 			else {
-				new EditProject(floatLabelName.getEditText().getText().toString(),
-						spinnerStatus.getSelectedItemPosition(),
-						floatLabelDescription.getEditText().getText().toString(),
-						spinnerType.getSelectedItemPosition(), 
-						floatLabelAuthor.getEditText().getText().toString(),
-						this.name).execute();
+				Project p = getProjectWithFieldsValues();
+				p.setPictureURL(pictureName);
+				new EditProject().execute(p);
 			}
 		}
 	}
