@@ -15,10 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
-import android.view.animation.Animation;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -31,8 +29,6 @@ import android.widget.Toast;
  * for the project @Label[i]
  */
 public class AddProjectActivity extends FragmentActivity{
-
-	Animation animFadeIn, animFadeOut;
 	private Spinner spinnerType;
 	private Button buttonValidate;
 	private FloatLabel floatLabelName, floatLabelAuthor;
@@ -43,7 +39,7 @@ public class AddProjectActivity extends FragmentActivity{
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_add_project);
-		
+
 		// Remove any focus
 		View current = getCurrentFocus();
 		if (current != null) current.clearFocus();
@@ -61,7 +57,7 @@ public class AddProjectActivity extends FragmentActivity{
 		floatLabelAuthor = (FloatLabel)findViewById(R.id.activity_add_project_float_label_author);
 		floatLabelAuthor.getEditText().setKeyListener(null);
 		floatLabelAuthor.getEditText().setOnFocusChangeListener(new OnFocusChangeListener() {
-			
+
 			@Override
 			public void onFocusChange(View arg0, boolean arg1) {
 				Intent intent = new Intent(getApplicationContext(), 
@@ -69,26 +65,26 @@ public class AddProjectActivity extends FragmentActivity{
 				startActivityForResult(intent, AUTHOR_SELECTION);
 			}
 		});
-		
+
 		buttonValidate = (Button)findViewById(R.id.activity_add_project_button_validate);
 		buttonValidate.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View arg0) {
 				checkInput(arg0);
 			}
 		});
 	}
-	
+
 	public void checkInput(View arg){
 		if (floatLabelName.getEditText().length() == 0)
 			Toast.makeText(getApplicationContext(), "Veuillez rentrer un nom", Toast.LENGTH_SHORT).show();
 		else if (floatLabelAuthor.getEditText().length() == 0)
 			Toast.makeText(getApplicationContext(), "Veuillez choisir un auteur", Toast.LENGTH_SHORT).show();
 		else 
-			new AddProject(floatLabelName.getEditText().getText().toString(), 
+			new AddProject().execute(floatLabelName.getEditText().getText().toString(), 
 					String.valueOf(spinnerType.getSelectedItemPosition()), 
-					floatLabelAuthor.getEditText().getText().toString()).execute();
+					floatLabelAuthor.getEditText().getText().toString());
 	}
 
 	@Override
@@ -100,7 +96,7 @@ public class AddProjectActivity extends FragmentActivity{
 				Member m = (Member)data.getExtras().get("member");
 				floatLabelAuthor.setText(m.getUsername());
 			}
-			break;
+		break;
 		}
 	}
 
@@ -120,18 +116,8 @@ public class AddProjectActivity extends FragmentActivity{
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
-	private class AddProject extends AsyncTask<Void, Void, String>
-	{
-		private String name, type, authorUsername;
-		private Project p;
 
-		public AddProject(String name, String type, String authorUsername){
-			this.name = name;
-			this.type = type;
-			this.authorUsername = authorUsername;
-			p = null;
-		}
+	private class AddProject extends AsyncTask<String, Void, Project>{
 
 		@Override
 		protected void onPreExecute() {
@@ -139,14 +125,17 @@ public class AddProjectActivity extends FragmentActivity{
 		}
 
 		@Override
-		protected String doInBackground(Void... params)
-		{
-			p = APIConnection.createProject(name, type, authorUsername);
-			return null;
+		/**
+		 * 
+		 * @param params [0] = name - [1] = type - [2] = authorUsername
+		 * @return
+		 */
+		protected Project doInBackground(String... params) {
+			return APIConnection.createProject(params[0], params[1], params[2]);
 		}
 
 		@Override
-		protected void onPostExecute(String file_url) {
+		protected void onPostExecute(Project p) {
 			if (p == null)
 				Toast.makeText(getApplicationContext(), "Erreur lors de la création du projet", Toast.LENGTH_LONG).show();
 			else {

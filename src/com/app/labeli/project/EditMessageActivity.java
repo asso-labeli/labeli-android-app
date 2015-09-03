@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toast;
@@ -28,8 +27,6 @@ import android.widget.Toast;
  * for the project @Label[i]
  */
 public class EditMessageActivity extends FragmentActivity{
-
-	Animation animFadeIn, animFadeOut;
 	private FloatLabel floatLabelContent;
 	private Button buttonValidate;
 	private Message message;
@@ -61,7 +58,7 @@ public class EditMessageActivity extends FragmentActivity{
 		if (floatLabelContent.getEditText().length() == 0)
 			Toast.makeText(getApplicationContext(), "Veuillez rentrer un message", Toast.LENGTH_SHORT).show();
 		else 
-			new EditMessage(floatLabelContent.getEditText().getText().toString()).execute();
+			new EditMessage().execute(floatLabelContent.getEditText().getText().toString());
 	}
 
 	@Override
@@ -81,15 +78,7 @@ public class EditMessageActivity extends FragmentActivity{
 		}
 	}
 	
-	private class EditMessage extends AsyncTask<Void, Void, String>
-	{
-		private String content;
-		private Message m;
-
-		public EditMessage(String content){
-			this.content = content;
-			m = null;
-		}
+	private class EditMessage extends AsyncTask<String, Void, Message>{
 
 		@Override
 		protected void onPreExecute() {
@@ -97,14 +86,12 @@ public class EditMessageActivity extends FragmentActivity{
 		}
 
 		@Override
-		protected String doInBackground(Void... params)
-		{
-			m = APIConnection.editMessage(message.getId(), content);
-			return null;
+		protected Message doInBackground(String... params){
+			return APIConnection.editMessage(message.getId(), params[0]);
 		}
 
 		@Override
-		protected void onPostExecute(String file_url) {
+		protected void onPostExecute(Message m) {
 			if (m == null)
 				Toast.makeText(getApplicationContext(), "Erreur lors de l'édition du message", Toast.LENGTH_LONG).show();
 			else {

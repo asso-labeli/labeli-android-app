@@ -20,7 +20,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -38,8 +37,6 @@ import android.widget.Toast;
  * for the project @Label[i]
  */
 public class MessagesActivity extends FragmentActivity{
-
-	Animation animFadeIn, animFadeOut;
 	private ListView listView;
 	private EditText editText;
 	private Button buttonSend;

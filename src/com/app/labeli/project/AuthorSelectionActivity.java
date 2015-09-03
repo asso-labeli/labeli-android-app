@@ -16,7 +16,6 @@ import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -30,8 +29,6 @@ import android.widget.TextView;
  * for the project @Label[i]
  */
 public class AuthorSelectionActivity extends FragmentActivity{
-	
-	Animation animFadeIn, animFadeOut;
 	public ListView listView;
 	public TextView textView;
 	private ProgressDialog pDialog;
@@ -113,14 +110,7 @@ public class AuthorSelectionActivity extends FragmentActivity{
 		}
 	}
 
-	private class MemberLoader extends AsyncTask<Void, Void, String>
-	{
-		ArrayList<Member> v;
-
-		public MemberLoader(){
-			v = null;
-		}
-
+	private class MemberLoader extends AsyncTask<Void, Void, ArrayList<Member>> {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -132,15 +122,13 @@ public class AuthorSelectionActivity extends FragmentActivity{
 		}
 
 		@Override
-		protected String doInBackground(Void... params)
-		{
-			v = APIConnection.getUsers();
-			return null;
+		protected ArrayList<Member> doInBackground(Void... params) {
+			return APIConnection.getUsers();
 		}
 
 		@SuppressWarnings("unchecked")
 		@Override
-		protected void onPostExecute(String file_url) {
+		protected void onPostExecute(ArrayList<Member> v) {
 			prepareListView(v);
 			prepareTextEdit();
 			items = (ArrayList<Member>) v.clone();

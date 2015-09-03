@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
-import android.view.animation.Animation;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -35,8 +34,6 @@ import android.widget.Toast;
  * for the project @Label[i]
  */
 public class EditProjectActivity extends FragmentActivity{
-
-	Animation animFadeIn, animFadeOut;
 	private Spinner spinnerType, spinnerStatus;
 	private FloatLabel floatLabelName, floatLabelAuthor, floatLabelDescription;
 	private Button buttonValidate, buttonChooseImage;

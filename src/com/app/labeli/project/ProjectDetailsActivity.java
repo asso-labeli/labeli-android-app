@@ -1,7 +1,5 @@
 package com.app.labeli.project;
 
-import java.util.ArrayList;
-
 import net.tools.APIConnection;
 import net.tools.MySingleton;
 
@@ -11,19 +9,15 @@ import com.tools.FileTools;
 import com.tools.HTMLTools;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.WindowManager;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -36,13 +30,10 @@ import android.widget.TextView;
  * for the project @Label[i]
  */
 public class ProjectDetailsActivity extends FragmentActivity{
-
 	private ImageView imageView;
 	private TextView textViewName, textViewAuthor, textViewDescription;
 	private ProgressDialog pDialog;
 	private Project project;
-	
-	Animation animFadeIn, animFadeOut;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
