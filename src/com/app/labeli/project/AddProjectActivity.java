@@ -140,6 +140,8 @@ public class AddProjectActivity extends FragmentActivity{
 				Toast.makeText(getApplicationContext(), "Erreur lors de la création du projet", Toast.LENGTH_LONG).show();
 			else {
 				Toast.makeText(getApplicationContext(), "Projet crée", Toast.LENGTH_LONG).show();
+				Intent intent = new Intent();
+				setResult(RESULT_OK, intent);
 				finish();
 			}
 		}

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -23,8 +24,12 @@ import javax.net.ssl.HttpsURLConnection;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ch.boye.httpclientandroidlib.HttpException;
+import com.app.labeli.interfaces.DataWithPicture;
+import com.tools.FileTools;
+
+import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -120,12 +125,12 @@ public class RequestSender {
 					jObj = null;
 				}
 			}
-			else throw new HttpException(responseCode+"");
+			else {
+				Log.w("HttpUrlConnection", "Error : server sent code : " + responseCode);
+			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (HttpException e) {
 			e.printStackTrace();
 		} finally {
 			connection.disconnect();
@@ -168,6 +173,32 @@ public class RequestSender {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	public boolean loadImage(Activity a, DataWithPicture d, int width){
+		if (d.getPictureURL() == null) return true;
+
+		final File dataFile = new File(FileTools.getAbsolutePathLocalFileFromURL(a, d.getPictureURL()));
+		String wallpaperURLStr = APIConnection.apiUrl + "images/" + d.getPictureURL() +"?dim=" + width;
+		final String localFile = FileTools.getLocalFileFromURL(d.getPictureURL());
+
+		Log.i("Co", dataFile.getAbsolutePath());
+		if (!dataFile.exists() && !d.getPictureURL().equals("null")){
+			Log.i("Net", "Chargement de " + wallpaperURLStr);
+			Bitmap bm = null;
+			try {
+				InputStream in = new java.net.URL(wallpaperURLStr).openStream();
+				bm = BitmapFactory.decodeStream(in);
+
+				FileTools.writeBitmapToFile(a, localFile, bm);
+				return true;
+			} catch (Exception e) {
+				Log.e("Error", e.getMessage());
+				e.printStackTrace();
+			}
 		}
 
 		return false;

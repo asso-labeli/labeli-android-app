@@ -12,10 +12,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.util.Log;
 
 import com.app.labeli.Survey;
 import com.app.labeli.SurveyItem;
+import com.app.labeli.interfaces.DataWithPicture;
 import com.app.labeli.member.Member;
 import com.app.labeli.project.Message;
 import com.app.labeli.project.Project;
@@ -140,6 +142,10 @@ public abstract class APIConnection {
 	
 	public static boolean makeFileRequest(File f, String fileName){
 		return jParser.postPicture(f, fileName);
+	}
+	
+	public static boolean loadImage(Activity a, DataWithPicture d, int width){
+		return jParser.loadImage(a, d, width);
 	}
 
 	public static Member getLoggedUser(){

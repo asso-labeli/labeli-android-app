@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import net.tools.APIConnection;
-import net.tools.MySingleton;
 
 import com.app.labeli.R;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -43,37 +43,45 @@ public class FragmentMember extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		new MemberLoader().execute();
+		getActivity().getActionBar().setTitle("Membres");
 		setHasOptionsMenu(true);
 
-		getActivity().getActionBar().setTitle("Membres");
+		// Remove any focus
+		View current = getActivity().getCurrentFocus();
+		if (current != null) current.clearFocus();
+
+		refresh();
 
 		return inflater.inflate(R.layout.fragment_member, container, false);
 	}
-	
+
 	public void refresh(){
 		new MemberLoader().execute();
 	}
 
+	@SuppressWarnings("unchecked")
 	public void prepareListView(ArrayList<Member> al){
 		listView = (ListView) getView().findViewById(R.id.fragment_member_list_view);		
 
-		adapter = new ListAdapterMember(this.getActivity().getApplicationContext(), 
-				al);
-		listView.setAdapter(adapter);
-		listView.setOnItemClickListener(new EventItemClickListener());
+		if (al != null){
+			items = (ArrayList<Member>) al.clone();
+			adapter = new ListAdapterMember(this.getActivity().getApplicationContext(), 
+					al);
+			listView.setAdapter(adapter);
+			listView.setOnItemClickListener(new EventItemClickListener());
+		}
 	}
 
 	public void prepareTextEdit(){
 		textView = (TextView) getView().findViewById(R.id.fragment_member_edit_text);
 		textView.addTextChangedListener(new EventItemTextWatcher());
 	}
-	
+
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
 		inflater.inflate(R.menu.fragment_member, menu);
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch(item.getItemId()){
@@ -98,7 +106,6 @@ public class FragmentMember extends Fragment {
 			intent.putExtra("member", (Member)adapter.getItem(position));
 			startActivity(intent);
 		}
-
 	}
 
 	private class EventItemTextWatcher implements TextWatcher {
@@ -133,14 +140,7 @@ public class FragmentMember extends Fragment {
 		}
 	}
 
-	private class MemberLoader extends AsyncTask<Void, Void, String>
-	{
-		ArrayList<Member> v;
-
-		public MemberLoader(){
-			v = null;
-		}
-
+	private class MemberLoader extends AsyncTask<Void, Void, ArrayList<Member>> {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -152,14 +152,14 @@ public class FragmentMember extends Fragment {
 		}
 
 		@Override
-		protected String doInBackground(Void... params)
-		{
-			v = APIConnection.getUsers();
-			return null;
+		protected ArrayList<Member> doInBackground(Void... params) {
+			return APIConnection.getUsers();
 		}
 
 		@Override
-		protected void onPostExecute(String file_url) {
+		protected void onPostExecute(ArrayList<Member> v) {
+			prepareListView(v);
+			prepareTextEdit();
 			pDialog.dismiss();
 		}
 	}

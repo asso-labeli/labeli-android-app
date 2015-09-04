@@ -1,14 +1,9 @@
 package com.app.labeli.event;
 
-import java.io.File;
-import java.util.concurrent.ExecutionException;
+import net.tools.APIConnection;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageRequest;
-import com.android.volley.toolbox.RequestFuture;
-import com.android.volley.toolbox.Volley;
 import com.app.labeli.R;
+import com.tools.DeviceTools;
 import com.tools.FileTools;
 import com.tools.HTMLTools;
 
@@ -18,7 +13,6 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -64,7 +58,7 @@ public class EventDetailsActivity extends FragmentActivity{
 		textViewDescription.setText(HTMLTools.HTMLToText(event.getDescription()));
 		
 		if (!event.getPictureURL().equals(""))
-			new ImageLoader(event.getPictureURL()).execute();
+			new ImageLoader().execute();
 	}
 	
 	@Override
@@ -97,72 +91,34 @@ public class EventDetailsActivity extends FragmentActivity{
 		imageView.setImageBitmap(myBitmap);
 	}
 
-	private class ImageLoader extends AsyncTask<Void, Void, String>
-	{
-		String courtUrl;
-		RequestQueue q;
-
-		public ImageLoader(String courtUrl){
-			this.courtUrl = courtUrl;
-			this.q = Volley.newRequestQueue(EventDetailsActivity.this);
-		}
-
+	private class ImageLoader extends AsyncTask<Void, Void, Boolean> {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			pDialog = new ProgressDialog(EventDetailsActivity.this);
+			// Need to be checked because pDialog is use in ProjectLoader AND
+			// 	ImageLoader
+			if (pDialog == null || !pDialog.isShowing())
+				pDialog = new ProgressDialog(EventDetailsActivity.this);
 			pDialog.setMessage("Chargement des images");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(false);
 			pDialog.show();
+
 		}
 
 		@Override
-		protected String doInBackground(Void... v)
-		{
-			if (courtUrl != null && !courtUrl.equals("")){
-				Bitmap bm = null;
-				
-				final File dataFile = new File(FileTools.getAbsolutePathLocalFileFromURL(EventDetailsActivity.this, courtUrl));
-				String wallpaperURLStr = "http://labeli.org/" + courtUrl;
-				String localFile = FileTools.getLocalFileFromURL(courtUrl);
-
-				if (!dataFile.exists()){
-					Log.i("Net", "Chargement de " + wallpaperURLStr);
-
-					RequestFuture<Bitmap> f = RequestFuture.newFuture();
-					ImageRequest ir = new ImageRequest(wallpaperURLStr.replace(" ", "%20"), f, 0, 0, null, null);
-					ir.setRetryPolicy(new DefaultRetryPolicy(
-							5000, 
-							DefaultRetryPolicy.DEFAULT_MAX_RETRIES, 
-							DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-					q.add(ir);
-
-					try {
-						bm = f.get();
-						FileTools.writeBitmapToFile(EventDetailsActivity.this, localFile, bm);
-					} catch (InterruptedException e) {
-						Log.w(getPackageName(), "Cannot load picture");
-						e.printStackTrace();
-					} catch (ExecutionException e) {
-						Log.w(getPackageName(), "Cannot load picture");
-						e.printStackTrace();
-					}
-
-				}
-			}
-			return null;
+		protected Boolean doInBackground(Void... v) {
+			return APIConnection.loadImage(EventDetailsActivity.this, event, 
+					DeviceTools.getWidthScreen(EventDetailsActivity.this));
 		}
 
 		@Override
-		protected void onPostExecute(String file_url) {
-			prepareImageView(FileTools.getAbsolutePathLocalFileFromURL(EventDetailsActivity.this, courtUrl));
-			pDialog.dismiss();
+		protected void onPostExecute(Boolean b) {
+			prepareImageView(FileTools.getAbsolutePathLocalFileFromURL(EventDetailsActivity.this, event.getPictureURL()));
+			// Need to be checked because pDialog is use in ProjectLoader AND
+			// 	ImageLoader
+			if (pDialog.isShowing())
+				pDialog.dismiss();
 		}
-
 	}
-
-
-
-
 }

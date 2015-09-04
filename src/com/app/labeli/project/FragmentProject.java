@@ -3,6 +3,7 @@ package com.app.labeli.project;
 import java.util.ArrayList;
 
 import net.tools.APIConnection;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -18,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.app.labeli.R;
+import com.app.labeli.member.Member;
 
 /**
  * > @FragmentProject
@@ -33,23 +35,25 @@ public class FragmentProject extends Fragment {
 	private ProgressDialog pDialog;
 	private ArrayList<Project> projects;
 
+	private static final int ADD_PROJECT = 1;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		getActivity().getActionBar().setTitle("Projets");
 		setHasOptionsMenu(true);
-		
+
 		refresh();
 
 		return inflater.inflate(R.layout.fragment_project, container, false);
 	}
-	
+
 	@Override
 	public void onStart() {
 		//refresh();
 		super.onStart();
 	}
-	
+
 	public void refresh(){
 		new ProjectLoader().execute();
 	}
@@ -57,7 +61,7 @@ public class FragmentProject extends Fragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
 		inflater.inflate(R.menu.fragment_project, menu);
-		
+
 		MenuItem itemAdd = menu.findItem(R.id.fragment_project_menu_addProject);
 		if (APIConnection.isLogged() 
 				&& APIConnection.loggedUserIsAdmin())
@@ -70,13 +74,26 @@ public class FragmentProject extends Fragment {
 		case R.id.fragment_project_menu_addProject :
 			Intent intent = new Intent(getActivity().getApplicationContext(), 
 					AddProjectActivity.class);
-			startActivity(intent);
+			startActivityForResult(intent, ADD_PROJECT);
 			return true;
 		case R.id.fragment_project_menu_refresh :
 			refresh();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (resultCode == Activity.RESULT_OK) {
+			switch(requestCode) {
+			case (ADD_PROJECT) :
+				refresh();
+			break;
+			}
 		}
 	}
 
@@ -98,7 +115,6 @@ public class FragmentProject extends Fragment {
 			intent.putExtra("project", projects.get(position));
 			startActivity(intent);
 		}
-
 	}
 
 	@Override

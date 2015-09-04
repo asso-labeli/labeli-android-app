@@ -65,9 +65,9 @@ public class AddMemberActivity extends FragmentActivity{
 		else if (floatLabelEmail.getEditText().length() == 0)
 			Toast.makeText(getApplicationContext(), "Veuillez rentrer une adresse e-mail", Toast.LENGTH_SHORT).show();
 		else 
-			new AddMember(floatLabelFirstName.getEditText().getText().toString(), 
+			new AddMember().execute(floatLabelFirstName.getEditText().getText().toString(), 
 					floatLabelLastName.getEditText().getText().toString(), 
-					floatLabelEmail.getEditText().getText().toString()).execute();
+					floatLabelEmail.getEditText().getText().toString());
 	}
 
 	@Override
@@ -87,32 +87,19 @@ public class AddMemberActivity extends FragmentActivity{
 		}
 	}
 	
-	private class AddMember extends AsyncTask<Void, Void, String>
-	{
-		private String firstName, lastName, email;
-		private Member m;
-
-		public AddMember(String firstName, String lastName, String email){
-			this.firstName = firstName;
-			this.lastName = lastName;
-			this.email = email;
-			m = null;
+	private class AddMember extends AsyncTask<String, Void, Member> {
+		@Override
+		/**
+		 * 
+		 * @param params [0] : firstName - [1] : lastName - [2] : email
+		 * @return
+		 */
+		protected Member doInBackground(String... params) {
+			return APIConnection.createUser(params[0], params[1], params[2]);
 		}
 
 		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-		}
-
-		@Override
-		protected String doInBackground(Void... params)
-		{
-			m = APIConnection.createUser(firstName, lastName, email);
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(String file_url) {
+		protected void onPostExecute(Member m) {
 			if (m == null)
 				Toast.makeText(getApplicationContext(), "Erreur lors de la création du membre", Toast.LENGTH_LONG).show();
 			else {

@@ -18,11 +18,11 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/activity_edit_project_text_view_title"
+            android:id="@+id/activity_edit_member_text_view_title"
             style="@style/text_view_activity_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/activity_edit_project_title" />
+            android:text="@string/activity_edit_member_title" />
 
         <LinearLayout
             style="@style/layout_with_text_components"
@@ -37,11 +37,11 @@
                 android:orientation="vertical" >
 
                 <com.iangclifton.android.floatlabel.FloatLabel
-                    android:id="@+id/activity_edit_project_float_label_name"
+                    android:id="@+id/activity_edit_member_float_label_first_name"
                     style="@style/float_label_field"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/activity_edit_project_name"
+                    android:hint="@string/activity_edit_member_first_name"
                     android:inputType="textCapSentences" />
             </LinearLayout>
 
@@ -52,14 +52,14 @@
                 android:orientation="vertical" >
 
                 <TextView
-                    android:id="@+id/activity_edit_project_text_view_type"
+                    android:id="@+id/activity_edit_member_text_view_last_name"
                     style="@style/text_view_field_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/activity_edit_project_type" />
+                    android:text="@string/activity_edit_member_last_name" />
 
                 <Spinner
-                    android:id="@+id/activity_edit_project_spinner_type"
+                    android:id="@+id/activity_edit_member_spinner_type"
                     style="@style/component_under_text_view_field"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -72,11 +72,39 @@
                 android:orientation="vertical" >
 
                 <com.iangclifton.android.floatlabel.FloatLabel
-                    android:id="@+id/activity_edit_project_float_label_author"
+                    android:id="@+id/activity_edit_member_float_label_email"
                     style="@style/float_label_field"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/activity_edit_project_author" />
+                    android:hint="@string/activity_edit_member_email" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/layout_one_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <com.iangclifton.android.floatlabel.FloatLabel
+                    android:id="@+id/activity_edit_member_float_label_university_group"
+                    style="@style/float_label_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/activity_edit_member_university_group" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/layout_one_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <com.iangclifton.android.floatlabel.FloatLabel
+                    android:id="@+id/activity_edit_member_float_label_website"
+                    style="@style/float_label_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/activity_edit_member_website" />
             </LinearLayout>
 
             <LinearLayout
@@ -86,14 +114,14 @@
                 android:orientation="vertical" >
 
                 <TextView
-                    android:id="@+id/activity_edit_project_text_view_status"
+                    android:id="@+id/activity_edit_member_text_view_level"
                     style="@style/text_view_field_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/activity_edit_project_status" />
+                    android:text="@string/activity_edit_member_level" />
 
                 <Spinner
-                    android:id="@+id/activity_edit_project_spinner_status"
+                    android:id="@+id/activity_edit_member_spinner_status"
                     style="@style/component_under_text_view_field"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -106,12 +134,11 @@
                 android:orientation="vertical" >
 
                 <com.iangclifton.android.floatlabel.FloatLabel
-                    android:id="@+id/activity_edit_project_float_label_description"
+                    android:id="@+id/activity_edit_member_float_label_role"
                     style="@style/float_label_field"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/activity_edit_project_description"
-                    android:inputType="textCapSentences|textMultiLine" />
+                    android:hint="@string/activity_edit_member_role" />
             </LinearLayout>
 
             <LinearLayout
@@ -121,12 +148,12 @@
                 android:orientation="vertical" >
 
                 <Button
-                    android:id="@+id/activity_edit_project_button_choose_image"
+                    android:id="@+id/activity_edit_member_button_choose_image"
                     style="@style/button_field"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/activity_edit_project_button_choose_image" />
+                    android:text="@string/activity_edit_member_button_choose_image" />
             </LinearLayout>
         </LinearLayout>
 
@@ -137,12 +164,12 @@
             android:orientation="vertical" >
 
             <Button
-                android:id="@+id/activity_edit_project_button_validate"
+                android:id="@+id/activity_edit_member_button_validate"
                 style="@style/button_validate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/activity_edit_project_button" />
+                android:text="@string/activity_edit_member_button" />
         </LinearLayout>
     </LinearLayout>
 

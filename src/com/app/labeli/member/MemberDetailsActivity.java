@@ -1,8 +1,9 @@
 package com.app.labeli.member;
 
-import net.tools.MySingleton;
+import net.tools.APIConnection;
 
 import com.app.labeli.R;
+import com.tools.DeviceTools;
 import com.tools.FileTools;
 
 import android.app.ProgressDialog;
@@ -26,7 +27,7 @@ import android.widget.TextView;
  */
 public class MemberDetailsActivity extends FragmentActivity {
 
-	private Member item;
+	private Member member;
 	private ImageView imageView;
 	private ProgressDialog pDialog;
 	private TextView textViewName, textViewStatus, textViewGroup, textViewBirthday, textViewBiography;
@@ -39,7 +40,7 @@ public class MemberDetailsActivity extends FragmentActivity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setTitle("Détail");
 
-		item = getIntent().getExtras().getParcelable("member");
+		member = getIntent().getExtras().getParcelable("member");
 
 		imageView = (ImageView) findViewById(R.id.activity_member_details_image_view_portrait);
 		textViewName = (TextView) findViewById(R.id.activity_member_details_text_view_name);
@@ -48,20 +49,20 @@ public class MemberDetailsActivity extends FragmentActivity {
 		textViewBirthday = (TextView) findViewById(R.id.activity_member_details_text_view_birthday);
 		textViewBiography = (TextView) findViewById(R.id.activity_member_details_text_view_biography);
 
-		textViewName.setText(item.getFirstName() + " " + item.getLastName());
-		textViewStatus.setText(item.getRole());
-		if (!item.getDescription().equals(""))
-			textViewGroup.setText("Groupe : " + item.getUniversityGroup());
+		textViewName.setText(member.getFirstName() + " " + member.getLastName());
+		textViewStatus.setText(member.getRole());
+		if (!member.getDescription().equals(""))
+			textViewGroup.setText("Groupe : " + member.getUniversityGroup());
 		
-		if (item.getBirthday() != null)
-			textViewBirthday.setText("Anniversaire : " + item.getBirthdayAsString());
+		if (member.getBirthday() != null)
+			textViewBirthday.setText("Anniversaire : " + member.getBirthdayAsString());
 		
-		if (item.getDescription().equals(""))
+		if (member.getDescription().equals(""))
 			textViewBiography.setText("Pas de biographie");
 		else
-			textViewBiography.setText(item.getDescription());
+			textViewBiography.setText(member.getDescription());
 		
-		if (!item.getPictureURL().equals(""))
+		if (!member.getPictureURL().equals(""))
 			new LoadImage().execute();
 	}
 
@@ -89,12 +90,7 @@ public class MemberDetailsActivity extends FragmentActivity {
 		imageView.setImageBitmap(myBitmap);
 	}
 
-	private class LoadImage extends AsyncTask<Void, Void, String>
-	{
-
-		public LoadImage(){
-			
-		}
+	private class LoadImage extends AsyncTask<Void, Void, Boolean> {
 
 		@Override
 		protected void onPreExecute() {
@@ -107,16 +103,14 @@ public class MemberDetailsActivity extends FragmentActivity {
 		}
 
 		@Override
-		protected String doInBackground(Void... v)
-		{
-			// TODO : Manage image size with screen size
-			MySingleton.loadImage(MemberDetailsActivity.this, item, 0);
-			return null;
+		protected Boolean doInBackground(Void... v) {
+			return APIConnection.loadImage(MemberDetailsActivity.this, member, 
+					DeviceTools.getWidthScreen(MemberDetailsActivity.this));
 		}
 
 		@Override
-		protected void onPostExecute(String file_url) {
-			prepareImageView(FileTools.getAbsolutePathLocalFileFromURL(MemberDetailsActivity.this, item.getPictureURL()));
+		protected void onPostExecute(Boolean success) {
+			prepareImageView(FileTools.getAbsolutePathLocalFileFromURL(MemberDetailsActivity.this, member.getPictureURL()));
 			pDialog.dismiss();
 		}
 
