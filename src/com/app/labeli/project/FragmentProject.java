@@ -19,7 +19,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.app.labeli.R;
-import com.app.labeli.member.Member;
 
 /**
  * > @FragmentProject

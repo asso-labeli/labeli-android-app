@@ -31,6 +31,7 @@ public class Member implements Parcelable, DataWithPicture{
 	private String pictureURL;
 	private Date created;
 	private Date birthday;
+	private Date lastEdited;
 	private String id; 
 	/* Type
 	 * 0 :
@@ -48,7 +49,7 @@ public class Member implements Parcelable, DataWithPicture{
 	public Member(String firstName, String lastName, String username,
 			String email, String role, String website,
 			String universityGroup, String description,
-			String pictureURL, Date created, Date birthday, String id, int level) {
+			String pictureURL, Date created, Date birthday, Date lastEdited, String id, int level) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -61,6 +62,7 @@ public class Member implements Parcelable, DataWithPicture{
 		this.pictureURL = pictureURL;
 		this.created = created;
 		this.birthday = birthday;
+		this.lastEdited = lastEdited;
 		this.id = id;
 		this.level = level;
 		this.visible = true;
@@ -73,7 +75,7 @@ public class Member implements Parcelable, DataWithPicture{
 				+ role + ", website=" + website + ", universityGroup="
 				+ universityGroup + ", description=" + description
 				+ ", pictureURL=" + pictureURL + ", created=" + created
-				+ ", birthday=" + birthday + ", id=" + id + ", level=" + level
+				+ ", birthday=" + birthday + ", lastEdited=" + lastEdited + ", id=" + id + ", level=" + level
 				+ ", visible=" + visible + "]";
 	}
 	
@@ -88,7 +90,7 @@ public class Member implements Parcelable, DataWithPicture{
 	public Object clone(){
 		return new Member(firstName, lastName, username, email, role, 
 				website, universityGroup, description, pictureURL, (Date)created.clone(), 
-				(Date)birthday.clone(), id, level);
+				(Date)birthday.clone(), (Date)lastEdited.clone(), id, level);
 	}
 	
 	public String getFirstName() {
@@ -213,6 +215,18 @@ public class Member implements Parcelable, DataWithPicture{
 		this.birthday = birthday;
 	}
 	
+	public Date getLastEdited() {
+		return lastEdited;
+	}
+	
+	public String getLastEditedAsString(){
+		return new SimpleDateFormat("dd/MM/yy", Locale.FRANCE).format(lastEdited);
+	}
+	
+	public void setLastEdited(Date lastEdited) {
+		this.lastEdited = lastEdited;
+	}
+	
 	protected Member(Parcel in) {
 		firstName = in.readString();
 		lastName = in.readString();
@@ -225,6 +239,7 @@ public class Member implements Parcelable, DataWithPicture{
 		pictureURL = in.readString();
 		created = new Date(in.readLong());
 		birthday = new Date(in.readLong());
+		lastEdited = new Date(in.readLong());
 		id = in.readString();
 		level = in.readInt();
 		visible = in.readByte() != 0x00;
@@ -248,6 +263,7 @@ public class Member implements Parcelable, DataWithPicture{
 		dest.writeString(pictureURL);
 		dest.writeLong(created.getTime());
 		dest.writeLong(birthday.getTime());
+		dest.writeLong(lastEdited.getTime());
 		dest.writeString(id);
 		dest.writeInt(level);
 		dest.writeByte((byte) (visible ? 0x01 : 0x00));

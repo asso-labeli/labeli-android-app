@@ -5,6 +5,7 @@ import java.util.Date;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.app.labeli.interfaces.Data;
 import com.app.labeli.member.Member;
 
 /**
@@ -15,7 +16,7 @@ import com.app.labeli.member.Member;
  * @author Florian "Aamu Lumi" Kauder
  * for the project @Label[i]
  */
-public class Message implements Comparable<Message>, Parcelable{
+public class Message implements Comparable<Message>, Parcelable, Data{
 	
 	public Project project;
 	public Member author;

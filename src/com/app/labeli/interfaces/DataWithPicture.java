@@ -8,7 +8,7 @@ package com.app.labeli.interfaces;
  * @author Florian "Aamu Lumi" Kauder
  * for the project @Label[i]
  */
-public interface DataWithPicture {
+public interface DataWithPicture extends Data{
 	
 	public String getPictureURL();
 	public void setPictureURL(String url);

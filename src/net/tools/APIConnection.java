@@ -57,17 +57,6 @@ public abstract class APIConnection {
 	private static String DELETE = "DELETE";
 	private static String PUT = "PUT";
 
-	// API Parameters Name
-	private static String paramAuthUsername = "username";
-	private static String paramAuthPassword = "password";
-	private static String paramProjectsName = "name";
-	private static String paramProjectsType = "type";
-	private static String paramUserFirstName = "firstName";
-	private static String paramUserLastName = "lastName";
-	private static String paramUserEmail = "email";
-	private static String paramUserPassword = "password";
-	private static String paramMessagesContent = "content";
-
 	// Users JSON Tags
 	private static String tagUserFirstName = "firstName";
 	private static String tagUserLastName = "lastName";
@@ -79,6 +68,7 @@ public abstract class APIConnection {
 	private static String tagUserPicture = "picture";
 	private static String tagUserCreated = "created";
 	private static String tagUserBirthday = "birthday";
+	private static String tagUserLastEdited= "lastEdited";
 	private static String tagUserId = "_id";
 	private static String tagUserLevel = "level";
 	private static String tagUserWebsite = "website";
@@ -168,15 +158,6 @@ public abstract class APIConnection {
 			return loggedUser.getLevel() >= Member.LEVEL_ADMIN;
 
 			return false;
-	}
-
-	/**
-	 * Vérifie si la chaîne est un booléen. Elle supprime tout les espaces et les \n de la chaine avant la vérification.
-	 * @param bool
-	 * @return
-	 */
-	private static boolean convertToBoolean(String bool){
-		return Boolean.valueOf(bool.replace(" ", "").replace("\n", ""));
 	}
 
 	private static <T> ArrayList<T> getItems(String url, String parseMethod, 
@@ -353,7 +334,6 @@ public abstract class APIConnection {
 
 	public static boolean deleteItem(String url,
 			HashMap<String, String> urlParameters, HashMap<String, String> bodyParameters){
-		HashMap<String, String> params = new HashMap<String, String>();
 		JSONObject json = makeHttpRequest(url, DELETE, urlParameters, bodyParameters);
 
 		if (json == null)
@@ -579,8 +559,10 @@ public abstract class APIConnection {
 		String description = o.getString(tagUserDescription);
 		Date created = null;
 		Date birthday = null;
+		Date lastEdited = null;
 		try {
 			created = DateTools.parse(o.getString(tagUserCreated));
+			lastEdited = DateTools.parse(o.getString(tagUserLastEdited));
 			if (!o.getString(tagUserBirthday).equals("null"))
 				birthday = DateTools.parse(o.getString(tagUserBirthday));
 			else
@@ -589,13 +571,14 @@ public abstract class APIConnection {
 			e.printStackTrace();
 			created = new Date(0);
 			birthday = new Date(0);
+			lastEdited = new Date(0);
 		}
 		String universityGroup = o.getString(tagUserUniversityGroup);
 		String id = o.getString(tagUserId);
 		String website = o.getString(tagUserWebsite);
 
 		return new Member(firstName, lastName, username, email, role, website, universityGroup,
-				description, picture, created, birthday, id, level);
+				description, picture, created, birthday, lastEdited, id, level);
 	}
 
 	public static Project parseProject(JSONObject o) throws JSONException{

@@ -1,5 +1,7 @@
 package com.app.labeli.event;
 
+import java.util.Date;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -10,6 +12,7 @@ import com.app.labeli.member.Member;
  * > @Event
  *
  * Model for Event data
+ * @deprecated
  *
  * @author Florian "Aamu Lumi" Kauder
  * for the project @Label[i]
@@ -20,13 +23,13 @@ public class Event implements Parcelable, DataWithPicture{
 	private String name;
 	private String description;
 	private String pictureURL;
-	private double created;
+	private Date created;
 	private int status;
 	private int type;
 	private int id;
 
 	public Event(Member author, String name, String description,
-			String picture, double created, int status, int type, int id) {
+			String picture, Date created, int status, int type, int id) {
 		super();
 		this.author = author;
 		this.name = name;
@@ -95,10 +98,10 @@ public class Event implements Parcelable, DataWithPicture{
 		this.type = type;
 	}
 
-	public double getCreated() {
+	public Date getCreated() {
 		return created;
 	}
-	public void setCreated(double created) {
+	public void setCreated(Date created) {
 		this.created = created;
 	}
 	public int getId() {
@@ -117,7 +120,7 @@ public class Event implements Parcelable, DataWithPicture{
 		name = in.readString();
 		description = in.readString();
 		pictureURL = in.readString();
-		created = in.readDouble();
+		created = new Date(in.readLong());
 		status = in.readInt();
 		type = in.readInt();
 		id = in.readInt();
@@ -134,7 +137,7 @@ public class Event implements Parcelable, DataWithPicture{
 		dest.writeString(name);
 		dest.writeString(description);
 		dest.writeString(pictureURL);
-		dest.writeDouble(created);
+		dest.writeLong(created.getTime());
 		dest.writeInt(status);
 		dest.writeInt(type);
 		dest.writeInt(id);
@@ -151,6 +154,17 @@ public class Event implements Parcelable, DataWithPicture{
 			return new Event[size];
 		}
 	};
+
+	@Override
+	public Date getLastEdited() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void setLastEdited(Date lastEdited) {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 }

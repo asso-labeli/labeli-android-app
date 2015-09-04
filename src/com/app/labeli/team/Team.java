@@ -12,6 +12,7 @@ import com.app.labeli.member.Member;
  * > @Team
  *
  * Model for Team data
+ * @deprecated
  *
  * @author Florian "Aamu Lumi" Kauder
  * for the project @Label[i]
@@ -145,5 +146,17 @@ public class Team implements Parcelable, DataWithPicture{
             return new Team[size];
         }
     };
+
+	@Override
+	public Date getLastEdited() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setLastEdited(Date lastEdited) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
