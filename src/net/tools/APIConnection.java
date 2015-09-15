@@ -155,7 +155,7 @@ public abstract class APIConnection {
 	 * @param a - activity where the image must be load
 	 * @param d - a data with a picture URL
 	 * @param width - width of the screen
-	 * @return true if loading is successfull
+	 * @return true if loading is successful
 	 */
 	public static boolean loadImage(Activity a, DataWithPicture d, int width){
 		return jParser.loadImage(a, d, width);
@@ -208,7 +208,7 @@ public abstract class APIConnection {
 	/**
 	 * Send a GET request and create a list with returned JSON datas.
 	 * The JSONObject returned by server must have :
-	 * - success : int - 1 if request is successfull
+	 * - success : int - 1 if request is successful
 	 * - data : JSONArray - contains datas which will be parsed
 	 * @param url
 	 * @param parseMethod - name of the method used to parse an object in data
@@ -239,7 +239,7 @@ public abstract class APIConnection {
 			return null;
 		try {
 			int success = json.getInt("success");
-			// Parse if successfull
+			// Parse if successful
 			if (success == 1){
 				JSONArray data = json.getJSONArray("data");
 				for (int i = 0; i < data.length(); i++){
@@ -259,7 +259,7 @@ public abstract class APIConnection {
 	/**
 	 * Send a HTTP request and parse the returned element.
 	 * The JSONObject returned by server must have :
-	 * - success : int - 1 if request is successfull
+	 * - success : int - 1 if request is successful
 	 * - data : JSONObject - element which will be parsed
 	 * @param url
 	 * @param method - HTTP method (GET, PUT, ...)
@@ -290,7 +290,7 @@ public abstract class APIConnection {
 			return null;
 		try {
 			int success = json.getInt("success");
-			// Parse if successfull
+			// Parse if successful
 			if (success == 1){
 				return (T) parse.invoke(APIConnection.class, json.getJSONObject("data"));
 			}
@@ -305,7 +305,7 @@ public abstract class APIConnection {
 	/**
 	 * Send a HTTP request and check the returned element.
 	 * The JSONObject returned by server must have :
-	 * - success : int - 1 if request is successfull
+	 * - success : int - 1 if request is successful
 	 * @param url
 	 * @param method - HTTP method (GET, PUT, ...)
 	 * @param parseMethod - name of the method used to parse an object in data
@@ -321,7 +321,7 @@ public abstract class APIConnection {
 			return false;
 		try {
 			int success = json.getInt("success");
-			// Parse if successfull
+			// Parse if successful
 			if (success == 1){
 				return true;
 			}
@@ -336,7 +336,7 @@ public abstract class APIConnection {
 	/**
 	 * Send a GET request and parse the returned element.
 	 * The JSONObject returned by server must have :
-	 * - success : int - 1 if request is successfull
+	 * - success : int - 1 if request is successful
 	 * - data : JSONObject - element which will be parsed
 	 * @param url
 	 * @param parseMethod - name of the method used to parse an object in data
@@ -352,7 +352,7 @@ public abstract class APIConnection {
 	/**
 	 * Send a POST request and parse the returned element.
 	 * The JSONObject returned by server must have :
-	 * - success : int - 1 if request is successfull
+	 * - success : int - 1 if request is successful
 	 * - data : JSONObject - element which will be parsed
 	 * @param url
 	 * @param parseMethod - name of the method used to parse an object in data
@@ -368,7 +368,7 @@ public abstract class APIConnection {
 	/**
 	 * Send a PUT request and parse the returned element.
 	 * The JSONObject returned by server must have :
-	 * - success : int - 1 if request is successfull
+	 * - success : int - 1 if request is successful
 	 * - data : JSONObject - element which will be parsed
 	 * @param url
 	 * @param parseMethod - name of the method used to parse an object in data
@@ -411,7 +411,7 @@ public abstract class APIConnection {
 	 * Send a request to login
 	 * @param username 
 	 * @param password
-	 * @return true if the connection is successfull
+	 * @return true if the connection is successful
 	 */
 	public static boolean login(String username, String password){
 		HashMap<String, String> nameValuePairs = new HashMap<String, String>(2);
@@ -436,7 +436,7 @@ public abstract class APIConnection {
 
 	/**
 	 * Send a request to logout
-	 * @return true if successfull
+	 * @return true if successful
 	 */
 	public static boolean logout(){
 		JSONObject json = makeHttpRequest(urlAuth, DELETE, null, null);
@@ -453,6 +453,17 @@ public abstract class APIConnection {
 		}
 
 		return false;
+	}
+	
+	/**
+	 * Send a request to reset password of user
+	 * @param userId - id of user 
+	 * @return true if successful
+	 */
+	public static boolean resetPassword(String userId){
+		if (!isLogged()) return false;
+		
+		return APIConnection.doHTTPRequest(urlResetPassword + '/' + userId, POST, null, null);
 	}
 
 	/* ******************************************************
@@ -630,6 +641,76 @@ public abstract class APIConnection {
 	public static ArrayList<ProjectUser> getProjectUsers(String projectID){
 		// TODO getProjectUsers
 		return null;
+	}
+	
+	/* ******************************************************
+	 * 
+	 * API Module : Surveys
+	 * 
+	 ********************************************************/
+	
+	/**
+	 * Send a request to create a survey
+	 * @param name - name of the survey
+	 * @param description - [optional] description of the survey
+	 * @param state - [optional] 0 : close / 1 : open
+	 * @return the created survey
+	 */
+	public static Survey createSurvey(String name, String description, 
+			String state){
+		if (!isLogged()) return null;
+		
+		HashMap<String, String> bodyParameters = new HashMap<String, String>(3);
+		bodyParameters.put("name", name);
+		if (description != null) bodyParameters.put("description", description);
+		if (state != null) bodyParameters.put("state", state);
+		
+		return APIConnection.<Survey>createItem(urlSurveys, "parseSurvey", null, bodyParameters);
+	}
+	
+	/**
+	 * Send a request to delete a survey
+	 * @param surveyId - id of the survey to delete
+	 * @return true if successful
+	 */
+	public static boolean deleteSurvey(String surveyId){
+		if (!isLogged()) return false;
+		
+		return APIConnection.deleteItem(urlSurveys + '/' + surveyId, null, null);
+	}
+	
+	/**
+	 * Send a request to edit a survey
+	 * @param s - the survey with updated datas
+	 * @return the edited survey
+	 */
+	public static Survey editSurvey(Survey s){
+		if (!isLogged()) return null;
+		
+		HashMap<String, String> bodyParameters = new HashMap<String, String>(3);
+		bodyParameters.put("name", s.getName());
+		bodyParameters.put("description", s.getDescription());
+		bodyParameters.put("state", String.valueOf(s.getState()));
+		
+		return APIConnection.<Survey>editItem(urlSurveys + '/' + s.getId(), 
+				"parseSurvey", null, bodyParameters);
+	}
+	
+	/**
+	 * Send a request to get a specifif survey
+	 * @param id - id of survey to get
+	 * @return resulted survey
+	 */
+	public static Survey getSurvey(String id){
+		return APIConnection.<Survey>getItem(urlSurveys, "parseSurvey", null, null);
+	}
+	
+	/**
+	 * Send a request to get all surveys
+	 * @return ArrayList with all surveys
+	 */
+	public static ArrayList<Survey> getSurveys(){
+		return APIConnection.<Survey>getItems(urlSurveys, "parseSurvey", null, null);
 	}
 
 	/* ******************************************************
