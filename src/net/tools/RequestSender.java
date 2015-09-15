@@ -34,9 +34,9 @@ import android.text.TextUtils;
 import android.util.Log;
 
 /**
- * > @JSONParser
+ * > @RequestSender
  *
- * Parser for JSON datas
+ * Object to send/get HTTP datas to/from a server.
  *
  * @author Florian "Aamu Lumi" Kauder
  * for the project @Label[i]
@@ -51,11 +51,21 @@ public class RequestSender {
 	private static final String COOKIES_HEADER = "Set-Cookie";
 	private CookieManager mCookieManager;
 
-	// constructor
+	/**
+	 * Constructor - Init the cookie manager
+	 */
 	public RequestSender() {
 		mCookieManager = new CookieManager();
 	}
 
+	/**
+	 * Send HTTP Request with params (x-url-encoded)
+	 * @param requestURL
+	 * @param method - HTTP method (GET, POST, PUT, DELETE, ...)
+	 * @param urlParameters - parameters send in URL
+	 * @param bodyParameters - parameters send in body (encoded)
+	 * @return JSONObject returned by the server
+	 */
 	public JSONObject makeHttpRequest(String requestURL, String method, 
 			HashMap<String, String> urlParameters, HashMap<String, String> bodyParameters){
 		HttpURLConnection connection = null;
@@ -63,6 +73,7 @@ public class RequestSender {
 		JSONObject jObj = null;
 
 		try {
+			// Check if we must add parameters in URL
 			if (urlParameters != null){
 				String stringUrlParams = getFormattedParameters(urlParameters);
 				url = new URL(requestURL+"?"+stringUrlParams);
@@ -70,26 +81,34 @@ public class RequestSender {
 			else
 				url = new URL(requestURL);
 
+			// Create connection
 			connection = (HttpURLConnection) url.openConnection();
 
+			// Add cookies to request
 			if (mCookieManager.getCookieStore().getCookies().size() > 0)
 				connection.setRequestProperty("Cookie", 
 						TextUtils.join(";", mCookieManager.getCookieStore().getCookies()));
 
+			// Set request parameters
 			connection.setReadTimeout(5000);
 			connection.setConnectTimeout(5000);
 			connection.setRequestMethod(method);
 			connection.setDoInput(true);
+			
+			// Check if we must add parameters in body
 			if (bodyParameters != null){
-				connection.setDoOutput(true);
-
+				// Create a string with parameters
 				String stringBodyParameters = getFormattedParameters(bodyParameters);
+				
+				// Set output request parameters
+				connection.setDoOutput(true);
 				connection.setRequestProperty("Content-Type", 
 						"application/x-www-form-urlencoded");
 				connection.setRequestProperty("Content-Length", "" + 
 						Integer.toString(stringBodyParameters.getBytes().length));
 				connection.setRequestProperty("Content-Language", "fr-FR"); 
 
+				// Send body's request
 				OutputStream os = connection.getOutputStream();
 				BufferedWriter writer = new BufferedWriter(
 						new OutputStreamWriter(os, "UTF-8"));
@@ -100,15 +119,19 @@ public class RequestSender {
 				os.close();
 			}
 
+			// Get response code
 			int responseCode = connection.getResponseCode();
 
+			// If response is 200 (OK)
 			if (responseCode == HttpsURLConnection.HTTP_OK) {
+				// Keep new cookies in the manager
 				List<String> cookiesHeader = connection.getHeaderFields().get(COOKIES_HEADER);
 				if (cookiesHeader != null){
 					for (String cookie : cookiesHeader)
 						mCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
 				}
 
+				// Read the response
 				String line;
 				BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 				StringBuilder sb = new StringBuilder();
@@ -117,6 +140,7 @@ public class RequestSender {
 					sb.append(line + "\n");
 				}
 
+				// Parse the response to a JSON Object
 				try {
 					jObj = new JSONObject(sb.toString());
 				} catch (JSONException e) {
@@ -133,15 +157,24 @@ public class RequestSender {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
+			// Close connection
 			connection.disconnect();
 		}
 
 		return jObj;
 	}
 
+	/**
+	 * Create a string formatted with parameters
+	 * @param params - HashMap containing all parameters
+	 * @return formatted string
+	 * @throws UnsupportedEncodingException
+	 */
 	private String getFormattedParameters(HashMap<String, String> params) throws UnsupportedEncodingException{
 		StringBuilder result = new StringBuilder();
 		boolean first = true;
+		
+		// Add each entry to String
 		for(Map.Entry<String, String> entry : params.entrySet()){
 			if (first)
 				first = false;
@@ -156,8 +189,15 @@ public class RequestSender {
 		return result.toString();
 	}
 
+	/**
+	 * Send a picture to a server
+	 * @param f - the file with the picture
+	 * @param pictureName - new name of picture on the server
+	 * @return
+	 */
 	public boolean postPicture(File f, String pictureName){ 
 		try {
+			// Crée une requête Multipart
 			MultipartUtility multipart = null;
 			if (mCookieManager.getCookieStore().getCookies().size() > 0)
 				multipart = new MultipartUtility(APIConnection.apiUrl + "upload", "UTF-8", mCookieManager.getCookieStore().getCookies());
@@ -178,22 +218,36 @@ public class RequestSender {
 		return false;
 	}
 
+	/**
+	 * Load an image from a URL
+	 * @param a - activity where the image must be load
+	 * @param d - a data with a picture URL
+	 * @param width - width of the screen
+	 * @return true if loading is successfull
+	 */
 	public boolean loadImage(Activity a, DataWithPicture d, int width){
 		if (d.getPictureURL() == null) return true;
 
+		// Open the data file
 		final File dataFile = new File(FileTools.getAbsolutePathLocalFileFromURL(a, d.getPictureURL()));
+		
+		// Create URL
 		String wallpaperURLStr = APIConnection.apiUrl + "images/" + d.getPictureURL() +"?dim=" + width;
 		final String localFile = FileTools.getLocalFileFromURL(d.getPictureURL());
 
-		Log.i("Co", dataFile.getAbsolutePath());
-		if (!dataFile.exists() && !d.getPictureURL().equals("null")){
-			Log.i("Net", "Chargement de " + wallpaperURLStr);
+		// If there's a image to load
+		if (!d.getPictureURL().equals("null") && (dataFile.lastModified() < d.getLastEdited().getTime())){
+			// Remove the file to reload it
+			if (dataFile.exists()) dataFile.delete();
+
 			Bitmap bm = null;
 			try {
 				InputStream in = new java.net.URL(wallpaperURLStr).openStream();
 				bm = BitmapFactory.decodeStream(in);
 
 				FileTools.writeBitmapToFile(a, localFile, bm);
+				
+				in.close();
 				return true;
 			} catch (Exception e) {
 				Log.e("Error", e.getMessage());

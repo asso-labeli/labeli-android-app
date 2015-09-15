@@ -1,7 +1,6 @@
 package net.tools;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -31,25 +30,28 @@ import net.tools.RequestSender;
  * > @APIConnection
  *
  * Connector to Label[i] API
- * Reference : https://github.com/asso-labeli/labeli-api
+ * Reference : {@link http://api.labeli.org}
+ * Git API : {@link https://github.com/asso-labeli/labeli-api}
  *
  * @author Florian "Aamu Lumi" Kauder
  * for the project @Label[i]
  */
 public abstract class APIConnection {
 
-	/**
-	 * Reference : https://github.com/eolhing/labeli-api
-	 */
-
 	// URLs
-	public static String apiUrl = "http://dev.aamulumi.info:9010/";
+	public static String apiUrl = "http://192.168.1.3:9010/";
 	private static String urlUsers = apiUrl + "users";
 	private static String urlAuth = apiUrl + "auth";
 	private static String urlProjects = apiUrl + "projects";
-	private static String urlMessages = apiUrl + "messages";
+	private static String urlProjectUser = apiUrl + "projectUser";
+	private static String urlProjectUsers = urlProjectUser + "s";
 	private static String urlMessage = apiUrl + "message";
+	private static String urlMessages = urlMessage + "s";
+	private static String urlSurveys = apiUrl + "surveys";
+	private static String urlSurveyItem = apiUrl + "surveyItem";
+	private static String urlSurveyItems = urlSurveyItem + "s";
 	private static String urlVotes = apiUrl + "votes";
+	private static String urlResetPassword = apiUrl + "resetPassword";
 
 	// HTTP
 	private static String GET = "GET";
@@ -125,27 +127,60 @@ public abstract class APIConnection {
 
 	private static RequestSender jParser = new RequestSender();
 
+	/**
+	 * Send HTTP Request with params (x-url-encoded)
+	 * @param url
+	 * @param method - HTTP method (GET, POST, PUT, DELETE, ...)
+	 * @param urlParameters - parameters send in URL
+	 * @param bodyParameters - parameters send in body (encoded)
+	 * @return JSONObject returned by the server
+	 */
 	private static JSONObject makeHttpRequest(String url, 
 			String method, HashMap<String, String> urlParameters, HashMap<String, String> bodyParameters){
 		return jParser.makeHttpRequest(url, method, urlParameters, bodyParameters);
 	}
-	
+
+	/**
+	 * Send a file to a server
+	 * @param f - the file to send
+	 * @param fileName - new name of file on the server
+	 * @return true if upload is successful
+	 */
 	public static boolean makeFileRequest(File f, String fileName){
 		return jParser.postPicture(f, fileName);
 	}
-	
+
+	/**
+	 * Load an image from a URL
+	 * @param a - activity where the image must be load
+	 * @param d - a data with a picture URL
+	 * @param width - width of the screen
+	 * @return true if loading is successfull
+	 */
 	public static boolean loadImage(Activity a, DataWithPicture d, int width){
 		return jParser.loadImage(a, d, width);
 	}
 
+	/**
+	 * Get the connected user to the API
+	 * @return the connected user
+	 */
 	public static Member getLoggedUser(){
 		return loggedUser;
 	}
 
+	/**
+	 * Check if this APIConnection is connected
+	 * @return true if is connected / a user is logged
+	 */
 	public static boolean isLogged(){
 		return loggedUser != null;
 	}
 
+	/**
+	 * Check if logged user is a member
+	 * @return true if is at least a member
+	 */
 	public static boolean loggedUserIsMember(){
 		if (isLogged())
 			return loggedUser.getLevel() >= Member.LEVEL_MEMBER;
@@ -153,15 +188,39 @@ public abstract class APIConnection {
 			return false;
 	}
 
+	/**
+	 * Check if logged user is an admin
+	 * @return true if is an admin
+	 */
 	public static boolean loggedUserIsAdmin(){
 		if (isLogged())
 			return loggedUser.getLevel() >= Member.LEVEL_ADMIN;
 
 			return false;
 	}
+	
+	/* ******************************************************
+	 * 
+	 * HTTP Request Methods
+	 * 
+	 ********************************************************/
 
+	/**
+	 * Send a GET request and create a list with returned JSON datas.
+	 * The JSONObject returned by server must have :
+	 * - success : int - 1 if request is successfull
+	 * - data : JSONArray - contains datas which will be parsed
+	 * @param url
+	 * @param parseMethod - name of the method used to parse an object in data
+	 * @param urlParameters - parameters send in URL
+	 * @param bodyParameters - parameters send in body (encoded)
+	 * @return the list of parsed elements
+	 */
 	private static <T> ArrayList<T> getItems(String url, String parseMethod, 
 			HashMap<String, String> urlParameters, HashMap<String, String> bodyParameters){
+		ArrayList<T> list = new ArrayList<T>();
+		
+		// Get parseMethod
 		Class<?>[] cArg = new Class[1];
 		cArg[0] = JSONObject.class;
 
@@ -173,8 +232,7 @@ public abstract class APIConnection {
 			return null;
 		}
 
-		ArrayList<T> list = new ArrayList<T>();
-
+		// Do the request
 		JSONObject json = makeHttpRequest(url, GET, urlParameters, bodyParameters);
 
 		if (json == null)
@@ -190,26 +248,30 @@ public abstract class APIConnection {
 					list.add(tmp);
 				}
 			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-			return null;
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-			return null;
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-			return null;
-		} catch (InvocationTargetException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 
 		return list;
 	}
-
+	
+	/**
+	 * Send a HTTP request and parse the returned element.
+	 * The JSONObject returned by server must have :
+	 * - success : int - 1 if request is successfull
+	 * - data : JSONObject - element which will be parsed
+	 * @param url
+	 * @param method - HTTP method (GET, PUT, ...)
+	 * @param parseMethod - name of the method used to parse an object in data
+	 * @param urlParameters - parameters send in URL
+	 * @param bodyParameters - parameters send in body (encoded)
+	 * @return the list of parsed elements
+	 */
 	@SuppressWarnings("unchecked")
-	private static <T> T getItem(String url, String parseMethod, 
+	private static <T> T doHTTPRequestAndParse(String url, String method, String parseMethod, 
 			HashMap<String, String> urlParameters, HashMap<String, String> bodyParameters){
+		// Get parseMethod
 		Class<?>[] cArg = new Class[1];
 		cArg[0] = JSONObject.class;
 
@@ -221,8 +283,8 @@ public abstract class APIConnection {
 			return null;
 		}
 
-		// Make request
-		JSONObject json = makeHttpRequest(url, GET, urlParameters, bodyParameters);
+		// Do the request
+		JSONObject json = makeHttpRequest(url, method, urlParameters, bodyParameters);
 
 		if (json == null)
 			return null;
@@ -232,109 +294,28 @@ public abstract class APIConnection {
 			if (success == 1){
 				return (T) parse.invoke(APIConnection.class, json.getJSONObject("data"));
 			}
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-			return null;
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-			return null;
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-			return null;
-		}
+		} 
 
 		return null;
 	}
-
-	@SuppressWarnings("unchecked")
-	public static <T> T createItem(String url, String parseMethod, 
+	
+	/**
+	 * Send a HTTP request and check the returned element.
+	 * The JSONObject returned by server must have :
+	 * - success : int - 1 if request is successfull
+	 * @param url
+	 * @param method - HTTP method (GET, PUT, ...)
+	 * @param parseMethod - name of the method used to parse an object in data
+	 * @param urlParameters - parameters send in URL
+	 * @param bodyParameters - parameters send in body (encoded)
+	 * @return the list of parsed elements
+	 */
+	public static boolean doHTTPRequest(String url, String method,
 			HashMap<String, String> urlParameters, HashMap<String, String> bodyParameters){
-		Class<?>[] cArg = new Class[1];
-		cArg[0] = JSONObject.class;
-
-		Method parse = null;
-		try {
-			parse = APIConnection.class.getMethod(parseMethod, cArg);
-		} catch (NoSuchMethodException e1) {
-			e1.printStackTrace();
-			return null;
-		}
-
-		JSONObject json = makeHttpRequest(url, POST, urlParameters, bodyParameters);
-
-		if (json == null)
-			return null;
-		try {
-			int success = json.getInt("success");
-			Log.i("Coucou", json.toString());
-			// Parse if successfull
-			if (success == 1){
-				return (T) parse.invoke(APIConnection.class, json.getJSONObject("data"));
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-			return null;
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-			return null;
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-			return null;
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-			return null;
-		}
-
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	public static <T> T editItem(String url, String parseMethod, 
-			HashMap<String, String> urlParameters, HashMap<String, String> bodyParameters){
-		Class<?>[] cArg = new Class[1];
-		cArg[0] = JSONObject.class;
-
-		Method parse = null;
-		try {
-			parse = APIConnection.class.getMethod(parseMethod, cArg);
-		} catch (NoSuchMethodException e1) {
-			e1.printStackTrace();
-			return null;
-		}
-
-		JSONObject json = makeHttpRequest(url, PUT, urlParameters, bodyParameters);
-
-		if (json == null)
-			return null;
-		try {
-			int success = json.getInt("success");
-			// Parse if successfull
-			if (success == 1){
-				return (T) parse.invoke(APIConnection.class, json.getJSONObject("data"));
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-			return null;
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-			return null;
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-			return null;
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-			return null;
-		}
-
-		return null;
-	}
-
-	public static boolean deleteItem(String url,
-			HashMap<String, String> urlParameters, HashMap<String, String> bodyParameters){
-		JSONObject json = makeHttpRequest(url, DELETE, urlParameters, bodyParameters);
+		JSONObject json = makeHttpRequest(url, method, urlParameters, bodyParameters);
 
 		if (json == null)
 			return false;
@@ -352,15 +333,86 @@ public abstract class APIConnection {
 		return false;
 	}
 
-	/*
-	 * AUTHENTIFICATION
+	/**
+	 * Send a GET request and parse the returned element.
+	 * The JSONObject returned by server must have :
+	 * - success : int - 1 if request is successfull
+	 * - data : JSONObject - element which will be parsed
+	 * @param url
+	 * @param parseMethod - name of the method used to parse an object in data
+	 * @param urlParameters - parameters send in URL
+	 * @param bodyParameters - parameters send in body (encoded)
+	 * @return the list of parsed elements
 	 */
-
-	public static Member getCurrentUser(){
-		// TODO getCurrentUser
-		return null;
+	private static <T> T getItem(String url, String parseMethod, 
+			HashMap<String, String> urlParameters, HashMap<String, String> bodyParameters){
+		return APIConnection.<T>doHTTPRequestAndParse(url, GET, parseMethod, urlParameters, bodyParameters);
 	}
 
+	/**
+	 * Send a POST request and parse the returned element.
+	 * The JSONObject returned by server must have :
+	 * - success : int - 1 if request is successfull
+	 * - data : JSONObject - element which will be parsed
+	 * @param url
+	 * @param parseMethod - name of the method used to parse an object in data
+	 * @param urlParameters - parameters send in URL
+	 * @param bodyParameters - parameters send in body (encoded)
+	 * @return the list of parsed elements
+	 */
+	private static <T> T createItem(String url, String parseMethod, 
+			HashMap<String, String> urlParameters, HashMap<String, String> bodyParameters){
+		return APIConnection.<T>doHTTPRequestAndParse(url, POST, parseMethod, urlParameters, bodyParameters);
+	}
+
+	/**
+	 * Send a PUT request and parse the returned element.
+	 * The JSONObject returned by server must have :
+	 * - success : int - 1 if request is successfull
+	 * - data : JSONObject - element which will be parsed
+	 * @param url
+	 * @param parseMethod - name of the method used to parse an object in data
+	 * @param urlParameters - parameters send in URL
+	 * @param bodyParameters - parameters send in body (encoded)
+	 * @return the list of parsed elements
+	 */
+	private static <T> T editItem(String url, String parseMethod, 
+			HashMap<String, String> urlParameters, HashMap<String, String> bodyParameters){
+		return APIConnection.<T>doHTTPRequestAndParse(url, PUT, parseMethod, urlParameters, bodyParameters);
+	}
+
+	/**
+	 * Send a DELETE request.
+	 * @param url
+	 * @param urlParameters - parameters send in URL
+	 * @param bodyParameters - parameters send in body (encoded)
+	 * @return the list of parsed elements
+	 */
+	public static boolean deleteItem(String url,
+			HashMap<String, String> urlParameters, HashMap<String, String> bodyParameters){
+		return APIConnection.doHTTPRequest(url, DELETE, urlParameters, bodyParameters);
+	}
+
+	/* ******************************************************
+	 * 
+	 * API Module : Authentification
+	 * 
+	 ********************************************************/
+
+	/**
+	 * Send a request to get the logged user (server vision)
+	 * @return the logged user, or null if not logged
+	 */
+	public static Member getCurrentUser(){
+		return APIConnection.<Member>getItem(urlAuth, GET, null, null);
+	}
+
+	/**
+	 * Send a request to login
+	 * @param username 
+	 * @param password
+	 * @return true if the connection is successfull
+	 */
 	public static boolean login(String username, String password){
 		HashMap<String, String> nameValuePairs = new HashMap<String, String>(2);
 		nameValuePairs.put("username", username);
@@ -382,6 +434,10 @@ public abstract class APIConnection {
 		return false;
 	}
 
+	/**
+	 * Send a request to logout
+	 * @return true if successfull
+	 */
 	public static boolean logout(){
 		JSONObject json = makeHttpRequest(urlAuth, DELETE, null, null);
 
@@ -399,16 +455,31 @@ public abstract class APIConnection {
 		return false;
 	}
 
-	/*
-	 * USERS
-	 */
+	/* ******************************************************
+	 * 
+	 * API Module : Users
+	 * 
+	 ********************************************************/
 
+	/**
+	 * Send a request to get the list of users
+	 * @return the list of users
+	 */
 	public static ArrayList<Member> getUsers(){
 		return APIConnection.<Member>getItems(urlUsers, "parseMember", null, null);
 	}
 
+	/**
+	 * Send a request to create a user
+	 * @param firstName
+	 * @param lastName
+	 * @param email
+	 * @return the created user
+	 */
 	public static Member createUser(String firstName, String lastName, 
 			String email){
+		if (!isLogged()) return null;
+		
 		HashMap<String, String> params = new HashMap<String, String>(3);
 		params.put("firstName", firstName);
 		params.put("lastName", lastName);
@@ -417,29 +488,68 @@ public abstract class APIConnection {
 		return APIConnection.<Member>createItem(urlUsers, "parseMember", null, params);
 	}
 
+	/**
+	 * Send a request to get user
+	 * @param userID - id of user to get
+	 * @return the user with the ID
+	 */
 	public static Member getUser(String userID){
 		return APIConnection.<Member>getItem(urlUsers + "/" + userID, "parseMember", null, null);
 	}
 
-	public static boolean editUser(String userID, String firstName, 
-			String lastName, String email, String website, 
-			String universityGroup, String role, Date birthday,
-			String description, String picture){
-		// TODO editUser
-		return false;
-	}
-
-	public static boolean deleteUser(String userID){
-		// TODO deleteUser
-		return false;
-	}
-
-	/*
-	 * PROJECTS
+	/**
+	 * Send a request to edit a user
+	 * @param m - member object with updated informations
+	 * @param password - the new password, or null if no new password
+	 * @return the edited user
 	 */
+	public static Member editUser(Member m, String password){
+		if (!isLogged()) return null;
+		
+		HashMap<String, String> params = new HashMap<String, String>(11);
+		params.put("firstName", m.getFirstName());
+		params.put("lastName", m.getLastName());
+		params.put("email", m.getEmail());
+		params.put("website", m.getWebsite());
+		params.put("universityGroup", m.getUniversityGroup());
+		params.put("birthday", String.valueOf(m.getBirthday().getTime()));
+		params.put("picture", m.getPictureURL());
+		params.put("role", m.getRole());
+		params.put("level", String.valueOf(m.getLevel()));
+		params.put("description", m.getDescription());
+		if (password != null) params.put("password", password);
+		
+		return APIConnection.<Member>editItem(urlUsers + "/" + m.getId(), "parseMember", null, params);
+	}
 
+	/**
+	 * Send a request to delete a user
+	 * @param userID - the id of user to delete
+	 * @return true if the user is deleted
+	 */
+	public static boolean deleteUser(String userID){
+		if (!isLogged()) return false;
+		
+		return APIConnection.deleteItem(urlUsers + "/" + userID, null, null);
+	}
+
+	/* ******************************************************
+	 * 
+	 * API Module : Projects
+	 * 
+	 ********************************************************/
+
+	/**
+	 * Send a request to create a project
+	 * @param name
+	 * @param type
+	 * @param authorUsername
+	 * @return the created project
+	 */
 	public static Project createProject(String name, String type, 
 			String authorUsername){
+		if (!isLogged()) return null;
+		
 		HashMap<String, String> params = new HashMap<String, String>(3);
 		params.put("name", name);
 		params.put("type", type);
@@ -448,12 +558,25 @@ public abstract class APIConnection {
 		return APIConnection.<Project>createItem(urlProjects, "parseProject", null, params);
 	}
 
+	/**
+	 * Send a request to delete a project
+	 * @param projectID
+	 * @return true if the project is deleted
+	 */
 	public static boolean deleteProject(String projectID){
-		// TODO deleteProject
-		return false;
+		if (!isLogged()) return false;
+		
+		return APIConnection.deleteItem(urlProjects + "/" + projectID, null, null);
 	}
 
+	/**
+	 * Send a request to edit a project
+	 * @param p - a project with updated informations
+	 * @return the edited project
+	 */
 	public static Project editProject(Project p){
+		if (!isLogged()) return null;
+		
 		HashMap<String, String> params = new HashMap<String, String>(6);
 		params.put("name", p.getName());
 		params.put("status", String.valueOf(p.getStatus()));
@@ -465,17 +588,28 @@ public abstract class APIConnection {
 		return APIConnection.<Project>editItem(urlProjects + "/" + p.getId(), "parseProject", null, params);
 	}
 
+	/**
+	 * Send a request to get all projects
+	 * @return the list of projects
+	 */
 	public static ArrayList<Project> getProjects(){
 		return APIConnection.<Project>getItems(urlProjects, "parseProject", null, null);
 	}
 
+	/**
+	 * Send a request to get a project
+	 * @param projectID
+	 * @return the project with the good ID
+	 */
 	public static Project getProject(String projectID){
 		return APIConnection.<Project>getItem(urlProjects + "/" + projectID, "parseProject", null, null);
 	}
 
-	/*
-	 * PROJECTUSERS
-	 */
+	/* ******************************************************
+	 * 
+	 * API Module : ProjectUsers
+	 * 
+	 ********************************************************/
 
 	public static boolean createOrEditProjectUser(String projectID, 
 			String level, String username){
@@ -498,10 +632,18 @@ public abstract class APIConnection {
 		return null;
 	}
 
-	/*
-	 * MESSAGES
-	 */
+	/* ******************************************************
+	 * 
+	 * API Module : Messages
+	 * 
+	 ********************************************************/
 
+	/**
+	 * Send a request to create a message
+	 * @param projectID - project where the message must be add
+	 * @param content
+	 * @return the created message
+	 */
 	public static Message createMessage(String projectID, String content){
 		if (!isLogged()) return null;
 
@@ -510,12 +652,23 @@ public abstract class APIConnection {
 		return APIConnection.<Message>createItem(urlMessages + "/" + projectID, "parseMessage", null, params);
 	}
 
+	/**
+	 * Send a request to delete a message
+	 * @param messageID
+	 * @return true if the message is deleted
+	 */
 	public static boolean deleteMessage(String messageID){
 		if (!isLogged()) return false;
 
 		return APIConnection.deleteItem(urlMessage + "/" + messageID, null, null);
 	}
 
+	/**
+	 * Send a request to edit a message
+	 * @param messageID
+	 * @param content
+	 * @return the edited message
+	 */
 	public static Message editMessage(String messageID, String content){
 		if (!isLogged()) return null;
 
@@ -524,17 +677,29 @@ public abstract class APIConnection {
 		return APIConnection.<Message>editItem(urlMessage + "/" + messageID, "parseMessage", null, params);
 	}
 
+	/**
+	 * Send a request to get a message
+	 * @param messageID
+	 * @return the message with the good ID
+	 */
 	public static Message getMessage(String messageID){
 		return APIConnection.<Message>getItem(urlMessage + "/" + messageID , "parseMessage", null, null);
 	}
 
+	/**
+	 * Send a request to get messages of a project
+	 * @param projectID
+	 * @return the list of messages for a project
+	 */
 	public static ArrayList<Message> getMessages(String projectID) {
 		return APIConnection.<Message>getItems(urlMessages + "/" + projectID, "parseMessage", null, null);
 	}
 
-	/*
-	 * VOTES
-	 */
+	/* ******************************************************
+	 * 
+	 * API Module : Votes
+	 * 
+	 ********************************************************/
 
 	public static Vote getVote(String id){
 		return null;
@@ -547,7 +712,19 @@ public abstract class APIConnection {
 	public static ArrayList<SurveyItem> getSurveyItems(String id){
 		return null;
 	}
+	
+	/* ******************************************************
+	 * 
+	 * Parsing Methods
+	 * 
+	 ********************************************************/
 
+	/**
+	 * Parse a JSONObject to a Member object
+	 * @param o
+	 * @return the parsed Member
+	 * @throws JSONException
+	 */
 	public static Member parseMember(JSONObject o) throws JSONException{
 		String lastName = o.getString(tagUserLastName);
 		String firstName = o.getString(tagUserFirstName);
@@ -581,6 +758,12 @@ public abstract class APIConnection {
 				description, picture, created, birthday, lastEdited, id, level);
 	}
 
+	/**
+	 * Parse a JSONObject to a Project object
+	 * @param o
+	 * @return the parsed project
+	 * @throws JSONException
+	 */
 	public static Project parseProject(JSONObject o) throws JSONException{
 		Member author = getUser(o.getString(tagProjectAuthor));
 		String name = o.getString(tagProjectName);
@@ -603,6 +786,12 @@ public abstract class APIConnection {
 		return new Project(author, name, description, picture, created, lastEdited, status, type, id);
 	}
 
+	/**
+	 * Parse a JSONObject to a SurveyItem object
+	 * @param o
+	 * @return the parsed surveyItem
+	 * @throws JSONException
+	 */
 	public static SurveyItem parseSurveyItem(JSONObject o) throws JSONException{
 		String name = o.getString(tagSurveyItemName);
 		Date created = null;
@@ -620,6 +809,12 @@ public abstract class APIConnection {
 		return new SurveyItem(name, created, lastEdited, id);
 	}
 
+	/**
+	 * Parse a JSONObject to a Vote object
+	 * @param o
+	 * @return the parsed vote
+	 * @throws JSONException
+	 */
 	public static Vote parseVote(JSONObject o) throws JSONException {
 		int negative = o.getInt(tagVoteNegative);
 		int neutral = o.getInt(tagVoteNeutral);
@@ -629,6 +824,12 @@ public abstract class APIConnection {
 		return new Vote(negative, neutral, positive, total);
 	}
 
+	/**
+	 * Parse a JSONObject to a Survey object
+	 * @param oSurvey
+	 * @return the parsed survey
+	 * @throws JSONException
+	 */
 	public static Survey parseSurvey(JSONObject oSurvey) throws JSONException {
 		String description = oSurvey.getString(tagSurveyDescription);
 		String name = oSurvey.getString(tagSurveyName);
@@ -653,6 +854,12 @@ public abstract class APIConnection {
 		return new Survey(description, name, state, numberChoices, created, lastEdited, author, id, v, items);
 	}
 
+	/**
+	 * Parse a JSONObject to a Message object
+	 * @param o
+	 * @return the parsed message
+	 * @throws JSONException
+	 */
 	public static Message parseMessage(JSONObject o) throws JSONException{
 		String content = o.getString(tagMessageContent);
 		Project project = getProject(o.getString(tagMessageProject));
