@@ -2,16 +2,18 @@ package com.app.labeli;
 
 import java.util.Date;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * > @SurveyItem
  *
  * Model for SurveyItem data
- * TODO add Parcelable
  *
  * @author Florian "Aamu Lumi" Kauder
  * for the project @Label[i]
  */
-public class SurveyItem {
+public class SurveyItem implements Parcelable{
 	
 	private String name;
 	private Date created;
@@ -58,6 +60,36 @@ public class SurveyItem {
 		this.id = id;
 	}
 	
-	
+	protected SurveyItem(Parcel in) {
+        name = in.readString();
+        created = new Date(in.readLong());
+        lastEdited = new Date(in.readLong());
+        id = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeLong(created.getTime());
+        dest.writeLong(lastEdited.getTime());
+        dest.writeString(id);
+    }
+
+    public static final Parcelable.Creator<SurveyItem> CREATOR = new Parcelable.Creator<SurveyItem>() {
+        @Override
+        public SurveyItem createFromParcel(Parcel in) {
+            return new SurveyItem(in);
+        }
+
+        @Override
+        public SurveyItem[] newArray(int size) {
+            return new SurveyItem[size];
+        }
+    };
 
 }

@@ -3,18 +3,20 @@ package com.app.labeli;
 import java.util.ArrayList;
 import java.util.Date;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.app.labeli.member.Member;
 
 /**
  * > @Survey
  *
  * Model for a Survey data
- * TODO add Parcelable
  *
  * @author Florian "Aamu Lumi" Kauder
  * for the project @Label[i]
  */
-public class Survey {
+public class Survey implements Parcelable{
 
 	private String description;
 	private String name;
@@ -27,6 +29,21 @@ public class Survey {
 	private Vote vote;
 	private ArrayList<SurveyItem> items;
 
+	public Survey(String description, String name, int state,
+			int numberChoices, Date created, Date lastEdited,
+			Member author, String id) {
+		this.description = description;	
+		this.name = name;
+		this.state = state;
+		this.numberChoices = numberChoices;
+		this.created = created;
+		this.lastEdited = lastEdited;
+		this.author = author;
+		this.id = id;
+		this.vote = new Vote(0, 0, 0, 0);
+		this.items = new ArrayList<SurveyItem>();
+	}
+	
 	public Survey(String description, String name, int state,
 			int numberChoices, Date created, Date lastEdited,
 			Member author, String id, Vote vote, ArrayList<SurveyItem> items) {
@@ -121,5 +138,51 @@ public class Survey {
 	public void setItems(ArrayList<SurveyItem> items) {
 		this.items = items;
 	}
+
+	@SuppressWarnings("unchecked")
+	protected Survey(Parcel in) {
+        name = in.readString();
+        description = in.readString();
+        state = in.readInt();
+        numberChoices = in.readInt();
+        created = new Date(in.readLong());
+        lastEdited = new Date(in.readLong());
+        author = (Member) in.readValue(Member.class.getClassLoader());
+        id = in.readString();
+        vote = (Vote) in.readValue(Vote.class.getClassLoader());
+        items = (ArrayList<SurveyItem>) in.readValue(ArrayList.class.getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(author);
+        dest.writeString(name);
+        dest.writeString(description);
+        dest.writeInt(state);
+        dest.writeInt(numberChoices);
+        dest.writeLong(created.getTime());
+        dest.writeLong(lastEdited.getTime());
+        dest.writeValue(author);
+        dest.writeString(id);
+        dest.writeValue(vote);
+        dest.writeValue(items);
+    }
+
+    public static final Parcelable.Creator<Survey> CREATOR = new Parcelable.Creator<Survey>() {
+        @Override
+        public Survey createFromParcel(Parcel in) {
+            return new Survey(in);
+        }
+
+        @Override
+        public Survey[] newArray(int size) {
+            return new Survey[size];
+        }
+    };
 
 }
