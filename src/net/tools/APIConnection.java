@@ -712,6 +712,72 @@ public abstract class APIConnection {
 	public static ArrayList<Survey> getSurveys(){
 		return APIConnection.<Survey>getItems(urlSurveys, "parseSurvey", null, null);
 	}
+	
+	/* ******************************************************
+	 * 
+	 * API Module : SurveyItems
+	 * 
+	 ********************************************************/
+	
+	/**
+	 * Send a request to create a SurveyItem
+	 * @param parentSurverId - id of survey which must be add the irem
+	 * @param name - name of item
+	 * @return parsed SurveyItem
+	 */
+	public static SurveyItem createSurveyItem(String parentSurverId, String name){
+		if (!isLogged()) return null;
+		
+		HashMap<String, String> bodyParameters = new HashMap<String, String>(1);
+		bodyParameters.put("name", name);
+		
+		return APIConnection.<SurveyItem>createItem(urlSurveyItems, "parseSurveyItem", null, bodyParameters);
+	}
+	
+	/**
+	 * Send a request to delete a SurveyItem
+	 * @param surveyItemId - id of surveyItem to delete
+	 * @return true if successful
+	 */
+	public static boolean deleteSurveyItem(String surveyItemId){
+		if (!isLogged()) return false;
+		
+		return APIConnection.deleteItem(urlSurveyItem + '/' + surveyItemId, null, null);
+	}
+	
+	/**
+	 * Send a request to edit a SurveyItem
+	 * @param s - surveyItem with updated values
+	 * @return the edited surveyItem
+	 */
+	public static SurveyItem editSurveyItem(SurveyItem s){
+		if (!isLogged()) return null;
+		
+		HashMap<String, String> bodyParameters = new HashMap<String, String>(1);
+		bodyParameters.put("name", s.getName());
+		
+		return APIConnection.<SurveyItem>editItem(urlSurveyItem + '/' + s.getId(), 
+				"parseSurveyItem", null, bodyParameters);
+	}
+	
+	/**
+	 * Send a request to get a specific SurveyItem
+	 * @param surveyItemId - id of surveyItem to get
+	 * @return the surveyItem with the good id
+	 */
+	public static SurveyItem getSurveyItem(String surveyItemId){
+		return APIConnection.<SurveyItem>getItem(urlSurveyItem + '/' + surveyItemId, 
+				"parseSurveyItem", null, null);
+	}
+	
+	/**
+	 * Send a request to get all surveyItems
+	 * @return the list of SurveyItems
+	 */
+	public static ArrayList<SurveyItem> getSurveyItems(){
+		return APIConnection.<SurveyItem>getItems(urlSurveyItems, 
+				"parseSurveyItem", null, null);
+	}
 
 	/* ******************************************************
 	 * 
