@@ -1,22 +1,22 @@
 package com.app.labeli;
 
 /**
- * > @Vote
+ * > @VoteResult
  *
- * Model for Vote data
+ * Model for VoteResult data
  * TODO add Parcelable
  *
  * @author Florian "Aamu Lumi" Kauder
  * for the project @Label[i]
  */
-public class Vote {
+public class VoteResult {
 	
 	private int negativeVote;
 	private int neutralVote;
 	private int positiveVote;
 	private int totalVote;
 	
-	public Vote(int negativeVote, int neutralVote, int positiveVote,
+	public VoteResult(int negativeVote, int neutralVote, int positiveVote,
 			int totalVote) {
 		this.negativeVote = negativeVote;
 		this.neutralVote = neutralVote;
